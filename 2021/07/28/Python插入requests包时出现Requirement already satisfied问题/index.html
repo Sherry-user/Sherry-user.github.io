@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Python插入requests包时出现Requirement already satisfied问题 · Mr.Long's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">longlongyu</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.Long's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">Python插入requests包时出现Requirement already satisfied问题</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2021-07-28</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><p><strong>前言</strong></p>
+<p>记录一下PyCharm3.7插入requests包时出现的问题</p>
+<span id="more"></span>
+
+<h1 id="Python插入requests包时出现Requirement-already-satisfied问题"><a href="#Python插入requests包时出现Requirement-already-satisfied问题" class="headerlink" title="Python插入requests包时出现Requirement already satisfied问题"></a>Python插入requests包时出现Requirement already satisfied问题</h1><p>上网上查了一下，发现好多出现这个问题的原因都是在自己电脑上安装python的时候有其他python版本的残留，然后我在自己电脑里面查了一下，发现我有一个PyCharm2.x和一个PyCharm3.x的文件，尝试网上的教程来，发现还是不行，甚至出现了其他的问题，弄了好久还是没解决，我怀疑可能是之前下载时文件没归类，有些零散的原因，于是我直接把他们都删了，再重新安装下载了PyCharm3.7。</p>
+<p>重新打开cmd，以管理员身份运行，输入<code>pip install requests</code></p>
+<p>发现还是出现了一下问题（我寻思着，难道我还是没删干净）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Requirement already satisfied: requests in e:\python\lib\site-packages (2.26.0)</span><br><span class="line">Requirement already satisfied: urllib3&lt;1.27,&gt;=1.21.1 in e:\python\lib\site-packages (from requests) (1.26.6)</span><br><span class="line">Requirement already satisfied: idna&lt;4,&gt;=2.5; python_version &gt;= &quot;3&quot; in e:\python\lib\site-packages (from requests) (3.2)</span><br><span class="line">Requirement already satisfied: charset-normalizer~=2.0.0; python_version &gt;= &quot;3&quot; in e:\python\lib\site-packages (from requests) (2.0.3)</span><br><span class="line">Requirement already satisfied: certifi&gt;=2017.4.17 in e:\python\lib\site-packages (from requests) (2021.5.30)</span><br><span class="line">You are using pip version 19.0.3, however version 21.1.3 is available.</span><br><span class="line">You should consider upgrading via the &#x27;python -m pip install --upgrade pip&#x27; command.</span><br></pre></td></tr></table></figure>
+
+<p>于是我按照他的提示重新输入<code>python -m pip install --upgrade pip</code></p>
+<p>结果为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Collecting pip</span><br><span class="line">  Using cached https://files.pythonhosted.org/packages/47/ca/f0d790b6e18b3a6f3bd5e80c2ee4edbb5807286c21cdd0862ca933f751dd/pip-21.1.3-py3-none-any.whl</span><br><span class="line">Installing collected packages: pip</span><br><span class="line">  Found existing installation: pip 19.0.3</span><br><span class="line">    Uninstalling pip-19.0.3:</span><br><span class="line">      Successfully uninstalled pip-19.0.3</span><br><span class="line">Successfully installed pip-21.1.3</span><br></pre></td></tr></table></figure>
+
+<p>之后再重新输入<code>pip install requests</code></p>
+<p>发现结果还是有问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Requirement already satisfied: requests in e:\python\lib\site-packages (2.26.0)</span><br><span class="line">Requirement already satisfied: urllib3&lt;1.27,&gt;=1.21.1 in e:\python\lib\site-packages (from requests) (1.26.6)</span><br><span class="line">Requirement already satisfied: certifi&gt;=2017.4.17 in e:\python\lib\site-packages (from requests) (2021.5.30)</span><br><span class="line">Requirement already satisfied: idna&lt;4,&gt;=2.5 in e:\python\lib\site-packages (from requests) (3.2)</span><br><span class="line">Requirement already satisfied: charset-normalizer~=2.0.0 in e:\python\lib\site-packages (from requests) (2.0.3)</span><br></pre></td></tr></table></figure>
+
+<p>于是我再尝试了一下网上的教程，输入<code>pip install --target=e:/python/lib/site-packages requests</code></p>
+<p>然后我终于成功了！！！！</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Collecting requests</span><br><span class="line">  Using cached requests-2.26.0-py2.py3-none-any.whl (62 kB)</span><br><span class="line">Collecting charset-normalizer~=2.0.0</span><br><span class="line">  Using cached charset_normalizer-2.0.3-py3-none-any.whl (35 kB)</span><br><span class="line">Collecting urllib3&lt;1.27,&gt;=1.21.1</span><br><span class="line">  Using cached urllib3-1.26.6-py2.py3-none-any.whl (138 kB)</span><br><span class="line">Collecting idna&lt;4,&gt;=2.5</span><br><span class="line">  Using cached idna-3.2-py3-none-any.whl (59 kB)</span><br><span class="line">Collecting certifi&gt;=2017.4.17</span><br><span class="line">  Using cached certifi-2021.5.30-py2.py3-none-any.whl (145 kB)</span><br><span class="line">Installing collected packages: urllib3, idna, charset-normalizer, certifi, requests</span><br><span class="line">Successfully installed certifi-2021.5.30 charset-normalizer-2.0.3 idna-3.2 requests-2.26.0 urllib3-1.26.6</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\certifi already exists. Specify --upgrade to force replacement.</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\certifi-2021.5.30.dist-info already exists. Specify --upgrade to force replacement.</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\charset_normalizer already exists. Specify --upgrade to force replacement.</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\charset_normalizer-2.0.3.dist-info already exists. Specify --upgrade to force replacement.</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\idna already exists. Specify --upgrade to force replacement.</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\idna-3.2.dist-info already exists. Specify --upgrade to force replacement.</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\requests already exists. Specify --upgrade to force replacement.</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\requests-2.26.0.dist-info already exists. Specify --upgrade to force replacement.</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\urllib3 already exists. Specify --upgrade to force replacement.</span><br><span class="line">WARNING: Target directory e:\python\lib\site-packages\urllib3-1.26.6.dist-info already exists. Specify --upgrade to force replacement.</span><br></pre></td></tr></table></figure></article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2021/07/28/Python%E6%8F%92%E5%85%A5requests%E5%8C%85%E6%97%B6%E5%87%BA%E7%8E%B0Requirement%20already%20satisfied%E9%97%AE%E9%A2%98/">http://example.com/2021/07/28/Python%E6%8F%92%E5%85%A5requests%E5%8C%85%E6%97%B6%E5%87%BA%E7%8E%B0Requirement%20already%20satisfied%E9%97%AE%E9%A2%98/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2021/07/29/CSS3%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" title="CSS3基础学习记录"><span>< PreviousPost</span><br><span class="prevTitle">CSS3基础学习记录</span></a><a class="nextSlogan" href="/2021/07/28/python%E7%88%AC%E8%99%AB%E5%AD%A6%E4%B9%A0/" title="python爬虫基础学习"><span>NextPost ></span><br><span class="nextTitle">python爬虫基础学习</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Python%E6%8F%92%E5%85%A5requests%E5%8C%85%E6%97%B6%E5%87%BA%E7%8E%B0Requirement-already-satisfied%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">Python插入requests包时出现Requirement already satisfied问题</span></a></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

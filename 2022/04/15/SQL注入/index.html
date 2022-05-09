@@ -1,0 +1,166 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>SQL注入 · Mr.Long's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">longlongyu</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.Long's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">SQL注入</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-04-15</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h1><h2 id="一-SQL注入原理"><a href="#一-SQL注入原理" class="headerlink" title="一.SQL注入原理"></a>一.SQL注入原理</h2><p>  web 应用程序对用户输入的数据合法性没有过滤或者是判断，<strong>前端传入的参数</strong>是攻击者可以控制，并且**参数带入数据库的查询 **，攻击者可以通过构造恶意的 sql 语句来实现对数据库的任意操作。例如一般用户登录用的SQL语句为：SELECT * FROM user WHERE username=’admin’ AND password=’passwd’，此处admin和passwd分别为用户输入的用户名和密码，如果程序员没有对用户输入的用户名和密码做处理，就可以构造万能密码成功绕过登录验证，如用户输入’or 1#,SQL语句将变为：SELECT * FROM user WHERE username=’’or 1#’ AND password=’’，‘’or 1为TRUE，#注释掉后面的内容，所以查询语句可以正确执行。</p>
+<p> sql注入漏洞攻击流程：注入点探测—信息获取—获取权限</p>
+<h2 id="二-数据库"><a href="#二-数据库" class="headerlink" title="二.数据库"></a>二.数据库</h2><h3 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h3><p>在 MySQL5.0 版本后，MySQL 默认在数据库中存放一个information_schema的数据库，在该库中，我们需要记住三个表名，分别是 schemata，tables，columns。</p>
+<ul>
+<li>Schemata 表存储的是该用户创建的所有数据库的库名，需要记住该表中记录数据库名的字段名为 schema_name。</li>
+<li>Tables 表存储该用户创建的所有数据库的库名和表名，要记住该表中记录数据库 库名和表名的字段分别是 table_schema 和 table_name</li>
+<li>Columns 表存储该用户创建的所有数据库的库名、表名、字段名，要记住该表中记录数据库库名、表名、字段名为 table_schema、。</li>
+</ul>
+<h2 id="三-重要函数"><a href="#三-重要函数" class="headerlink" title="三.重要函数"></a>三.重要函数</h2><ul>
+<li><p>Version()；当前 mysql 的版本</p>
+</li>
+<li><p> Database();当前网站使用的数据库</p>
+</li>
+<li><p>User();当前 MySQL 的用户</p>
+</li>
+<li><p> system_user(); 系统用户名</p>
+</li>
+<li><p>session_user();连接数据库的用户名</p>
+</li>
+<li><p>current_user;当前用户名</p>
+</li>
+<li><p>load_file();读取本地文件</p>
+</li>
+<li><p>length(str) : 返回给定字符串的长度，如 length(“string”)=6</p>
+</li>
+<li><p>substr(string,start,length) : 对于给定字符串string，从start位开始截取，截取length长度 ,如 substr(“chinese”,3,2)=“in”<br>substr()、stbstring()、mid() 三个函数的用法、功能均一致</p>
+</li>
+<li><p>concat(username)：将查询到的username连在一起，默认用逗号分隔<br>concat(str1,’’,str2)：将字符串str1和str2的数据查询到一起，中间用连接group_concat(username) ：将username数据查询在一起，用逗号连接</p>
+</li>
+<li><p>三种注释符号： </p>
+<h1 id><a href="#" class="headerlink" title></a></h1><p> –空格 空格可以使用+代替 （url 编码%23 表示注释）<br> /**/</p>
+</li>
+</ul>
+<h2 id="四-SQL注入的类型"><a href="#四-SQL注入的类型" class="headerlink" title="四.SQL注入的类型"></a>四.SQL注入的类型</h2><h3 id="按注入点类型分类"><a href="#按注入点类型分类" class="headerlink" title="按注入点类型分类"></a>按注入点类型分类</h3><h4 id="数字型注入点"><a href="#数字型注入点" class="headerlink" title="数字型注入点"></a>数字型注入点</h4><p> 类似结构 <a target="_blank" rel="noopener" href="http://xxx.com/users.php?id=1">http://xxx.com/users.php?id=1</a> 基于此种形式的注入，一般被叫做数字型注入点，缘由是其注入点 id 类型为数字。</p>
+<h4 id="字符型注入点"><a href="#字符型注入点" class="headerlink" title="字符型注入点"></a>字符型注入点</h4><p> 类似结构 <a target="_blank" rel="noopener" href="http://xxx.com/users.php?name=admin">http://xxx.com/users.php?name=admin</a> 这种形式，其注入点 name 类型为字符类型，所以叫字符型注入点。 </p>
+<p><img src="/C:/Users\ASUS\AppData\Roaming\Typora\typora-user-images\1650098909906.png" alt="1650098909906"><img src="/C:/Users\ASUS\AppData\Roaming\Typora\typora-user-images\1650098933704.png" alt="1650098933704"></p>
+<h4 id="搜索型注入点"><a href="#搜索型注入点" class="headerlink" title="搜索型注入点"></a>搜索型注入点</h4><p>这类注入主要是指在进行数据搜索时没过滤搜索参数，一般在链接地址中有 “keyword=关键字” 有的不显示在的链接地址里面，而是直接通过搜索框表单提交。此类注入点提交的 SQL 语句，其原形大致为：select * from 表名 where 字段 like ‘%关键字%’ 若存在注入。</p>
+<h3 id="按数据提交的方式来分类"><a href="#按数据提交的方式来分类" class="headerlink" title="按数据提交的方式来分类"></a>按数据提交的方式来分类</h3><h4 id="GET注入"><a href="#GET注入" class="headerlink" title="GET注入"></a>GET注入</h4><p> 提交数据的方式是 GET , 注入点的位置在 GET 参数部分。 </p>
+<h4 id="POST注入"><a href="#POST注入" class="headerlink" title="POST注入"></a>POST注入</h4><p> 使用 POST 方式提交数据，注入点位置在 POST <em>数据部分</em> 。</p>
+<h4 id="Cookie注入"><a href="#Cookie注入" class="headerlink" title="Cookie注入"></a>Cookie注入</h4><p> HTTP 请求的时候会带上客户端的 Cookie, 注入点存在 Cookie 当中的某个字段中。 </p>
+<h4 id="HTTP头部注入"><a href="#HTTP头部注入" class="headerlink" title="HTTP头部注入"></a>HTTP头部注入</h4><p> 注入点在 HTTP 请求头部的某个字段中。比如存在 User-Agent 字段中。严格讲的话，Cookie 其实应该也是算头部注入的一种形式。因为在 HTTP 请求的时候，Cookie 是头部的一个字段。 </p>
+<h3 id="按照执行效果来分类"><a href="#按照执行效果来分类" class="headerlink" title="按照执行效果来分类"></a>按照执行效果来分类</h3><h4 id="基于布尔的盲注"><a href="#基于布尔的盲注" class="headerlink" title="基于布尔的盲注"></a>基于布尔的盲注</h4><p> 可以根据返回页面判断条件真假的注入。 </p>
+<h4 id="基于时间的盲注"><a href="#基于时间的盲注" class="headerlink" title="基于时间的盲注"></a>基于时间的盲注</h4><p> 不能根据页面返回内容判断任何信息，用条件语句查看时间延迟语句是否执行（即页面返回时间是否增加）来判断。 </p>
+<h4 id="基于报错注入"><a href="#基于报错注入" class="headerlink" title="基于报错注入"></a>基于报错注入</h4><p> 页面会返回错误信息，或者把注入的语句的结果直接返回在页面中。 </p>
+<h4 id="联合查询注入"><a href="#联合查询注入" class="headerlink" title="联合查询注入"></a>联合查询注入</h4><p> 使用union的情况下的注入。 </p>
+<h4 id="堆查询注入"><a href="#堆查询注入" class="headerlink" title="堆查询注入"></a>堆查询注入</h4><p> 可以同时执行多条语句的执行时的注入。 </p>
+<h4 id="宽字节注入"><a href="#宽字节注入" class="headerlink" title="宽字节注入"></a>宽字节注入</h4><h4 id="二次注入"><a href="#二次注入" class="headerlink" title="二次注入"></a>二次注入</h4><h4 id="json注入"><a href="#json注入" class="headerlink" title="json注入"></a>json注入</h4><h4 id="DNSlog注入"><a href="#DNSlog注入" class="headerlink" title="DNSlog注入"></a>DNSlog注入</h4><h4 id="SQL-注入写入webshell"><a href="#SQL-注入写入webshell" class="headerlink" title="SQL 注入写入webshell"></a>SQL 注入写入webshell</h4><h4 id="limit注入"><a href="#limit注入" class="headerlink" title="limit注入"></a>limit注入</h4><h2 id="五-注入点探测"><a href="#五-注入点探测" class="headerlink" title="五.注入点探测"></a>五.注入点探测</h2><h3 id="判断是否存在注入"><a href="#判断是否存在注入" class="headerlink" title="判断是否存在注入"></a>判断是否存在注入</h3><p>引号判断： 无论字符型还是整型都会因为单引号个数不匹配而报错。 </p>
+<h3 id="判断注入类型"><a href="#判断注入类型" class="headerlink" title="判断注入类型"></a>判断注入类型</h3><p> 总之数字型注入不需要使用单引号闭合前面的单引号就可以执行SQL语句，而字符型必须闭合前面的单引号，然后才可以执行SQL语句，同时也需要把后面的单引号闭合，而注释就是很好的一种闭合后面的单引号的方法。 方法不唯一。</p>
+<ol>
+<li>id=1’无（我觉得应该是异常的）异常      id=1and 1=1—+正确显示      id=1and1=2—+ 错误          ===&gt;数字注入</li>
+<li>id=1‘异常          id=1’and‘1’=‘1—+正确               id=1‘and’1‘=’2–+错误          ===&gt;单引号字符型注入</li>
+</ol>
+<p>GET型注入很容易从URL中看出来，如图，网页的URL为：<a target="_blank" rel="noopener" href="http://127.0.0.1/DVWA/vulnerabilities/sqli/?id=1%EF%BC%8C%E6%B5%8F%E8%A7%88%E5%99%A8%E9%80%9A%E5%B8%B8%E4%BD%BF%E7%94%A8?%E6%9D%A5%E8%A1%A8%E7%A4%BAGET%E6%96%B9%E6%B3%95%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0%EF%BC%8C%E8%80%8C%E4%BD%BF%E7%94%A8POST%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0%E6%98%AF%E4%B8%8D%E4%BC%9A%E6%98%BE%E7%A4%BA%E5%88%B0URL%E4%B8%AD%E7%9A%84%EF%BC%8C%E5%9B%A0%E6%AD%A4URL%E4%B8%AD%E5%90%AB%E6%9C%89%EF%BC%9F%E8%AF%B4%E6%98%8E%E5%B0%B1%E6%98%AF%E4%BD%BF%E7%94%A8GET%E6%96%B9%E6%B3%95%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0%EF%BC%8C">http://127.0.0.1/DVWA/vulnerabilities/sqli/?id=1，浏览器通常使用?来表示GET方法传递参数，而使用POST传递参数是不会显示到URL中的，因此URL中含有？说明就是使用GET方法传递参数，</a></p>
+<h3 id="判断数据库类型"><a href="#判断数据库类型" class="headerlink" title="判断数据库类型"></a>判断数据库类型</h3><p>1’ or ‘ab’=’a+’b ————–MS SQLserver数据库，字符串连接，成功这返回永真条件<br>1’ or ‘ab’=‘a’’b —————Mysql数据库，字符串连接，成功这返回永真条件<br>1’ or ‘ab’=‘a’||’b ————-Oracle数据库，字符串连接，成功这返回永真条件</p>
+<h3 id="确定数据库权限"><a href="#确定数据库权限" class="headerlink" title="确定数据库权限"></a>确定数据库权限</h3><h3 id="查数据库的库名，表名，列名以及相应的数据"><a href="#查数据库的库名，表名，列名以及相应的数据" class="headerlink" title="查数据库的库名，表名，列名以及相应的数据"></a>查数据库的库名，表名，列名以及相应的数据</h3><p>猜测字段数：order by 3#</p>
+<p>判断显示位：union select 1,2,3#</p>
+<p> 获取当数据库名称和当前连接数据库的用户:  union select user(),database() </p>
+<p> 列出所有数据库 union select 1,schema_name from information_schema.Schemata#</p>
+<p> 列出中所有的表 -1’ union select table_name,table_schema from information_schema.tables#</p>
+<p> 列出（数据库：mysql表：user）中的数据   -1’ union select User,Password from mysql.user#</p>
+<p><img src="/C:/Users\ASUS\AppData\Roaming\Typora\typora-user-images\1650110416731.png" alt="1650110416731"></p>
+<p>3、还有就是Timing Attack测试，也就是时间盲注。通过简单的条件语句比如 and 1=2 是无法看出异常的。在MySQL中，有一个Benchmark() 函数，它是用于测试性能的。 Benchmark(count,expr) ，这个函数执行的结果，是将表达式 expr 执行 count 次 。<br>因此，利用benchmark函数，可以让同一个函数执行若干次，使得结果返回的时间比平时要长，通过时间长短的变化，可以判断注入语句是否执行成功。</p>
+<h2 id="五-SQL实战"><a href="#五-SQL实战" class="headerlink" title="五.SQL实战"></a>五.SQL实战</h2><h2 id="六-SQL绕过"><a href="#六-SQL绕过" class="headerlink" title="六.SQL绕过"></a>六.SQL绕过</h2><h2 id="七-关于SQL注入的防御"><a href="#七-关于SQL注入的防御" class="headerlink" title="七.关于SQL注入的防御"></a>七.关于SQL注入的防御</h2><p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/whoim_i/article/details/102733802">https://blog.csdn.net/whoim_i/article/details/102733802</a> </p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42263820/article/details/110132955">https://blog.csdn.net/qq_42263820/article/details/110132955</a></p>
+<p> <a target="_blank" rel="noopener" href="https://caichuanqi.blog.csdn.net/article/details/109611296?spm=1001.2101.3001.6650.13&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-13.pc_relevant_default&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-13.pc_relevant_default&utm_relevant_index=15">(57条消息) 网页是否存在SQL注入(单引号判断法)_菜鸟-传奇的博客-CSDN博客</a> </p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/04/15/SQL%E6%B3%A8%E5%85%A5/">http://example.com/2022/04/15/SQL%E6%B3%A8%E5%85%A5/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/04/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BBxss/" title="跨站脚本攻击xss"><span>< PreviousPost</span><br><span class="prevTitle">跨站脚本攻击xss</span></a><a class="nextSlogan" href="/2022/03/31/Linux%E5%91%BD%E4%BB%A4/" title="Linux基本命令记录"><span>NextPost ></span><br><span class="nextTitle">Linux基本命令记录</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5"><span class="toc-number">1.</span> <span class="toc-text">SQL注入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80-SQL%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">一.SQL注入原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C-%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.2.</span> <span class="toc-text">二.数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL"><span class="toc-number">1.2.1.</span> <span class="toc-text">MySQL</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-%E9%87%8D%E8%A6%81%E5%87%BD%E6%95%B0"><span class="toc-number">1.3.</span> <span class="toc-text">三.重要函数</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text"></span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B-SQL%E6%B3%A8%E5%85%A5%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.1.</span> <span class="toc-text">四.SQL注入的类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E6%B3%A8%E5%85%A5%E7%82%B9%E7%B1%BB%E5%9E%8B%E5%88%86%E7%B1%BB"><span class="toc-number">2.1.1.</span> <span class="toc-text">按注入点类型分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%97%E5%9E%8B%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">数字型注入点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E5%9E%8B%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">字符型注入点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E5%9E%8B%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="toc-number">2.1.1.3.</span> <span class="toc-text">搜索型注入点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E6%95%B0%E6%8D%AE%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%B9%E5%BC%8F%E6%9D%A5%E5%88%86%E7%B1%BB"><span class="toc-number">2.1.2.</span> <span class="toc-text">按数据提交的方式来分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#GET%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">GET注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#POST%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">POST注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Cookie%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.2.3.</span> <span class="toc-text">Cookie注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HTTP%E5%A4%B4%E9%83%A8%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.2.4.</span> <span class="toc-text">HTTP头部注入</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%89%E7%85%A7%E6%89%A7%E8%A1%8C%E6%95%88%E6%9E%9C%E6%9D%A5%E5%88%86%E7%B1%BB"><span class="toc-number">2.1.3.</span> <span class="toc-text">按照执行效果来分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%B8%83%E5%B0%94%E7%9A%84%E7%9B%B2%E6%B3%A8"><span class="toc-number">2.1.3.1.</span> <span class="toc-text">基于布尔的盲注</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E7%9A%84%E7%9B%B2%E6%B3%A8"><span class="toc-number">2.1.3.2.</span> <span class="toc-text">基于时间的盲注</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.3.3.</span> <span class="toc-text">基于报错注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.3.4.</span> <span class="toc-text">联合查询注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A0%86%E6%9F%A5%E8%AF%A2%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.3.5.</span> <span class="toc-text">堆查询注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%BD%E5%AD%97%E8%8A%82%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.3.6.</span> <span class="toc-text">宽字节注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E6%AC%A1%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.3.7.</span> <span class="toc-text">二次注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#json%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.3.8.</span> <span class="toc-text">json注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DNSlog%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.3.9.</span> <span class="toc-text">DNSlog注入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SQL-%E6%B3%A8%E5%85%A5%E5%86%99%E5%85%A5webshell"><span class="toc-number">2.1.3.10.</span> <span class="toc-text">SQL 注入写入webshell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#limit%E6%B3%A8%E5%85%A5"><span class="toc-number">2.1.3.11.</span> <span class="toc-text">limit注入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94-%E6%B3%A8%E5%85%A5%E7%82%B9%E6%8E%A2%E6%B5%8B"><span class="toc-number">2.2.</span> <span class="toc-text">五.注入点探测</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E6%B3%A8%E5%85%A5"><span class="toc-number">2.2.1.</span> <span class="toc-text">判断是否存在注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%B3%A8%E5%85%A5%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.2.2.</span> <span class="toc-text">判断注入类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.2.3.</span> <span class="toc-text">判断数据库类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A1%AE%E5%AE%9A%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9D%83%E9%99%90"><span class="toc-number">2.2.4.</span> <span class="toc-text">确定数据库权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%BA%93%E5%90%8D%EF%BC%8C%E8%A1%A8%E5%90%8D%EF%BC%8C%E5%88%97%E5%90%8D%E4%BB%A5%E5%8F%8A%E7%9B%B8%E5%BA%94%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="toc-number">2.2.5.</span> <span class="toc-text">查数据库的库名，表名，列名以及相应的数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94-SQL%E5%AE%9E%E6%88%98"><span class="toc-number">2.3.</span> <span class="toc-text">五.SQL实战</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD-SQL%E7%BB%95%E8%BF%87"><span class="toc-number">2.4.</span> <span class="toc-text">六.SQL绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83-%E5%85%B3%E4%BA%8ESQL%E6%B3%A8%E5%85%A5%E7%9A%84%E9%98%B2%E5%BE%A1"><span class="toc-number">2.5.</span> <span class="toc-text">七.关于SQL注入的防御</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

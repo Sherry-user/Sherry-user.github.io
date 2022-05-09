@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>python爬虫基础学习 · Mr.Long's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">longlongyu</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.Long's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">python爬虫基础学习</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2021-07-28</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><p><strong>前言</strong></p>
+<p>​        网络爬虫是一种按照一定的规则，自动地抓取万维网信息的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%A8%8B%E5%BA%8F/13831935">程序</a>或者<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%84%9A%E6%9C%AC/1697005">脚本</a>。理论上，只要浏览器能够访问的数据，都可以通过爬虫获取。爬虫也可以应用在搜索引擎上，蜘蛛从索引区出发爬取网页，将抓取到的网页放到临时库进行处理，清除不符合规则的数据，然后将符合规则的数据在索引区中进行分类，归档，排序，最终将结果返回给用户。</p>
+<span id="more"></span>
+
+<h1 id="python爬虫基础学习"><a href="#python爬虫基础学习" class="headerlink" title="python爬虫基础学习"></a>python爬虫基础学习</h1><h2 id="爬虫的合法性"><a href="#爬虫的合法性" class="headerlink" title="爬虫的合法性"></a>爬虫的合法性</h2><p>我们可以通过查看<strong>Robots协议</strong>（也称为爬虫协议）来确保其合法性，一般网站通过Robots协议告诉搜索引擎哪些页面可以抓取，哪些页面不能抓取。它是国际互联网界通行的道德规范，虽然没有写入法律，但是每一个爬虫都应该遵守这项协议。<br>例如 豆瓣的网址：<a target="_blank" rel="noopener" href="https://book.douban.com/">https://book.douban.com/</a></p>
+<p>​        我们可以查询到他的robots协议（网址为<a target="_blank" rel="noopener" href="https://book.douban.com/robots.txt%EF%BC%89%EF%BC%8C%E5%85%B6%E4%B8%AD%E8%A7%84%E5%AE%9A%E4%BA%86%E9%A1%B5%E9%9D%A2%E6%98%AF%E5%90%A6%E5%8F%AF%E4%BB%A5%E7%88%AC%E5%8F%96%EF%BC%9A">https://book.douban.com/robots.txt），其中规定了页面是否可以爬取：</a></p>
+<p>​        以下就是豆瓣的robots协议内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: /subject_search</span><br><span class="line">Disallow: /search</span><br><span class="line">Disallow: /new_subject</span><br><span class="line">Disallow: /service/iframe</span><br><span class="line">Disallow: /j/</span><br><span class="line">Sitemap: http://www.douban.com/sitemap_index.xml</span><br><span class="line">Sitemap: http://www.douban.com/sitemap_updated_index.xml</span><br><span class="line"></span><br><span class="line">User-agent: Wandoujia Spider</span><br><span class="line">Disallow: /</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="爬虫基本流程"><a href="#爬虫基本流程" class="headerlink" title="爬虫基本流程"></a>爬虫基本流程</h2><p>目的：爬取书籍《小时候》的作者，出版社，定价，内容简介</p>
+<ol>
+<li><p>准备工作</p>
+<p>通过浏览器查看分析网页，点开源代码，找到所需爬取信息的位置，需要一些前端知识。</p>
+</li>
+<li><p>获取数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">base_url=&#x27;https://book.douban.com/subject/35476387/?icn=index-latestbook-subject&#x27;</span><br><span class="line">headers=&#123;</span><br><span class="line">    &#x27;User-Agent&#x27;:&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.55&#x27;,</span><br><span class="line">&#125;</span><br><span class="line">response=requests.get(base_url,headers=headers)</span><br><span class="line">print(response.content.decode(&#x27;utf-8&#x27;))</span><br></pre></td></tr></table></figure>
+
+<p>通过以上代码就可以实现获取页面源代码</p>
+</li>
+<li><p>解析内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">import re</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">base_url=&#x27;https://book.douban.com/subject/35476387/?icn=index-latestbook-subject&#x27;</span><br><span class="line">headers=&#123;</span><br><span class="line">    &#x27;User-Agent&#x27;:&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.55&#x27;,</span><br><span class="line">&#125;</span><br><span class="line">response=requests.get(base_url,headers=headers)</span><br><span class="line"></span><br><span class="line">bs=BeautifulSoup(response.content.decode(&#x27;utf-8&#x27;),&#x27;html.parser&#x27;)</span><br><span class="line"></span><br><span class="line">info=bs.find_all(&#x27;div&#x27;, &#123;&quot;class&quot;: &quot;&quot;,&quot;id&quot;:&quot;info&quot;&#125;)    #确定作者，出版社，定价的位置</span><br><span class="line">info1=bs.find_all(&#x27;div&#x27;, &#123;&quot;class&quot;: &quot;intro&quot;&#125;)  #确定简介的位置</span><br><span class="line">info=str(info)</span><br><span class="line">#利用正则表达式确定查找标准</span><br><span class="line">find_writer=re.compile(r&#x27;&lt;a class=&quot;&quot; href=&quot;/search/%E6%A1%91%E6%A0%BC%E6%A0%BC&quot;&gt;(.*?)&lt;/a&gt;&#x27;)</span><br><span class="line">find_pub=re.compile(r&#x27;&lt;span class=&quot;pl&quot;&gt;出版社:&lt;/span&gt; (.*?)&lt;br/&gt;&#x27;)</span><br><span class="line">find_pri=re.compile(r&#x27;&lt;span class=&quot;pl&quot;&gt;定价:&lt;/span&gt; (.*?)&lt;br/&gt;&#x27;)</span><br><span class="line">#得出查找对象</span><br><span class="line">re_writer=re.findall(find_writer,info)</span><br><span class="line">re_pub=re.findall(find_pub,info)</span><br><span class="line">re_pri=re.findall(find_pri,info)</span><br><span class="line">#打印查找对象</span><br><span class="line">print(&#x27;作者：&#x27;,re_writer[0])</span><br><span class="line">print(&#x27;出版社：&#x27;,re_pub[0])</span><br><span class="line">print(&#x27;定价：&#x27;,re_pri[0])</span><br><span class="line">print(&#x27;简介：&#x27;,info1[1].text.replace(&#x27; &#x27;,&#x27;\n&#x27;))  </span><br></pre></td></tr></table></figure>
+
+<p>结果为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">作者： 桑格格</span><br><span class="line">出版社： 北京十月文艺出版社</span><br><span class="line">定价： 79</span><br><span class="line">简介： </span><br><span class="line">★桑格格《小时候》全新编订版，在旧版图文叙事的基础上，增加近15万字篇幅。</span><br><span class="line">★一部跳跃、魔幻、爆笑、忧伤的女孩成长记，带领我们穿越到世界年纪还小的时候。</span><br><span class="line">★一座封存记忆的纯真博物馆，一颗拒绝长大的童心，历经忧伤、动荡、裂变，内心的纯真依旧完好无损。</span><br><span class="line">★四川话版的“麦兜故事”，花椒般活色生香的小人物群像，无数人的成长记忆。</span><br><span class="line">★小时候永远消失了，但关于小时候的记忆，却始终治愈我们。</span><br><span class="line">★易烊千玺、李娟、史航、何小竹一致推荐。</span><br><span class="line">·</span><br><span class="line">桑格格的半自传体长篇小说。全书用混合着四川方言的口语写成，以2258个词条讲述了一个女娃子从蹒跚学步到二十多岁闯荡大城市的成长经历。</span><br><span class="line">本书以时间为轴，一个成都女童的主观世界跳跃着展开：从乡下寄养到厂区子弟，从牙牙学语到呼朋引伴，从幼儿园到恋爱，从被大人守护到守护大人……</span><br><span class="line">小时候的人和事，被桑格格以散点叙事的方式娓娓道来，如同儿童记忆特有的前后颠倒和琐碎，妙趣盎然，还有几分淡淡的梦幻色彩。</span><br><span class="line">这是一本大部头的小人书，举重若轻，在令读者捧腹之余，不经意地划过了二十多年的时间——那是一个被时间吞噬了的消失的时代，但这个孩子的鲜活形象和她的童心，却映射在时代的变迁之中。</span><br></pre></td></tr></table></figure>
+
+<p><strong>替换字符常用方法：</strong></p>
+<ul>
+<li><p>re.sub(pattern, repl, string, count=0, flags=0)方法：pattern表示正则表达式中的模式字符串；repl被替换的字符串（既可以是字符串，也可以是函数）；string表示要被处理的，要被替换的字符串；count表示匹配的次数, 默认是全部替换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">st = &quot;hello 2019&quot;</span><br><span class="line">st = re.sub(&quot;([0-9]+)&quot;,&quot;maymay&quot;,st)</span><br><span class="line">print(st)</span><br></pre></td></tr></table></figure>
+
+<p>结果为：<code>hello maymay</code></p>
+</li>
+<li><p>str.replace(old, new[, max])方法：old 是将被替换的子字符串。new 是新字符串，用于替换old子字符串。max是可选字符串, 替换不超过 max 次。</p>
+</li>
+<li><p>str.strip([chars])方法：去除字符串前面和后面的所有设置的字符串chars，默认为空格。</p>
+</li>
+</ul>
+</li>
+<li><p>保存数据</p>
+</li>
+</ol>
+<p>未完待续</p>
+<p>参考网址：</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12E411A7ZQ?p=22">https://www.bilibili.com/video/BV12E411A7ZQ?p=22</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40558166/article/details/102868801?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162717841016780261987353%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=162717841016780261987353&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-2-102868801.pc_search_all_es&amp;utm_term=python%E7%88%AC%E8%99%AB&amp;spm=1018.2226.3001.4187">https://blog.csdn.net/qq_40558166/article/details/102868801?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162717841016780261987353%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=162717841016780261987353&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-2-102868801.pc_search_all_es&amp;utm_term=python%E7%88%AC%E8%99%AB&amp;spm=1018.2226.3001.4187</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/lwgkzl/article/details/85544871?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162746758016780366583265%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=162746758016780366583265&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-85544871.pc_search_result_before_js&amp;utm_term=sub+replace&amp;spm=1018.2226.3001.4187">https://blog.csdn.net/lwgkzl/article/details/85544871?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162746758016780366583265%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=162746758016780366583265&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-85544871.pc_search_result_before_js&amp;utm_term=sub+replace&amp;spm=1018.2226.3001.4187</a></p>
+<p>正则表达式参考链接：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/48219401/answer/742444326">(4 条消息) 你是如何学会正则表达式的？ - 知乎 (zhihu.com)</a></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2021/07/28/python%E7%88%AC%E8%99%AB%E5%AD%A6%E4%B9%A0/">http://example.com/2021/07/28/python%E7%88%AC%E8%99%AB%E5%AD%A6%E4%B9%A0/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2021/07/28/Python%E6%8F%92%E5%85%A5requests%E5%8C%85%E6%97%B6%E5%87%BA%E7%8E%B0Requirement%20already%20satisfied%E9%97%AE%E9%A2%98/" title="Python插入requests包时出现Requirement already satisfied问题"><span>< PreviousPost</span><br><span class="prevTitle">Python插入requests包时出现Requirement already satisfied问题</span></a><a class="nextSlogan" href="/2021/07/23/HTML%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="HTML学习笔记"><span>NextPost ></span><br><span class="nextTitle">HTML学习笔记</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#python%E7%88%AC%E8%99%AB%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0"><span class="toc-number">1.</span> <span class="toc-text">python爬虫基础学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%88%AC%E8%99%AB%E7%9A%84%E5%90%88%E6%B3%95%E6%80%A7"><span class="toc-number">1.1.</span> <span class="toc-text">爬虫的合法性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%88%AC%E8%99%AB%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.</span> <span class="toc-text">爬虫基本流程</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

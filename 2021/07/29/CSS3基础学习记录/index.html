@@ -1,0 +1,383 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>CSS3基础学习记录 · Mr.Long's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">longlongyu</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.Long's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">CSS3基础学习记录</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2021-07-29</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="CSS3基础学习记录"><a href="#CSS3基础学习记录" class="headerlink" title="CSS3基础学习记录"></a>CSS3基础学习记录</h1><h2 id="1-css样式"><a href="#1-css样式" class="headerlink" title="1.css样式"></a>1.css样式</h2><h3 id="1-1内联样式"><a href="#1-1内联样式" class="headerlink" title="1.1内联样式"></a>1.1内联样式</h3><p>eg.<code>&lt;p style=&quot;color:red;&quot;&gt;helio&lt;/p&gt;</code></p>
+<p>开发时尽量不要使用，维护代价大。</p>
+<h3 id="1-2内部样式表"><a href="#1-2内部样式表" class="headerlink" title="1.2内部样式表"></a>1.2内部样式表</h3><p>将样式编写到head中的style标签里面,然后通过选择器来选择元素更改样式。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;head&gt;</span><br><span class="line">	   &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">	   &lt;title&gt;</span><br><span class="line">	   测试</span><br><span class="line">	   &lt;/title&gt;</span><br><span class="line">	   &lt;style&gt;</span><br><span class="line">		   p&#123;</span><br><span class="line">			   color: green;</span><br><span class="line">			   font-size: 50px;</span><br><span class="line">		   &#125;</span><br><span class="line">	   &lt;/style&gt;</span><br><span class="line">&lt;/head&gt;</span><br></pre></td></tr></table></figure>
+
+<p>缺点：只能对一个网页起作用，它的样式不能跨网页起作用。</p>
+<h3 id="1-3-外部样式表"><a href="#1-3-外部样式表" class="headerlink" title="1.3.外部样式表"></a>1.3.外部样式表</h3><p>将CSS样式编写到一个外部的css文件中，然后通过link标签来引入css文件。</p>
+<p>eg.<code>&lt;link rel=&quot;stylesheet&quot; herf=&quot;./style.css&quot;&gt;</code></p>
+<h2 id="2-语法"><a href="#2-语法" class="headerlink" title="2.语法"></a>2.语法</h2><ol>
+<li><p>注释: <code>/*这是注释*/</code></p>
+</li>
+<li><p>基本语法：</p>
+<p>选择器{声明块}（声明块包含属性和属性值）</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">p&#123;</span><br><span class="line">	   color: green;</span><br><span class="line">	   font-size: 50px;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="2-1选择器"><a href="#2-1选择器" class="headerlink" title="2.1选择器"></a>2.1选择器</h3><p><strong>常用选择器</strong></p>
+<ul>
+<li><p>元素选择器 <code>p&#123; color: green;&#125;</code></p>
+</li>
+<li><p>id选择器<code>#对象ID&#123;color: green;&#125;</code></p>
+</li>
+<li><p>类选择器<code>.对象类名&#123;color: green;&#125;</code></p>
+</li>
+<li><p>通配选择器<code>*&#123;color: green;&#125;</code></p>
+</li>
+</ul>
+<p><strong>复合选择器</strong></p>
+<ul>
+<li><p>交集选择器:例如<code>div. red&#123;color: green;&#125;</code></p>
+<p><code>.a.b.c&#123;color: green;&#125;</code></p>
+</li>
+<li><p>并集选择器：例如<code>hq,span&#123;color:green;&#125;</code></p>
+<p>或者<code>#b1,.p1&#123;color: green;&#125;</code></p>
+</li>
+</ul>
+<p><strong>关系选择器</strong></p>
+<p>（父元素，子元素，祖先元素，后代元素，兄弟元素）</p>
+<ul>
+<li>子元素选择器:语法：父元素&gt;子元素,eg.<code>div.box&gt;span&#123;color: green;&#125;</code></li>
+<li>后代元素选择器：语法：祖先 后代eg.<code>div span&#123;color: green;&#125;</code></li>
+<li>兄弟元素选择器：<code>p+span&#123;color: green;&#125;</code>PS:+是指选择紧挨着的一个进行操作<code>p~span&#123;color: green;&#125;</code>PS:~是指选择所有符合条件的进行操作</li>
+</ul>
+<p><strong>属性选择器</strong></p>
+<p><code>[属性]&#123;color: green;&#125;</code>选择带有属性的</p>
+<p><code>[属性=a]&#123;color: green;&#125;</code>选择属性为a的</p>
+<p><code>[属性^=a]&#123;color: green;&#125;</code>选择属性以a开始的</p>
+<p><code>[属性$=a]&#123;color: green;&#125;</code>选择属性以a结束的</p>
+<p><strong>伪类选择器</strong></p>
+<p>用来描述元素的特殊状态,比如第一个元素，被点击的元素，鼠标移入的元素，一般以：开头。例如<code>:not</code>,</p>
+<p><code>ul&gt;li:not(:nth-of-type(3))&#123;color: green;&#125;</code></p>
+<p>例如：</p>
+<p>（以下排序是根据所有子元素进行排序）</p>
+<p><code>ul&gt;li:first-child&#123;color: green;&#125;</code>第一个子类且是li</p>
+<p><code>ul&gt;li:last-child&#123;color: green;&#125;</code>最后一个子类且是li</p>
+<p><code> ul&gt;li:nth&#123;color: green;&#125;</code>第n个元素</p>
+<p>特殊值：</p>
+<p> n:0到正无穷</p>
+<p>2n或even：偶数位的元素</p>
+<p>2n+1或odd: 奇数位的元素</p>
+<p>（以下排序是根据同类型中进行排序）</p>
+<p><code>:first-of-type</code></p>
+<p><code>:last-of-type</code></p>
+<p><code>:nth-of-type</code></p>
+<p>(以下是关于链接的伪类)</p>
+<p><code>:link</code>:表示正常的链接，用来表示没访问过的链接</p>
+<p><code>:visited</code>:访问过的链接，只能修改链接的颜色</p>
+<p><code>:hover</code>:用来表示鼠标移入的状态</p>
+<p><code>:active</code>:用来表示鼠标所点击的状态</p>
+<p><strong>伪元素选择器</strong></p>
+<p>表示页面中不真实存在的元素，以::开头。</p>
+<p>eg.p::first-letter{color: green;}</p>
+<p>::first-letter 表示第一个字母</p>
+<p>::first-line  表示第一行</p>
+<p>::selection  表示选中的内容</p>
+<p>::before 表示元素的开始</p>
+<p>::after  表示元素的最后</p>
+<p>before和after必须和content结合使用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">p::before&#123;</span><br><span class="line">		   content: &#x27;&quot;&#x27;;</span><br><span class="line">	   &#125;</span><br><span class="line">	   p::after&#123;</span><br><span class="line">		   content: &#x27;&quot;&#x27;;</span><br><span class="line">	   &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;everyone&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="/C:/Users\ASUS\AppData\Roaming\Typora\typora-user-images\image-20210729194615179.png" alt="image-20210729194615179"></p>
+<p><strong>选择器的权重（即优先级）</strong></p>
+<ol>
+<li>内联样式 ， 权重为1000</li>
+<li>id选择器 ，  权重为100</li>
+<li>类和伪类选择器 ，权重为10</li>
+<li>元素选择器  ，权重为  1</li>
+<li>通配选择器 ，权重为0</li>
+<li>继承的样式，没有优先级</li>
+</ol>
+<p> 比较优先级时，需要将所有选择器的优先级进行相加计算（分组选择器是单独计算的），最后优先级越高，优先相似，不过选择器的累加不会超过其最大数量级，例如，类选择器再高也不会超过id选择器。如果优先级相等，则优先使用位置靠下的样式。</p>
+<p>在某个样式后面加！important，则该样式拥有最高优先级。</p>
+<p><strong>补充：像素相关单位：</strong></p>
+<p>px，百分比,em,rem</p>
+<p><strong>补充：颜色相关单位：</strong></p>
+<p>颜色名，RGB值（语法：rgb（255，50，90）），RGBA值（最后一位表示透明度，1为完全不透明，0为完全透明，5为半透明，语法：rgb(255，0，0，1)），十六进制的RGB值，HSL值（H色相，S饱和度，L亮度），HSLA值</p>
+<h2 id="3-继承"><a href="#3-继承" class="headerlink" title="3.继承"></a>3.继承</h2><p>我们为一个元素设置的样式同样也会应用到它的后代上。但并表示所有的样式都会被继承，比如背景相关，布局相关的。</p>
+<h2 id="4-布局"><a href="#4-布局" class="headerlink" title="4.布局"></a>4.布局</h2><p><strong>文档流</strong></p>
+<p>网页是一个多层的结构，最底下的一层即为文档流，文档流是网页的基础，我们所创建的元素默认都是在文档流中进行排列的。所有元素共有2种形态：在文档流中和脱离文档流的。</p>
+<h3 id="4-1盒子模型"><a href="#4-1盒子模型" class="headerlink" title="4.1盒子模型"></a>4.1盒子模型</h3><p>css将页面的所有元素都设置为了一个矩形的盒子，网页布局即将不同的盒子摆放到不同的位置。每一个盒子都由以下几个部分组成：</p>
+<p><strong>内容区（content）：</strong></p>
+<p>width，height，background-color</p>
+<p><strong>边框（border）：</strong></p>
+<p>border-width，border-color，border-style</p>
+<p>简写格式：border:solid  10px  red(无顺序要求)或者border-top:solid  10px  red</p>
+<p>对于四个边框，四个值就是控制 上，右，下，左，三个值就是控制上，左右，下，两个值就是控制上下，左右，一个值就是控制上下左右；除此之外，还可以使用border-xxx-width来控制某一个边，xxx可以是top,right,bottom,left。</p>
+<p><strong>内边距(padding):</strong></p>
+<p>padding-top,padding-right,padging-bottom,padding-left</p>
+<p>或者直接使用padding:20px 10px 10px 10px</p>
+<p>注意：内边距的大小将会影响盒子的大小(盒子的可见框大小由内容区，内边距，边框决定，计算盒子的大小的时候，需要将三者相加)</p>
+<p><strong>外边距(margin):</strong></p>
+<p>margin-top,margin-left,margin-bottom，margin-right</p>
+<p>外边距不会影响盒子可见框的大小，但是外边距会影响盒子的位置。</p>
+<p><strong>水平方向布局：</strong></p>
+<p>margin-left+border-left+padding-left+width+padding-right+border-right+margin-right必须等于父元素的内容区宽度，如果不满足，则称过度约束，等式自动调整（没有auto的情况，浏览器会调整margin-right使得等式成立，如果有auto的值，则会自动调整auto的那个值（width,margin-right,margin-right都可以设置，例如width：auto;）使得等式成立）</p>
+<p><strong>垂直方向的布局</strong>：</p>
+<p>默认情况下，父元素由内容撑开，子元素是指父元素中排列，如果子元素的大小超过了父元素，则子元素会从父元素中溢出，可以使用overflow属性来设置父元素如何处理溢出的子元素。overflow:hidden(visible,hidden,scroll生成滚动条，auto根据需要生成滚动条，overflow-x,overflow-y)</p>
+<p>补充：相邻的垂直方向的外边距会发生重叠现象，兄弟元素的重叠（都是正值）会取两者外边距之间的较大值，（一正一负）取两者之和，（都为负）取两者之中绝对值较大的。父子元素的重叠，子元素会传递给父元素，一般会影响页面布局，需要处理。</p>
+<p><strong>行内元素的盒模型</strong></p>
+<p>行内元素不支持设置宽度和高度，可以设置padding，border，margin，但不会影响页面布局。</p>
+<p>补充：</p>
+<p><strong>display</strong>属性用来设置元素显示的类型，属性值为inline则为行元素，block设置块元素，inline-block设置行内块元素，table将元素设置为一个表格，none使得元素不在页面显示，我们可以通过使用display来使得行元素可以设置宽度和高度。</p>
+<p>visibility属性用来设置元素的显示状态，visible为默认值，使得元素在页面正常显示，hidden使得元素在页面隐藏不显示，但依旧占据页面位置。</p>
+<p><strong>盒子的尺寸</strong></p>
+<p>box-sizing可以用来设置盒子尺寸的计算方式，可选border-box（高度和宽度是盒子可见框的大小）,content-box(默认值，高度宽度就是盒子content的大小)</p>
+<p><strong>修饰</strong></p>
+<p><em>轮廓</em>：outline：设置轮廓，不会影响页面布局</p>
+<p><em>阴影</em>：box-shadow:设置元素阴影效果，不会影响页面布局（格式例如box-shadow：10px 10px 50px red，第一个值表示水平偏移，第二个值为垂直偏移,第三个值为模糊半径，第四个值为颜色）</p>
+<p><em>圆角</em>：border-radius，border-top-left-radius，border-top-right-radius，border-bottom-left-radius，border-bottom-right-radius.（格式例如：border-top-left-radius：50px 50px,第一个值为水平方向半径，第二个值为垂直方向的半径）</p>
+<p>注意：border-radius：50%；就是一个圆形。</p>
+<h3 id="4-2浏览器的默认样式"><a href="#4-2浏览器的默认样式" class="headerlink" title="4.2浏览器的默认样式"></a>4.2浏览器的默认样式</h3><p>通常情况下，浏览器都会为我们的元素设置以下默认样式，但是默认样式的存在会影响页面的布局，因此在编写网页时，我们通常要去除浏览器的默认样式。</p>
+<ul>
+<li><p>通过*{margin:0;padding:0；}来清除样式，但是存在清除不干净的情况；</p>
+</li>
+<li><p>最好可以通过引入reset.css或者normalize.css文件来彻底清除默认样式。</p>
+</li>
+</ul>
+<h3 id="浮动——float"><a href="#浮动——float" class="headerlink" title="浮动——float"></a>浮动——float</h3><p><strong>作用：</strong>通过浮动可以使得一个元素向其父元素的左右移动，不过该浮动元素不会超过前面其他的浮动元素。（浮动元素默认不会从父元素中移出）通过浮动可以制作水平方向的布局。浮动元素不会盖住文字，因此可以利用浮动来设置文字环绕。</p>
+<p><strong>属性：</strong>float</p>
+<p><strong>属性值：</strong></p>
+<p>none默认值，不浮动</p>
+<p>left 元素向左移动</p>
+<p>right 元素向右移动</p>
+<p><strong>注意：</strong>元素设置浮动以后，水平等式不需要强制成立，而且元素会从文档流脱离，不占用文档流位置，所以下边还在文档流中的元素会自动向上移动。浮动元素不会超过它上边的兄弟元素，最多和它一样高。浮动元素会影响其他元素，如果想要浮动元素对当前元素不影响，那么可以对当前元素设置clear属性（属性值left 清除左侧浮动元素的影响，right 清除右侧浮动元素的影响  ，both 清除两侧中最大影响的那侧）</p>
+<p>脱离文档流的特点：</p>
+<p>块元素并不独占一行，和行元素一样，宽高默认有内容撑开。</p>
+<h3 id="解决高度坍塌的问题"><a href="#解决高度坍塌的问题" class="headerlink" title="解决高度坍塌的问题"></a>解决高度坍塌的问题</h3><p><strong>引起原因</strong>：浮动布局时，子元素脱离文档流，无法撑起父元素的高度，导致父元素高度丢失，其下的元素自动上移，导致页面布局混乱。</p>
+<p><strong>解决办法：</strong></p>
+<p>1.父元素高度写死；</p>
+<p>2.利用BFC（块级格式化环境）：BFC是一个CSS中的隐含属性，我们可以为一个元素开启BFC，开启BFC之后该元素会变成一个独立的布局区域。</p>
+<p>开启BFC后元素特点：1.开启BFC的元素不会被浮动元素覆盖；2.开启BFC的元素子元素和父元素外边距不会重叠；3.开启BFC的元素可以包含浮动的子元素</p>
+<p>开启BFC的方式：1.设置元素的浮动；2、将元素设置为行内块元素；3.将父元素的overflow设置一个非visible的值（常用的方式overflow：hidden）</p>
+<p>3.利用clear属性：</p>
+<p>3.1给浮动元素设置一个兄弟元素，设置兄弟元素的clear属性。</p>
+<p>3.2利用伪元素，给浮动元素的::after元素设置一个clear属性，并转换为块元素，这样就不用将表象上的问题使用结构的方法来解决。</p>
+<h3 id="解决外边距重叠问题"><a href="#解决外边距重叠问题" class="headerlink" title="解决外边距重叠问题"></a>解决外边距重叠问题</h3><p>当我们调节子元素的外边距时，父元素的外边距也会跟着变化。例如，我们想让位于父元素上方的子元素移到父元素的下方，一般情况下，我们可以设置子元素的外边距，但是这样会使得父元素整体也往下移动，无法达到预想效果。</p>
+<p><strong>解决办法：</strong></p>
+<p>1.给父元素的伪类::before设置为{content：“”；display：table；}</p>
+<p><strong>注意：</strong>clearfix::before,.clearfix::after{contenet:’’;dispaly:table;clear:both;}这个样式可以解决高度坍塌和外边距重叠的问题，当遇到这些问题的时候，可以直接使用它。只需要在父元素的类上加一个class =“clearfix”,然后使用该样式即可。</p>
+<h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h3><p>一种更加高级的布局手段。通过定位可以将元素摆放到页面的任意位置</p>
+<p><strong>方法：</strong>使用position属性来设置定位。</p>
+<p>position属性可选值：</p>
+<p><strong>static</strong> 默认值，元素是静止的没有开启定位；</p>
+<p>**relative **开启元素的相对定位,相对定位是参照于元素在文档流中的位置进行定位的（如果不设置偏移量，元素不会发生任何变化）；以下是偏移量的设置：</p>
+<ul>
+<li><p>top:10px,是指定位元素和定位位置上边的距离</p>
+</li>
+<li><p>bottom:10px,是指定位元素和定位位置下边的距离</p>
+</li>
+<li><p>left:10px,是指定位元素和定位位置左侧的距离</p>
+</li>
+<li><p>right:10px,是指定位元素和定位位置右侧的距离</p>
+</li>
+</ul>
+<p>注意：相对定位会提升元素的层级，<strong>但不会使元素脱离文档流</strong>，也就是说，相对定位不会改变元素的性质，块还是块，行内还是行内。</p>
+<p><strong>absolute</strong>开启元素的绝对定位，（开启绝对定位后，如果不设置偏移量，元素的位置不会发生变化）绝对定位是相对于其<em>包含块</em>【正常情况下，包含块是离当前元素最近的祖先块元素，绝对定位的包含块就是离它最近开启了定位的祖先元素，如果所有的祖先元素都没有开启定位，那么根元素html就是它的包含块】进行定位的</p>
+<p>注意：绝对定位会使元素提升一个层级，<strong>开启绝对定位后，元素会从文档流中脱离</strong>，所以绝对定位会改变元素的性质，行内变成块，块的宽高被内容撑开</p>
+<p><strong>fixed</strong> 开启与那是的固定定位,也是一种特殊的绝对定位，性质基本和绝对定位一样。唯一不同的是，固定定位永远参考于浏览器的视口进行定位。</p>
+<p>注意：固定定位的元素不会随着网页的滚动条滚动。</p>
+<p><strong>sticky</strong> 开启元素的粘滞定位，和相对定位的特点基本一致，不同的是粘滞定位可以在元素到达某个位置是将其固定，不再随滚动条滚动，但是它的兼容性不是特别好</p>
+<h3 id="绝对定位元素的位置"><a href="#绝对定位元素的位置" class="headerlink" title="绝对定位元素的位置"></a>绝对定位元素的位置</h3><p>水平方向需要满足：包含块的内容区宽度=left+margin-left+border-left+padding-left+width+padding-right+border-right+margin-right+right.当发生过度约束时，如果9个值中没有auto【margin width left right 都可以设置auto】，那么将会自动调整right值以使得等式满足</p>
+<p>垂直方向的布局：需要满足 包含块的高度=top+margin-top、bottom+padding-top、bottomborder-top、bottom+hight</p>
+<p><strong>垂直水平居中的设置方式：</strong>top/right/top/bottom=0,margin=auto</p>
+<p><strong>元素的层级</strong></p>
+<p>对于开启了定位的元素，我们可以通过z-index属性来设置元素的层级，z-index需要一个整数作为一个层级，值越大元素层级越高，越优先显示。</p>
+<p>注意：如果元素层级一样。则优先显示靠下的元素；祖先元素的层级再高，也不会盖住后代元素。</p>
+<h2 id="5-字体"><a href="#5-字体" class="headerlink" title="5.字体"></a>5.字体</h2><p><strong>字体样式</strong></p>
+<p><strong>color：</strong>字体颜色</p>
+<p><strong>font-size</strong> 字体大小：（单位：px；em 相当于当前元素的一个font-size；rem 相当于根元素的一个font-size）</p>
+<p>**font-weight:**narmal(默认不加粗)，bold(加粗)</p>
+<p>**font-style:**normal(默认正常的)，italic（斜体）</p>
+<p>**font-familiy **字体族（字体格式），可选择如下：</p>
+<p>（他们都是指定字体类别，浏览器会自动使用该类别下的字体）</p>
+<ul>
+<li><p>serif 衬线字体类</p>
+</li>
+<li><p>sans-serif 非衬线字体类</p>
+</li>
+<li><p>monospace 等宽字体类</p>
+<p>注意：font-fimily可以指定多个字体，第一个无法使用就使用第二个。当用户没有该字体时，我们可以通过@font-face{font-family：“ ”；src:url();}来使得一些偏僻的字体，客户也能使用。但是使用@font-face时需要考虑到加载速度和版权，字体格式问题。</p>
+</li>
+</ul>
+<p><strong>line-hight：</strong>行高可以是指定的一个大小（单位px）;也可以是一个整数，如果是整数的话，行高将会是字体的指定倍数。我们可以通过设置行高与高的值相同，可以达到使单行文字垂直居中的目的。</p>
+<p><strong>字体的简写属性</strong>：</p>
+<p>直接通过font来设置字体相关的所以属性，格式：font: font-style  font-weight 字体大小/行高 字体族（ font-style  font-weight行高可以省略不写，不写使用默认样式）</p>
+<p><strong>图标字体</strong></p>
+<p>因为网页中经常需要使用一些图标，直接使用图片来引用的化，一来图片本身比较大，二来使用起来也非常的不灵活。所以我们使用图标时，我们可以将图标设置为字体，然后通过font-face的形式来对图标进行引入。</p>
+<p><strong>fontawesome使用步骤：</strong></p>
+<ol>
+<li><p>下载<a target="_blank" rel="noopener" href="https://fontawesome.com/%EF%BC%88%E4%BE%8B%E5%A6%82iconfont%E5%9B%BE%E6%A0%87%E5%BA%93%EF%BC%8C%E4%BD%86%E6%98%AFsang%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%89%88%E6%9D%83%E9%97%AE%E9%A2%98%EF%BC%89">https://fontawesome.com/（例如iconfont图标库，但是sang需要注意版权问题）</a></p>
+</li>
+<li><p>解压</p>
+</li>
+<li><p>将css和wedfonts移动到项目中</p>
+</li>
+<li><p>利用link将all.css引入到网页中</p>
+</li>
+<li><p>使用图标字体</p>
+<ul>
+<li>直接通过类名来使用图标字体 例如：<code>&lt;i class=“fas/fab fa-ball”&gt;&lt;/i&gt;</code>  fas和fab是类名， fa-ball是图标名称。同时我们还可以利用style设置大小颜色等</li>
+<li>通过伪元素来使用，li::before{ content:”\f1b0”;font-familiy:’Font Awesome 5 Free’ ;font-weight:900;margin-right:10px;}</li>
+<li>通过实体来实现,&amp;#x后面接图标的编码，例如<code>&lt;span class=&quot;fas&quot;&gt;&amp;#xf0f3;&lt;/span&gt;</code></li>
+</ul>
+</li>
+</ol>
+<p><strong>文本样式</strong>：</p>
+<p>**text-align:**表示文本的对齐方式，可选值 left（左侧对齐），right（右侧对齐），center（居中对齐），justfy(两端对齐)</p>
+<p>**vertical-align:**表示文本的垂直对齐，可选值baseline（默认值，基线对齐）top(顶部对齐)，bottom（底部对齐），middle（居中对齐），还可以直接指定值，例如vertical-align:10px</p>
+<p>**text-decoration:**可选值 none(默认值) underline(下划线) overline(上划线)，格式：text-decoration:underline red(不过需要注意，颜色对于IE浏览器不支持)</p>
+<p>**white-space:**设置网页如何处理空白，可选值 normal（正常），nowrap（不换行），pre（保留空白）</p>
+<p>注意：关于将溢出文字以省略号的形式表达出来的方式</p>
+<p>{width：200px;</p>
+<p>white-space:nowrap;</p>
+<p>overflow:hidden;</p>
+<p>text-overflow:ellipsis;}</p>
+<p>text-overflow:ellipsis;表示将溢出的文字以省略号的形式表达出来。</p>
+<h2 id="6-背景图"><a href="#6-背景图" class="headerlink" title="6.背景图"></a>6.背景图</h2><p><strong>设置方式</strong>：<strong>background-image：url(”路径“)</strong></p>
+<p>注意：如果背景图片小于元素。则背景图片会自动在元素中平铺，直至元素铺满；如果背景图片大于元素，将会有一部分图片无法显示；</p>
+<p><strong>具体形式设置：</strong></p>
+<p><strong>background-repeat</strong>属性用来设置背景的重复方式，可选值 repeat（默认值，背景会沿着x和y轴重复，直至铺满；repeat-x 沿着x值重复，repeat-y 沿着y轴重复  no-repeat：背景图片不重复）</p>
+<p><strong>background-position</strong>属性用来设置背景图片的位置.通过top left  right bottom  center几个方位词来表示位置，例如background-position：left center(注意 使用方位次必须使用2个，如果使用1个，我们将默认第二个为center)；除此之外，我们还可以通过偏移量来指定背景图片的位置,需要2个值，水平方向偏移量，垂直方向偏移量，例如：background-position：50px，50px.</p>
+<p><strong>background-clip</strong>属性实现背景与边框的设置 ，可选值 border-box(默认值，背景会出现在边框的下边) padding-box （背景不会出现在边框上，只会出现在内容区和内边距）content-box （背景只会出现在内容区）</p>
+<p><strong>background-origin</strong>属性用于更改背景图片偏移量的计算原点，可选值 padding-box(默认值 ，background-position从内边距开始计算；）content-box（背景图的偏移量从内容区开始计算)，border-box（背景图片的偏移量从边框处开始计算）</p>
+<p><strong>background-size</strong>属性用于设置背景图的尺寸，例如：background-size:50px 50px;如果只写一个值，那么第二个值默认auto；特殊的background-size:cover 表示自动铺满，background-size:contain表示图片比例不变，让图片在元素中完整显示；</p>
+<p><strong>background-attachment</strong>属性用于控制背景图片是否跟随元素移动，可选值 scroll （默认值，背景图片会跟随元素移动） fixed（背景图片会固定在页面中，不会跟随元素移动）</p>
+<p><strong>注意</strong>所有背景相关的属性都可以直接通过background：来设置，并且没有顺序要求，也没有哪个属性是必须写的，但是需要注意的是background-size必须写在background-position的后边，并且必须使用/隔开。而且background-origin background-clip两个样式如果写的话，orgin要在clip的后面。</p>
+<p><strong>雪碧图</strong>：可以一次性将多个图片加载完成，降低请求次数，加快访问熟读速度，解决图片闪烁问题，也称为CSS-Sprite。</p>
+<h2 id="7-渐变"><a href="#7-渐变" class="headerlink" title="7.渐变"></a>7.渐变</h2><p>渐变本身是图片，需要通过background-image来设置，</p>
+<p><strong>线性渐变</strong>：使用方法：background-image：linear-gradient（red,yellow）表示以红色开头，黄色结尾的渐变（默认从上到下，如果存在第一个属性值，且值使用to left ,to right,to bottom,to top,xxxdeg，turn ,则表示渐变方向）；</p>
+<p>注意：颜色可以使用多种,默认每种颜色平均分配。但是我们可以手动指定渐变的颜色分布情况，例如：background-image：linear-gradient（red 50px,yellow 100px）数值指定渐变起始位置。</p>
+<p>background-image：repeating-linear-gradient（red 50px,yellow 100px）表示可以平铺的线性渐变</p>
+<p><strong>径向渐变</strong>：</p>
+<p>即让渐变拥有放射性的效果。默认情况下渐变的形状根据元素的形状而定，但是我们也可以手动设置，以改变渐变大小 形状与位置，语法background-image：radial-gradient（大小 at 位置，颜色 位置， 颜色 位置，颜色 位置）位置大小可以省略。</p>
+<h2 id="8-表格"><a href="#8-表格" class="headerlink" title="8.表格"></a>8.表格</h2><p>除去常见的宽高，边框等设置，一些列出的是一些特殊的使用：</p>
+<p>border-spacing：10px ;用于设置边框之间的距离，如果将其变为0的话，双线边框可以变为单线边框。</p>
+<p>border-collapse:collapse；可以设置边框的合并。使双线边框可以变为单线边框。</p>
+<p>我们还可以通过伪类来使表格的单数行和双数行使用不一样的颜色，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tbody tr:nth-child(odd)</span><br><span class="line">&#123;</span><br><span class="line">background-color:bfa;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>tbody是tr的父元素，由系统自动创建。</p>
+<p><em>关于表格内文字的居中问题，我们可以使用vertical-align属性来和text-align属性设置，所以我们可以将一些元素设置为table（display：table-cell），然后使用vertical-align:midddle来实现居中。</em></p>
+<h2 id="关于居中问题"><a href="#关于居中问题" class="headerlink" title="关于居中问题"></a>关于居中问题</h2><h3 id="垂直居中"><a href="#垂直居中" class="headerlink" title="垂直居中"></a>垂直居中</h3><ul>
+<li>1.**（文本）使用vertical-align:**表示文本的垂直对齐，可选值baseline（默认值，基线对齐）top(顶部对齐)，bottom（底部对齐），middle（居中对齐），还可以直接指定值，例如vertical-align:10px</li>
+<li>2.<strong>将行高与内容区的高设置为相同的。</strong></li>
+</ul>
+<h3 id="水平居中"><a href="#水平居中" class="headerlink" title="水平居中"></a>水平居中</h3><ul>
+<li><p>2.**（文本）使用text-align:**表示文本的对齐方式，可选值 left（左侧对齐），right（右侧对齐），center（居中对齐），justfy(两端对齐)</p>
+</li>
+<li><p>2.<strong>子元素在父元素中居中</strong>：将子元素与父元素的宽度设为一致的，然后将子元素设置text-align：center，就可以实现子元素的内容在父元素中水平居中。</p>
+</li>
+</ul>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p><strong>cursor规则</strong>是设定网页浏览时用户鼠标指针的样式，也就是鼠标的图形形状。cursor：pointer设定鼠标的形状为一只伸出食指的手，这也是绝大多数浏览器里面鼠标停留在网页链接上方时候的样式<br>另外可以选择其他鼠标指针样式，常用的有default 箭头，crosshair 十字，progress 箭头和沙漏等等；</p>
+<p><strong>解决页面缩小时，页面布局改变的问题</strong>：</p>
+<p>1.给body加上一个min-width最小宽度，以px为单位，当页面缩小时，如果达到所设置的最小宽度，body的宽度不再改变，超出的部分会使用横向滚动条显示，其内所有元素的布局不会受到影响；</p>
+<p>2.使用百分比设置宽度，这样在页面缩放时，页面各元素也会跟着缩放，宽度占比不变，不过前提是在设置CSS样式之前，先给body和HTML这两个元素设置宽度为100%，避免后面出错。</p>
+<p>3.<strong>对于脱离文档流的元素（例如使用了绝对定位的元素）</strong>，由于我做的浮动是绝对定位（position:absolute），在外边加一个div层（给它一个父级），外边的div层加上相对（position:relative），然后再去调整子级的位置（top，left等）。</p>
+<p>参考资料：</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1XJ411X7Ud">https://www.bilibili.com/video/BV1XJ411X7Ud</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.w3school.com.cn/h.asp">https://www.w3school.com.cn/h.asp</a></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2021/07/29/CSS3%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">http://example.com/2021/07/29/CSS3%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2021/08/05/JavaScript%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="JavaScript学习笔记"><span>< PreviousPost</span><br><span class="prevTitle">JavaScript学习笔记</span></a><a class="nextSlogan" href="/2021/07/28/Python%E6%8F%92%E5%85%A5requests%E5%8C%85%E6%97%B6%E5%87%BA%E7%8E%B0Requirement%20already%20satisfied%E9%97%AE%E9%A2%98/" title="Python插入requests包时出现Requirement already satisfied问题"><span>NextPost ></span><br><span class="nextTitle">Python插入requests包时出现Requirement already satisfied问题</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CSS3%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">CSS3基础学习记录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-css%E6%A0%B7%E5%BC%8F"><span class="toc-number">1.1.</span> <span class="toc-text">1.css样式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1%E5%86%85%E8%81%94%E6%A0%B7%E5%BC%8F"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1内联样式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2%E5%86%85%E9%83%A8%E6%A0%B7%E5%BC%8F%E8%A1%A8"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2内部样式表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%A4%96%E9%83%A8%E6%A0%B7%E5%BC%8F%E8%A1%A8"><span class="toc-number">1.1.3.</span> <span class="toc-text">1.3.外部样式表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E8%AF%AD%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">2.语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1%E9%80%89%E6%8B%A9%E5%99%A8"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1选择器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%BB%A7%E6%89%BF"><span class="toc-number">1.3.</span> <span class="toc-text">3.继承</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%B8%83%E5%B1%80"><span class="toc-number">1.4.</span> <span class="toc-text">4.布局</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1盒子模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E9%BB%98%E8%AE%A4%E6%A0%B7%E5%BC%8F"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2浏览器的默认样式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%AE%E5%8A%A8%E2%80%94%E2%80%94float"><span class="toc-number">1.4.3.</span> <span class="toc-text">浮动——float</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E9%AB%98%E5%BA%A6%E5%9D%8D%E5%A1%8C%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.4.4.</span> <span class="toc-text">解决高度坍塌的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%A4%96%E8%BE%B9%E8%B7%9D%E9%87%8D%E5%8F%A0%E9%97%AE%E9%A2%98"><span class="toc-number">1.4.5.</span> <span class="toc-text">解决外边距重叠问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.4.6.</span> <span class="toc-text">定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%9D%E5%AF%B9%E5%AE%9A%E4%BD%8D%E5%85%83%E7%B4%A0%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-number">1.4.7.</span> <span class="toc-text">绝对定位元素的位置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%AD%97%E4%BD%93"><span class="toc-number">1.5.</span> <span class="toc-text">5.字体</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E8%83%8C%E6%99%AF%E5%9B%BE"><span class="toc-number">1.6.</span> <span class="toc-text">6.背景图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%B8%90%E5%8F%98"><span class="toc-number">1.7.</span> <span class="toc-text">7.渐变</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E8%A1%A8%E6%A0%BC"><span class="toc-number">1.8.</span> <span class="toc-text">8.表格</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E5%B1%85%E4%B8%AD%E9%97%AE%E9%A2%98"><span class="toc-number">1.9.</span> <span class="toc-text">关于居中问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD"><span class="toc-number">1.9.1.</span> <span class="toc-text">垂直居中</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B0%B4%E5%B9%B3%E5%B1%85%E4%B8%AD"><span class="toc-number">1.9.2.</span> <span class="toc-text">水平居中</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A5%E5%85%85"><span class="toc-number">1.10.</span> <span class="toc-text">补充</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
