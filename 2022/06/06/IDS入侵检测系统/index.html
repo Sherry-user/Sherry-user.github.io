@@ -1,0 +1,168 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>IDS入侵检测系统 · Mr.Long's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.Long's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">IDS入侵检测系统</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-06-06</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="IDS入侵检测系统"><a href="#IDS入侵检测系统" class="headerlink" title="IDS入侵检测系统"></a>IDS入侵检测系统</h1><p> IDS（intrusion detection system）<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B&spm=1001.2101.3001.7020">入侵检测</a>系统是一种对网络传输进行即时监视，在发现可疑传输时发出警报或者采取主动反应措施的网络安全设备。它与其他网络安全设备的不同之处便在于，IDS是一种积极主动的安全防护技术。 </p>
+<p>专业上讲IDS就是依照一定的安全策略，对网络、系统的运行状况进行监视，尽可能发现各种攻击企图、攻击行为或者攻击结果，以保证网络系统资源的机密性、完整性和可用性。与防火墙不同的是，IDS入侵检测系统是一个旁路监听设备，没有也不需要跨接在任何链路上，无须网络流量流经它便可以工作。因此，对IDS的部署的唯一要求就是：IDS应当挂接（并行接入）在所有所关注流量都必须流经的链路上。</p>
+<h2 id="入侵检测系统功能"><a href="#入侵检测系统功能" class="headerlink" title="入侵检测系统功能"></a>入侵检测系统功能</h2><ul>
+<li>监测并分析用户和系统的活动</li>
+<li>核查系统配置和漏洞</li>
+<li>对操作系统进行日志管理，并识别违反安全策略的用户活动</li>
+<li>针对已发现的攻击行为作出适当的反应，如告警、中止进程等</li>
+</ul>
+<h2 id="入侵检测系统的分类"><a href="#入侵检测系统的分类" class="headerlink" title="入侵检测系统的分类"></a>入侵检测系统的分类</h2><p><strong>按入侵检测形态</strong></p>
+<ul>
+<li>硬件入侵检测</li>
+<li>软件入侵检测</li>
+</ul>
+<p><strong>按目标系统的类型</strong></p>
+<ul>
+<li>网络入侵检测</li>
+</ul>
+<p> 该类系统一般被动地在网络上监听整个网段上的信息流，通过捕获网络数据包，进行分析，能够检测该网络段上发生的网络入侵。 </p>
+<ul>
+<li>主机入侵检测</li>
+</ul>
+<p> 即在每个要保护的主机上运行一个代理程序，一般只能检测该主机上发生的入侵。它在重要的系统服务器、工作站或用户计算机上运行，监视操作系统或系统事件级别的可疑活动（如尝试登录失败等）。此类系统需要定义清楚哪些是不合法的活动，然后把这种安全策略转换成入侵检测规则。 </p>
+<ul>
+<li>混合型</li>
+</ul>
+<p><strong>按系统结构</strong></p>
+<ul>
+<li>集中式</li>
+<li>分布式</li>
+</ul>
+<p> 一般由多个部件组成，分布在网络的各个部分，每个部件完成相应功能，分别进行数据采集、数据分析等。通过中心的控制部件，进行数据汇总、分析、产生入侵警报等。在这种“分布式IDS（入侵检测系统）”的结构下，不仅可以检测到针对单独主机的入侵，同时也可以检测到针对该网段上的主机的入侵。 </p>
+<h2 id="入侵检测系统原理"><a href="#入侵检测系统原理" class="headerlink" title="入侵检测系统原理"></a>入侵检测系统原理</h2><h3 id="1-信息收集"><a href="#1-信息收集" class="headerlink" title="1.信息收集"></a>1.信息收集</h3><p>收集的内容包括系统、网络、数据及用户活动的状态和行为<br> 入侵检测利用的信息一般来自以下四个方面：</p>
+<ul>
+<li><p>系统日志：黑客经常在系统日志中留下他们的踪迹，因此，充分利用系统日志是非常重要的</p>
+</li>
+<li><p>目录以及文件的异常改变：网络环境中的文件系统包含很多软件和数据文件，包含重要信息的文 件和私有数据文件经常是黑客修改或破坏的目标</p>
+</li>
+<li><p>程序执行中的异常行为 网络系统上的程序执行一般包括操作系统、网络服务、用户启动的程 序和特定目的的应用，例如数据库服务器。每个在系统上执行的程序由一 到多个进程来实现。每个进程执行在具有不同权限的环境中，这种环境控 制着进程可访问的系统资源、程序和数据文件等。一个进程出现了不期望 的行为可能表明黑客正在入侵你的系统。黑客可能会将程序或服务的运行 分解，从而导致运行失败，或者是以非用户或非管理员意图的方式操作</p>
+</li>
+<li><p>物理形式的入侵信息 这包括两个方面的内容，一是未授权的对网络硬件连接；二是对物理 资源的未授权访问</p>
+</li>
+</ul>
+<h3 id="2-数据分析"><a href="#2-数据分析" class="headerlink" title="2.数据分析"></a>2.数据分析</h3><p>一般通过三种技术手段进行分析： 模式匹配， 统计分析和完整性分析。 其中前两种方法用于实时的入侵检测，而完整性分析则用于事后分析。</p>
+<ul>
+<li><p>模式匹配：模式匹配就是将收集到的信息与已知的网络入侵和系统误用模式数据 库进行比较，从而发现违背安全策略的行为</p>
+</li>
+<li><p>统计分析 ：统计分析方法首先给系统对象（如用户、文件、目录和设备等）创建 一个统计描述，统计正常使用时的一些测量属性（如访问次数、操作失败 次数和延时等）。测量属性的平均值将被用来与网络、系统的行为进行比 较，任何观察值如果超过了正常值范围，就认为有入侵发生。其优点是可 检测到未知的入侵和更为复杂的入侵，缺点是误报、漏报率高，且不适应 用户正常行为的突然改变</p>
+</li>
+<li><p>完整性分析 完整性分析主要关注某个文件或对象是否被更改，这经常包括文件和 目录的内容及属性，它在发现被修改成类似特洛伊木马的应用程序方面特 别有效。其优点是不管模式匹配方法和统计分析方法能否发现入侵，只要 是有入侵行为导致了文件或其他对象的任何改变，它都能够发现。缺点是 一般以批处理方式实现，不用于实时响应</p>
+</li>
+</ul>
+<h3 id="分析引擎："><a href="#分析引擎：" class="headerlink" title="分析引擎："></a>分析引擎：</h3><p> <strong>1、误用检测技术</strong><br>基于模式匹配原理。收集非正常操作的行为特征，建立相关的特征库，当监测的用户或系统行为与库中的记录相匹配时，系统就认为这种行为是入侵。 </p>
+<p> <strong>2、异常检测技术</strong><br>基于统计分析原理。首先总结正常操作应该具有的特征（用户轮廓），试图用定量的方式加以描述，当用户活动与正常行为有重大偏离时即被认为是入侵。 </p>
+<p> 3.入侵响应</p>
+<p> <strong>主动响应：</strong> 入侵检测系统在检测到入侵后能够阻断攻击、影响进而改变攻击的进程。 </p>
+<p> <strong>被动响应：</strong> 入侵检测系统仅仅简单地报告和记录所检测出的问题。 </p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><ul>
+<li>事件产生器：它的目的是从整个计算环境中获得事件，并向系统的其他部分提供此事件。</li>
+<li>事件分析器：分析数据，发现危险、异常事件，通知响应单元</li>
+<li>响应单元：对分析结果作出反应</li>
+<li>事件数据库：存放各种中间和最终数据</li>
+</ul>
+<p><img src="/E:/git-blog\source\images\1654741185264.png" alt="1654741185264"></p>
+<h3 id="工作过程"><a href="#工作过程" class="headerlink" title="工作过程"></a>工作过程</h3><h2 id="入侵行为的特征"><a href="#入侵行为的特征" class="headerlink" title="入侵行为的特征"></a>入侵行为的特征</h2><p>一组能确定网络访问或系统行为是入侵行为的字符串、数据、行为模式或符号组合等，入侵行为的这些特征，是入侵检测系统鉴别入侵行为的基本依据。<br>对于NIDS，入侵行为的特征，可以是IP地址、端口号、某些标志组合、数据包长度以及数据包内容中包含的特定字符串等。<br>对于HIDS，入侵行为的特征还包括对目标系统频繁访问尝试、对系统配置文件的访问尝试以及目标系统上运行（安装）程序的名称、占用的端口号、注册表项等的读取。</p>
+<h2 id="IDS和防火墙联动"><a href="#IDS和防火墙联动" class="headerlink" title="IDS和防火墙联动"></a>IDS和防火墙联动</h2><p>通过IDS来发现，通过防火墙来阻断。但由于迄今为止没有统一的接口规范，加上越来越频发的“瞬间攻击”（一个会话就可以达成攻击效果，如SQL注入、溢出攻击等），使得IDS与防火墙联动在实际应用中的效果不显著。 ‘</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43606134/article/details/106351223">https://blog.csdn.net/weixin_43606134/article/details/106351223</a></p>
+<p> <a target="_blank" rel="noopener" href="https://blog.csdn.net/hexf9632/article/details/90698399">(74条消息) IDS入侵检测系统_半砖的博客-CSDN博客_入侵检测系统</a> </p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/06/06/IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F/">http://example.com/2022/06/06/IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/06/06/WAF----Web%E5%BA%94%E7%94%A8%E9%98%B2%E7%81%AB%E5%A2%99/" title="WAF -- Web应用防火墙"><span>< PreviousPost</span><br><span class="prevTitle">WAF -- Web应用防火墙</span></a><a class="nextSlogan" href="/2022/05/30/%E6%B0%B8%E6%81%92%E4%B9%8B%E8%93%9D%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" title="永恒之蓝漏洞利用"><span>NextPost ></span><br><span class="nextTitle">永恒之蓝漏洞利用</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.</span> <span class="toc-text">IDS入侵检测系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%8A%9F%E8%83%BD"><span class="toc-number">1.1.</span> <span class="toc-text">入侵检测系统功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">1.2.</span> <span class="toc-text">入侵检测系统的分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">入侵检测系统原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.数据分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%BC%95%E6%93%8E%EF%BC%9A"><span class="toc-number">1.3.3.</span> <span class="toc-text">分析引擎：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-number">1.3.4.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.5.</span> <span class="toc-text">工作过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E8%A1%8C%E4%B8%BA%E7%9A%84%E7%89%B9%E5%BE%81"><span class="toc-number">1.4.</span> <span class="toc-text">入侵行为的特征</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDS%E5%92%8C%E9%98%B2%E7%81%AB%E5%A2%99%E8%81%94%E5%8A%A8"><span class="toc-number">1.5.</span> <span class="toc-text">IDS和防火墙联动</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

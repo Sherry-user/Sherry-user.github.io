@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>防火墙技术 · Mr.Long's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.Long's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">防火墙技术</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-05-26</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h1><p> 防火墙可分为<strong>软件防火墙</strong>和<strong>硬件防火墙</strong>。软件防火墙又可分为<strong>个人防火墙</strong>和<strong>网关防火墙</strong>。 </p>
+<h5 id="个人防火墙"><a href="#个人防火墙" class="headerlink" title="个人防火墙"></a>个人防火墙</h5><p>个人防火墙运行在 PC 上，用于监控 PC 和外网的通信信息。在 Windows 操作系统中集成了 Windows 防火墙。</p>
+<p><strong>网关防火墙</strong><br>在网络中的网关上配置防火墙的功能，能对网络中的流量进行策略控制，这就是网关防火墙。</p>
+<p>网关防火墙分为两种，一种是在 Windows 、Linux 等操作系统上安装并运行防火墙软件的软件网关防火墙，另一种是使用专用设备的硬件网关防火墙。</p>
+<p>个人防火墙主要监控 PC 的通信流量，网关防火墙是监控网络中所有终端的通信流量，在网关处进行策略控制。</p>
+<h5 id="硬件防火墙"><a href="#硬件防火墙" class="headerlink" title="硬件防火墙"></a>硬件防火墙</h5><p>通过硬件设备实现的防火墙叫做<strong>硬件防火墙</strong>，外形跟路由器相似，接口类型通常有千兆网口、万兆光口。</p>
+<h1 id="防火相关技术"><a href="#防火相关技术" class="headerlink" title="防火相关技术"></a>防火相关技术</h1><p>1.包过滤技术</p>
+<p><img src="/E:/git-blog\source\images\1653530737743.png" alt="1653530737743"></p>
+<p><img src="/E:/git-blog\source\images\1653530890142.png" alt="1653530890142"></p>
+<p><img src="/E:/git-blog\source\images\1653530934175.png" alt="1653530934175"></p>
+<h1 id="关于Iptables"><a href="#关于Iptables" class="headerlink" title="关于Iptables"></a>关于Iptables</h1><p>Linux防火墙由两个组件netfilter和iptables组成，通常也称为iptables防火墙</p>
+<ul>
+<li>netfilter是内核的一部分，由一些数据包过滤表组成，这些表包含内核用来控制数据包过滤处理的规则集</li>
+<li>iptables组件是一种工具，运行在用户空间，可对数据包过滤表中的规则进行插入、修改和删除</li>
+</ul>
+<p>iptables包含4个表，5个链:</p>
+<ul>
+<li><p>4个表:raw，mangle，nat，filter，优先级:raw&gt;mangle&gt;nat&gt;filter。</p>
+</li>
+<li><p>5个链:PREROUTING，INPUT，FORWARD，OUTPUT，POSTROUTING。</p>
+</li>
+</ul>
+<p>链是数据包传输的路径，表是功能的集合。</p>
+<p><img src="/E:/git-blog\source\images\1653531184370.png" alt="1653531184370"></p>
+<p><img src="/E:/git-blog\source\images\1653531268731.png" alt="1653531268731"></p>
+<p><strong>lptables工具基本命令:</strong><br>iptables [-t table] command chain-name [match] [target/jump]</p>
+<p>iptables -P chain-name DROP/ ACCEPT/REJECT</p>
+<p><img src="/E:/git-blog\source\images\1653531620100.png" alt="1653531620100"></p>
+<p><strong>command chain-name，指定iptables执行的动作，包括插入规则，删除规则和添加规则。</strong><br>-P –policy链名&gt;定义默认策略<br>-L –list链名&gt;查看iptables规则列表<br>-A–append链名&gt;在规则列表的最后增加1条规则-l –insert链名&gt;在指定的位置插入1条规则</p>
+<p>-D–delete链名&gt;从规则列表中删除1条规则</p>
+<p>-R–replace链名&gt;替换规则列表中的某条规则</p>
+<p>-F–flush链名&gt;删除表中所有规则<br>-Z –zero链名&gt;数据包计数器和流量计数器归零-x –delete-chain链名&gt;删除自定义链<br>-y ..- verbose …链名&gt;..与-L命令显示更多更详细的信息</p>
+<p><strong>parameter，指定数据包与规则所匹配的特征，包括源地址，目的地址，传输协议和端口号等。</strong><br>-i–in-interface网络接口名&gt;指定数据包流入的网络接口</p>
+<p>-o–out-interface网络接口名&gt;指定数据包流出网络接口</p>
+<p>-p–proto指定匹配的协议，如TCP、UDP和ICMP等<br>-s–source源地址或子网&gt;指定数据包匹配的源地址<br>-d–destination目的地址或子网&gt;指定数据包匹配的目的地址</p>
+<p>–tcp-flags TCP连接标记&gt;指定对TCP连接的标记进行匹配</p>
+<p>–icmp-type ICMP报文类型&gt;指定对ICMP报文类型进行匹配</p>
+<p>–sport源端口号&gt;指定数据包匹配的源端口号<br>–dport目的端口号&gt;指定数据包匹配的目的端口号<br>-m - match匹配的模块指定数据包规则所使用的过滤模块</p>
+<p>-j，指定了当前面的条件都满足时，iptabIes执行的动作。<br>iptab les处理动作除了ACCEPT、REJECT、 DROP外，还包括RED IRECT、MASQUERADE、 LOG、 ULOG、 DNAT、 RETURN、 TOS、 SNAT、MI RROR、QUEUE、TTL、MARK等。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/networktp/article/details/122658292">https://blog.csdn.net/networktp/article/details/122658292</a></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/05/26/%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/">http://example.com/2022/05/26/%E9%98%B2%E7%81%AB%E5%A2%99%E6%8A%80%E6%9C%AF/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/05/30/window7%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3/" title="window7密码破解"><span>< PreviousPost</span><br><span class="prevTitle">window7密码破解</span></a><a class="nextSlogan" href="/2022/05/17/TCP%20IP%E5%8D%8F%E8%AE%AE/" title=""><span>NextPost ></span><br><span class="nextTitle">[Untitled Post]</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-number">1.</span> <span class="toc-text">分类</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%AA%E4%BA%BA%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-number">1.0.0.0.1.</span> <span class="toc-text">个人防火墙</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-number">1.0.0.0.2.</span> <span class="toc-text">硬件防火墙</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E7%9B%B8%E5%85%B3%E6%8A%80%E6%9C%AF"><span class="toc-number">2.</span> <span class="toc-text">防火相关技术</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EIptables"><span class="toc-number">3.</span> <span class="toc-text">关于Iptables</span></a></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
