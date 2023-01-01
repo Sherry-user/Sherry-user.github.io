@@ -1,0 +1,333 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>基于linux的snort部署搭建及搭建过程中遇到的问题 · 香蜜的博客</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">基于linux的snort部署搭建及搭建过程中遇到的问题</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-07-13</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h2 id="数据流图"><a href="#数据流图" class="headerlink" title="数据流图"></a>数据流图</h2><p><img src="/E:/git-blog\source\images\clip_image002.png" alt="img"></p>
+<h2 id="方案搭建过程"><a href="#方案搭建过程" class="headerlink" title="方案搭建过程"></a>方案搭建过程</h2><h3 id="6-1安装snort"><a href="#6-1安装snort" class="headerlink" title="6.1安装snort"></a>6.1安装snort</h3><p>6.1.1.首先，新建一个文件夹来保存需要的tar包的文件夹</p>
+<p>#mkdir ~/snort_src</p>
+<p>#cd ~/snort_src</p>
+<p>6.1.2安装必备的组件</p>
+<p>#sudo apt-get install -y build-essential libpcap-dev libpcre3-dev libdumbnet-dev bison flex zlib1g-dev liblzma-dev openssl libssl-dev</p>
+<p><img src="/E:/git-blog\source\images\clip_image003.png" alt="img">以下是组件解释：</p>
+<p>build-essential：提供用于编译软件的构建工具（GCC等）。</p>
+<p>bison，flex：DAQ所需的解析器（DAQ将在下面安装）。</p>
+<p>libpcap-dev：Snort所需的网络流量捕获库。</p>
+<p>libpcre3-dev：支持Snort所需正则表达式的函数库。</p>
+<p>libdumbnet-dev：libdnet库为几个低层网络例程提供了一个简化的可移植接口。许多安装Snort的指南都是从源代码安装此库的，尽管这不是必需的。</p>
+<p>zlib1g-dev：Snort所需的压缩库。</p>
+<p>liblzma-dev：提供对swf文件的解压缩（adobe flash）</p>
+<p>openssl和libssl-dev：提供SHA和MD5文件签名</p>
+<p>6.1.3.安装Nghttp2的开发库</p>
+<p>#sudo apt-get install -y libnghttp2-dev</p>
+<p>6.1.4.在snort官网下载数据采集器（DAQ）来抽象对数据包捕获库的调用</p>
+<p>#cd ~/snort_src</p>
+<p>#wget <a target="_blank" rel="noopener" href="https://snort.org/downloads/snort/daq-2.0.7.tar.gz">https://snort.org/downloads/snort/daq-2.0.7.tar.gz</a>  </p>
+<p>#tar -xvzf daq-2.0.7.tar.gz</p>
+<p>#cd daq-2.0.7</p>
+<p>#./configure</p>
+<p>#make  #编译</p>
+<p>#sudo make install #安装</p>
+<p>6.1.5.源码安装snort</p>
+<p>#cd ~/snort_src</p>
+<p>#wget <a target="_blank" rel="noopener" href="https://snort.org/downloads/snort/snort-2.9.20.tar.gz">https://snort.org/downloads/snort/snort-2.9.20.tar.gz</a></p>
+<p>#tar -xvzf snort-2.9.20.tar.gz</p>
+<p>#cd snort-2.9.20</p>
+<p>#./configure –enable-sourcefire  </p>
+<p>enable-sourcefire应该被添加到混合中，因为它也设置了一个标志用于条件编译。</p>
+<p>#make</p>
+<p>#sudo make install</p>
+<p>6.1.6.更新共享库</p>
+<p>#sudo ldconfig</p>
+<p>6.1.7.Snort安装会将Snort二进制文件放在/ usr / local / bin / snort，因此，创建到/ usr / sbin / snort的符号链接</p>
+<p>#sudo ln -s /usr/local/bin/snort /usr/sbin/snort </p>
+<p>6.1.8安装后输入snort –V看到以下内容，安装snort完成</p>
+<p><img src="/E:/git-blog\source\images\clip_image005.jpg" alt="img"></p>
+<h3 id="6-2将snort配置位NIDS"><a href="#6-2将snort配置位NIDS" class="headerlink" title="6.2将snort配置位NIDS"></a>6.2将snort配置位NIDS</h3><p>6.2.1. 基本配置：出于安全原因， Snort应该以非特权用户身份运行，创建一个<strong>snort</strong>用户和组</p>
+<p>#sudo groupadd snort<br> #sudo useradd snort -r -s /sbin/nologin -c SNORT_IDS -g snort</p>
+<p>6.2.2. 创建snort需要的文件和文件夹</p>
+<p># 创建Snort目录:<br> #sudo mkdir /etc/snort<br> #sudo mkdir /etc/snort/rules<br> #sudo mkdir /etc/snort/rules/iplists<br> #sudo mkdir /etc/snort/preproc_rules<br> #sudo mkdir /usr/local/lib/snort_dynamicrules<br> #sudo mkdir /etc/snort/so_rules</p>
+<p># 创建一些存储规则和ip列表的文件<br> #sudo touch /etc/snort/rules/iplists/black_list.rules<br> #sudo touch /etc/snort/rules/iplists/white_list.rules<br> #sudo touch /etc/snort/rules/local.rules<br> #sudo touch /etc/snort/sid-msg.map</p>
+<p># 创建日志文件<br> #sudo mkdir /var/log/snort<br> #sudo mkdir /var/log/snort/archived_logs</p>
+<p># 调整权限，对目前目录下的所有文件与子目录进行相同的权限变更，即以递归的方式逐个变更，使得此程序具有 root 的权限；拥有者有读取，写入，执行权限；组用户有读取，写入，执行权限；其他用户有 读取，执行权限<br> #sudo chmod -R 5775 /etc/snort<br> #sudo chmod -R 5775 /var/log/snort<br> #sudo chmod -R 5775 /var/log/snort/archived_logs<br> #sudo chmod -R 5775 /etc/snort/so_rules<br> #sudo chmod -R 5775 /usr/local/lib/snort_dynamicrules</p>
+<p># 改变文件夹的所有权为snort组的snort用户，以便snort程序能够写入日志等数据<br> #sudo chown -R snort:snort /etc/snort<br> #sudo chown -R snort:snort /var/log/snort<br> #sudo chown -R snort:snort /usr/local/lib/snort_dynamicrules</p>
+<p>6.2.3. 将解压后snort中的文件复制到我们新建的文件夹中</p>
+<p>  #cd ~/snort_src/snort-2.9.20/etc/<br> #sudo cp <em>.conf</em> /etc/snort<br> #sudo cp *.map /etc/snort<br> #sudo cp *.dtd /etc/snort</p>
+<p>  #cd ~/snort_src/snort-2.9.9.0/src/dynamic-#preprocessors/build/usr/local/lib/snort_dynamicpreprocessor/<br> #sudo cp * /usr/local/lib/snort_dynamicpreprocessor/</p>
+<p>完成以上操作后/etc/snort/文件结构如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image006.png" alt="img"></p>
+<p>6.2.4. 编辑snort配置文件</p>
+<p>注释掉Snort导入默认规则文件集的行，因为我们暂时还没有引入相关规则，如果不注释掉的话就会报错</p>
+<p>#sudo sed -i ‘s/include $RULE_PATH/include $RULE_PATH/‘ /etc/snort/snort.conf<br> 修改snort.conf文件，如下</p>
+<p> #配置网络信息，这里的IP是192.168.159.138，所以ip如下</p>
+<p>ipvar HOME_NET 192.168.159.0/24</p>
+<p><img src="/E:/git-blog\source\images\clip_image008.jpg" alt="img"></p>
+<p>我们需要告诉Snort我们之前创建的所有文件夹的位置。这些设置也是<strong>snort.conf</strong>文件的一部分</p>
+<p><img src="/E:/git-blog\source\images\clip_image010.jpg" alt="img"></p>
+<p>#启用本地规则文件</p>
+<p><img src="/E:/git-blog\source\images\clip_image012.jpg" alt="img"></p>
+<p>6.2.5测试snort</p>
+<p>root@hui-virtual-machine:/etc/snort/rules# sudo snort -T -c /etc/snort/snort.conf -i ens33</p>
+<p><img src="/E:/git-blog\source\images\clip_image014.jpg" alt="img"></p>
+<p>6.2.6.编辑规则文件，编写两条基本的规则如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image016.jpg" alt="img"></p>
+<p>6.2.7.开始测试刚刚编写的规则</p>
+<p>hui@hui-virtual-machine:/etc/snort/rules$ sudo snort -T -c /etc/snort/snort.conf                                            -i ens33</p>
+<p><img src="/E:/git-blog\source\images\clip_image018.jpg" alt="img"></p>
+<p>开始检验，用一台别的主机ping snort的主机</p>
+<p>#sudo /usr/local/bin/snort -A console -q -u snort -g snort -c /etc/snort/snort.conf -i ens33</p>
+<p>可以看到如下结果，即警告信息如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image020.jpg" alt="img"></p>
+<p>在规则中，没有关于ARP欺骗检测规则定义，但是可以通过snort的内置模块进行检测。具体配置如下：</p>
+<p>在snort.conf文件中配置如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image021.png" alt="img"></p>
+<p><img src="/E:/git-blog\source\images\clip_image023.jpg" alt="img"></p>
+<p>完成后使用kali进行ARP欺骗攻击</p>
+<p><img src="/E:/git-blog\source\images\clip_image025.jpg" alt="img"></p>
+<p>再次回到被攻击机，发现攻击成功</p>
+<p><img src="/E:/git-blog\source\images\clip_image027.jpg" alt="img"></p>
+<p>同时，我们也可以在这里发现ARP攻击警告信息如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image029.jpg" alt="img"></p>
+<p>6.2.8.安装官方snort规则，添加其他的安全规则，这里使用snort官网上下载的community.rules，将下载来的community.rules复制到/etc/snort/rules目录下，如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image030.png" alt="img"></p>
+<p>修改snort.conf，添加community.rules规则集，如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image031.png" alt="img"></p>
+<p>查看规则集内容如下，可以看到所有的规则都被注释掉了，因此这里我们可以选择需要的规则取消注释</p>
+<p><img src="/E:/git-blog\source\images\clip_image033.jpg" alt="img"></p>
+<h3 id="6-3-安装Barnyard2和配置Mysql"><a href="#6-3-安装Barnyard2和配置Mysql" class="headerlink" title="6.3.安装Barnyard2和配置Mysql"></a>6.3.安装Barnyard2和配置Mysql</h3><p>Barnyard2的作用是读取Snort产生的二进制事件文件(/var/log/snort/snort.log.XXXXXXXXXX)并存储到MySQL中。Snort的配置文件自身含有插件，它允许将Snort报警记录到MySQL中，但这样一来，系统数据会激增。当IDS系统检测到入侵行为时，它会用INSERT语句向数据库中写入数据，导致更新非常慢。所以如果直接将Snort输出到数据库，在数据量增大时这种方案的效率并不高，故使用外部代理将报警输出到Barnyard2。下一步，安装Barnyard2，这是一个专用的后台处理程序，将有助于减少Snort服务器上的负载</p>
+<p>6.3.1安装一些必备组件</p>
+<p>#sudo apt-get install -y mysql-server libmysqlclient-dev mysql-client autoconf libtool</p>
+<p>6.3.2编辑snort.conf文件</p>
+<p>#sudo vi /etc/snort/snort.conf</p>
+<p>#添加一行以告诉Snort以二进制形式输出事件。即添加以下行并保存文件：output unified2: filename snort.u2, limit 128</p>
+<p><img src="/E:/git-blog\source\images\clip_image035.jpg" alt="img"></p>
+<p>6.3.3接下来，安装Barnyard2</p>
+<p>#cd ~/snort_src</p>
+<p>#wget <a target="_blank" rel="noopener" href="https://github.com/firnsy/barnyard2/archive/master.tar.gz">https://github.com/firnsy/barnyard2/archive/master.tar.gz</a> -O barnyard2-Master.tar.gz</p>
+<p>#tar zxvf barnyard2-Master.tar.gz</p>
+<p>#cd barnyard2-master</p>
+<p>使用autoreconf来更新配置文件</p>
+<p>#autoreconf -fvi -I ./m4 </p>
+<p>Barnyard2需要访问<strong>dnet.h</strong>库，该库是我们先前与Ubuntu libdumbnet软件包一起安装的，创建一个链接</p>
+<p>#sudo ln -s /usr/include/dumbnet.h /usr/include/dnet.h<br> #sudo ldconfig</p>
+<p>根据系统结构，运行Barnyard2在MySQL的库（这里时64位的）</p>
+<p>  #./configure –with-mysql –with-mysql-libraries=/usr/lib/x86_64-linux-gnu</p>
+<p>​    #make<br> #sudo make install</p>
+<p>​    测试barnyard2是否安装成功</p>
+<p>   #barnyard2 –V</p>
+<p><img src="/E:/git-blog\source\images\clip_image037.jpg" alt="img"></p>
+<p>为Snort配置为使用Barnyard2，从源程序包中复制一些文件</p>
+<p>#sudo cp ~/snort_src/barnyard2-master/etc/barnyard2.conf /etc/snort/<br> #sudo mkdir /var/log/barnyard2<br> #sudo chown snort.snort /var/log/barnyard 赋予snort组snort用户操作该文件的权限</p>
+<p>#sudo touch /var/log/snort/barnyard2.waldo</p>
+<p>指定文件的拥有者改为指定的用户snort 组snort<br> #sudo chown snort.snort /var/log/snort/barnyard2.waldo </p>
+<p>6.3.4. 创建数据库<br> #sudo mysql 进入数据库<br> mysql&gt; create database snort;<br> mysql&gt; use snort;</p>
+<p>#导入barnyard2的数据库<br> mysql&gt; source ~/snort_src/barnyard2-master/schemas/create_mysql<br> mysql&gt; CREATE USER ‘snort‘@’localhost’ IDENTIFIED BY ‘123’;</p>
+<p>#赋予数据库的部分操作权限给snort‘@’localhost<br> mysql&gt; grant create, insert, select, delete, update on snort.* to ‘snort‘@’localhost’; </p>
+<p>mysql&gt; exit</p>
+<p>6.3.5.创建数据库后，要将信息告诉Barnyard2，编辑barnyard2.conf文件</p>
+<p>#sudo gedit /etc/snort/barnyard2.conf</p>
+<p><img src="/E:/git-blog\source\images\clip_image038.png" alt="img">在文件的末尾添加</p>
+<p>output database: log, mysql, user=snort password=123 dbname=snort host=localhost sensor name=sensor01</p>
+<p>然后运行如下命令：</p>
+<p>sudo barnyard2 -c /etc/snort/barnyard2.conf -d /var/log/snort -f snort.log -w /var/log/snort/barnyard2.waldo -g snort -u snort</p>
+<p>运行结果如图，等待数据传入</p>
+<p><img src="/E:/git-blog\source\images\clip_image040.jpg" alt="img"></p>
+<p>再次ping 192.168.159.137,出现如下结果，可知数据已存入数据库：</p>
+<p><img src="/E:/git-blog\source\images\clip_image042.jpg" alt="img"></p>
+<h3 id="6-4-安装base"><a href="#6-4-安装base" class="headerlink" title="6.4.安装base"></a>6.4.安装base</h3><p>创建可视化界面，这里使用的是base，base需要php5 </p>
+<p>6.4.1.安装php5软件包</p>
+<p>#sudo add-apt-repository ppa:ondrej/php<br> #sudo apt-get update<br> #sudo apt-get install -y apache2 libapache2-mod-php5.6 php5.6-mysql php5.6-cli php5.6 php5.6-common php5.6-gd php5.6-cli php-pear php5.6-xml</p>
+<p>6.4.2.安装pear图像图</p>
+<p>#sudo pear install -f –alldeps Image_Graph</p>
+<p>6.4.3.下载安装adodb</p>
+<p>#cd ~/snort_src<br> #wget <a target="_blank" rel="noopener" href="https://sourceforge.net/projects/adodb/files/adodb-php5-only/adodb-520-for-#php5/adodb-5.20.8.tar.gz">https://sourceforge.net/projects/adodb/files/adodb-php5-only/adodb-520-for-#php5/adodb-5.20.8.tar.gz</a><br> #tar -xvzf adodb-5.20.8.tar.gz<br> #sudo mv adodb5 /var/adodb<br> #sudo chmod -R 755 /var/adodb</p>
+<p>6.4.4.下载base并复制到apache2目录下</p>
+<p>#cd ~/snort_src<br> #wget <a target="_blank" rel="noopener" href="http://sourceforge.net/projects/secureideas/files/BASE/base-1.4.5/base-1.4.5.tar.gz">http://sourceforge.net/projects/secureideas/files/BASE/base-1.4.5/base-1.4.5.tar.gz</a><br> #tar xzvf base-1.4.5.tar.gz<br> #sudo mv base-1.4.5 /var/www/html/base/</p>
+<p>6.4.5.创建和配置base文件</p>
+<p>#cd /var/www/html/base<br> #sudo cp base_conf.php.dist base_conf.php<br> #sudo vi /var/www/html/base/base_conf.php</p>
+<p>文件配置如下</p>
+<p>$BASE_urlpath = ‘/base’;<br> $DBlib_path = ‘/var/adodb/‘;<br> $alert_dbname  = ‘snort’;<br> $alert_host   = ‘localhost’;<br> $alert_port   = ‘’;<br> $alert_user   = ‘snort’;<br> $alert_password = ‘123’;   </p>
+<p><img src="/E:/git-blog\source\images\clip_image044.jpg" alt="img"></p>
+<p><img src="/E:/git-blog\source\images\clip_image046.jpg" alt="img"></p>
+<p><img src="/E:/git-blog\source\images\clip_image047.png" alt="img"></p>
+<p>修改base文件权限</p>
+<p>#sudo chown -R www-data:www-data /var/www/html/base<br> #sudo chmod o-r /var/www/html/base/base_conf.php</p>
+<p><img src="/E:/git-blog\source\images\clip_image049.jpg" alt="img"></p>
+<p>这里也可以不配置base文件，可以在<a target="_blank" rel="noopener" href="http://localhost/base%E4%B8%AD%E8%AE%BE%E7%BD%AE">http://localhost/base中设置</a></p>
+<p>6.4.6.重启apache</p>
+<p>#sudo service apache2 restart</p>
+<p>6.4.7浏览器打开 http：//localhost/base/index.php，可以看到如下结果:</p>
+<p><img src="/E:/git-blog\source\images\clip_image051.jpg" alt="img"></p>
+<h2 id="测试编写的攻击检测规则"><a href="#测试编写的攻击检测规则" class="headerlink" title="测试编写的攻击检测规则"></a>测试编写的攻击检测规则</h2><p><img src="/E:/git-blog\source\images\clip_image053.jpg" alt="img"></p>
+<p>第一条规则：除192.168.159.10以外的主机网页访问本机都弹出警告；</p>
+<p>第二条规则：当SYN包10秒出现1200个就弹出警告；</p>
+<p>第三条规则：当ICMP包大于100就弹出警告；</p>
+<p>第四条规则：当尝试获取主机的shell时，弹出警告；</p>
+<p>第五条规则：当发生FIN扫描时弹出警告。</p>
+<p>检验如下：</p>
+<p>7.1.首先，验证第一条规则</p>
+<p>alert tcp !192.168.159.10 any -&gt; $HOME_NET 80 (msg: “other want to get HTTP!!!”; classtype: attempted-user; sid: 1000002; rev: 1; priority: 1)</p>
+<p>即除192.168.159.10以外的主机网页访问ubuntu</p>
+<p><img src="/E:/git-blog\source\images\clip_image055.jpg" alt="img"></p>
+<p>回到虚拟机，可以看到终端已弹出警告</p>
+<p><img src="/E:/git-blog\source\images\clip_image057.jpg" alt="img"></p>
+<p>Web端也已经有记录</p>
+<p><img src="/E:/git-blog\source\images\clip_image059.jpg" alt="img"></p>
+<p>7.2.现在验证第二条规则，alert tcp any any -&gt; $HOME_NET any (msg: “SYN flood!!!”; flags: S; threshold: type threshold,track by_dst,count 1200,seconds 10; classtype: attempted-dos ; sid: 1000006; rev: 1; priority: 2)</p>
+<p>我们根据SYN泛洪攻击的特征，即短时间内发出大量的SYN包，造成资源的大量消耗而不能向正常的请求提供服务，那么我们可以在规则里写入10秒钟内包的数目达到了1200就弹出警告.</p>
+<p>我们在攻击机kali运行hping3 -q -n -a 2.2.2.2 -S -s 53 –keep -p 631 –flood 192.168.159.138</p>
+<p>查看到ubuntu已弹出警告</p>
+<p><img src="/E:/git-blog\source\images\clip_image061.jpg" alt="img"></p>
+<p>7.3.现在验证第三条规则：alert icmp any any -&gt; $HOME_NET any (msg: “ICMP so big!!!”; classtype: icmp-event ; dsize: &gt;100; sid: 10000004; rev: 1)</p>
+<p>通过查询资料我们发现对于一般的PING包来说，windows的ping包大小为32bit，Linux的ping包大小一般为64Bit，因此我们可以设定ping包的大小如果超过100bit的话，就弹出警示。</p>
+<p>当ICMP包大于100就弹出警告；</p>
+<p>用主机发送一个超过101大小的包</p>
+<p><img src="/E:/git-blog\source\images\clip_image063.jpg" alt="img"></p>
+<p>查看ubuntu最近的15条记录，可以看到已经弹出了警告</p>
+<p><img src="/E:/git-blog\source\images\clip_image065.jpg" alt="img"></p>
+<p>7.4.现在检验第四条规则，alert tcp any any -&gt; $HOME_NET 22 (msg: “other want to get SSL/SHELL!!!”; classtype: attempted-user ;threshold: type threshold,track by_dst,count 5,seconds 1; sid: 1000007; rev: 1;)</p>
+<p>通过端口号来判断是否有SSH协议，但是如果只通过这个来判断是否有人连接了SSH又会产生误报，比如端口扫描也会扫描到22端口，经过抓包分析发现，完成一次SSH连接需要15到20个包，因此我们还要在规则里面写入当1秒钟收到5个SSH协议包的话就弹出警示，这样可以降低误报率。</p>
+<p>连接ubuntu的shell,如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image067.jpg" alt="img"></p>
+<p>查看警告信息，能查看到关于该规则的警告</p>
+<p><img src="/E:/git-blog\source\images\clip_image069.jpg" alt="img"></p>
+<p>7.5.现在检验低五条规则，alert tcp any any -&gt; $HOME_NET any (msg: “namp FIN scan!!!”; flags: F; threshold: type threshold,track by_dst,count 500,seconds 2;classtype: network-scan ; sid: 1000008; rev: 1; )，经过测试可以发现FIN扫描基本上在2分钟之内完成，扫描一般有1000多个端口，因此规则里面设置的频率为2分钟500个FIN包，则弹出警示。</p>
+<p>用kali的nmap去扫描ubuntu的端口，如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image071.jpg" alt="img"></p>
+<p>回到ubuntu就可以查看到该条规则的警告，如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image073.jpg" alt="img"></p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>5.1.在解包时出现如下错误，查到是dpkg的问题，需要更新软件，但是我的apt-get install命令出现了问题，最后发现是ubuntu 14.04版本过低，因此我重新安装了ubuntu18.04,就没有这个错误。</p>
+<p><img src="/E:/git-blog\source\images\clip_image075.jpg" alt="img"></p>
+<p>5.2. 安装Barnyard2时，编译软件时报错, 详细的错误信息如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image077.jpg" alt="img"></p>
+<p>解决办法：从错误信息看，是在处理configure.ac文件时出错了，认为AC_PROG_LIBTOOL是未定义的宏，使得执行autoconf失败，安装libtool包得以解决：sudo apt-get install libtool</p>
+<p>5.3.数据库无法传入数据，即警告信息没有存入snort数据库的event里面，具体情况如下：</p>
+<p><img src="/E:/git-blog\source\images\clip_image079.jpg" alt="img"></p>
+<p><img src="/E:/git-blog\source\images\clip_image080.png" alt="img"></p>
+<p>解决办法：进入barnyard2.conf文件做如下修改：</p>
+<p><img src="/E:/git-blog\source\images\clip_image082.jpg" alt="img"></p>
+<p><img src="/E:/git-blog\source\images\clip_image084.jpg" alt="img"></p>
+<p>然后启动Snort和Barnyard2进行联合测试</p>
+<p>执行sudo snort -q -u snort -g snort -c /etc/snort/snort.conf -i ens33 –D（“-D”参数表示以后台进程运行）</p>
+<p>如果出现以下内容，则成功启动snort了：</p>
+<p><img src="/E:/git-blog\source\images\clip_image086.jpg" alt="img"></p>
+<p>然后再重新执行的这条命令用于测试Barnyard2程序是否能正常执行：</p>
+<p>sudo barnyard2 -c /etc/snort/barnyard2.conf -d /var/log/snort/ -f snort.log -w /var/log/snort/barnyard2.waldo -g snort -u snort -T</p>
+<p>如出现以下结果，说明程序可以正常运行。</p>
+<p><img src="/E:/git-blog\source\images\clip_image088.jpg" alt="img"></p>
+<p>然后运行如下命令：</p>
+<p>sudo barnyard2 -c /etc/snort/barnyard2.conf -d /var/log/snort -f snort.log -w /var/log/snort/barnyard2.waldo -g snort -u snort</p>
+<p>完成上述步骤后再执行传入警告信息的命令，就会是成功的。</p>
+<p>5.4.安装pear图像图时，报错如下：php拓展没找到</p>
+<p><img src="/E:/git-blog\source\images\clip_image090.jpg" alt="img"></p>
+<p>解决办法：查看ubuntu的默认php版本，发现和我们下载使用的版本不一样，因此找不到php拓展</p>
+<p><img src="/E:/git-blog\source\images\clip_image092.jpg" alt="img"></p>
+<p>尝试重新设置默认php版本，步骤如下：</p>
+<p>启用PHP5.6模块：$ sudo a2enmod php5.6</p>
+<p>设置PHP5.6为默认版本：$ sudo update-alternatives –set php /usr/bin/php5.6</p>
+<p>由于安装了其他PHP扩展，将它们设置为默认值：$ sudo update-alternatives –set phar /usr/bin/phar5.6</p>
+<p>最后，重新启动Apache web服务器：$ sudo systemctl restart apache2</p>
+<p>现在，检查PHP5.6是否为默认版本：$ php –v</p>
+<p><img src="/E:/git-blog\source\images\clip_image094.jpg" alt="img"></p>
+<p>问题得以解决！！！</p>
+<p>​                             </p>
+<p>5.5. 浏览器打开 http：//localhost/base/index.php，无法访问</p>
+<p><img src="/E:/git-blog\source\images\clip_image096.jpg" alt="img"></p>
+<p>解决办法：检查设置本机的hosts为 127.0.0.1 localhost</p>
+<p><img src="/E:/git-blog\source\images\clip_image098.jpg" alt="img"></p>
+<h2 id><a href="#" class="headerlink" title></a></h2></article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/07/13/%E5%9F%BA%E4%BA%8Elinux%E7%9A%84snort%E9%83%A8%E7%BD%B2%E6%90%AD%E5%BB%BA%E5%8F%8A%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">http://example.com/2022/07/13/%E5%9F%BA%E4%BA%8Elinux%E7%9A%84snort%E9%83%A8%E7%BD%B2%E6%90%AD%E5%BB%BA%E5%8F%8A%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/07/13/%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84/" title=""><span>< PreviousPost</span><br><span class="prevTitle">[Untitled Post]</span></a><a class="nextSlogan" href="/2022/07/02/NTP/" title="NTP"><span>NextPost ></span><br><span class="nextTitle">NTP</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text">数据流图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">方案搭建过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1%E5%AE%89%E8%A3%85snort"><span class="toc-number">2.1.</span> <span class="toc-text">6.1安装snort</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2%E5%B0%86snort%E9%85%8D%E7%BD%AE%E4%BD%8DNIDS"><span class="toc-number">2.2.</span> <span class="toc-text">6.2将snort配置位NIDS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E5%AE%89%E8%A3%85Barnyard2%E5%92%8C%E9%85%8D%E7%BD%AEMysql"><span class="toc-number">2.3.</span> <span class="toc-text">6.3.安装Barnyard2和配置Mysql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E5%AE%89%E8%A3%85base"><span class="toc-number">2.4.</span> <span class="toc-text">6.4.安装base</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BC%96%E5%86%99%E7%9A%84%E6%94%BB%E5%87%BB%E6%A3%80%E6%B5%8B%E8%A7%84%E5%88%99"><span class="toc-number">3.</span> <span class="toc-text">测试编写的攻击检测规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">4.</span> <span class="toc-text">遇到的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text"></span></a></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

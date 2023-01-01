@@ -1,0 +1,346 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>shell脚本语言学习 · 香蜜的博客</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">shell脚本语言学习</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-12-31</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="Shell脚本语言学习"><a href="#Shell脚本语言学习" class="headerlink" title="Shell脚本语言学习"></a>Shell脚本语言学习</h1><h2 id="Shell是什么"><a href="#Shell是什么" class="headerlink" title="Shell是什么"></a>Shell是什么</h2><p> Shell是一个命令行解释器，它接收应用程序/用户命令，然后调用操作系统内核。 Shell还是一个功能相当强大的编程语言，易编写、易调试、灵活性强。  </p>
+<p><strong><img src="/E:/git-blog\source\images\1672485339590.png" alt="1672485339590"></strong></p>
+<h2 id="Shell脚本语言"><a href="#Shell脚本语言" class="headerlink" title="Shell脚本语言"></a>Shell脚本语言</h2><ol>
+<li> <strong>创建脚本</strong> ：.sh后缀的文件，例如helloworld.sh</li>
+<li><strong>脚本格式</strong></li>
+</ol>
+<p>脚本以 <code>#!/bin/bash</code> 开头（指定解析器），然后就可以写入shell命令</p>
+<ol start="2">
+<li><strong>脚本执行方式：</strong> </li>
+</ol>
+<p> <strong>方式1⃣️.</strong> 采用bash或sh+脚本的相对路径/绝对路径（不用赋予脚本+x权限） </p>
+<p> <strong>方式2⃣️.</strong> 采用输入脚本的绝对路径/相对路径执行脚本（<code>必须具有可执行权限+x</code>） </p>
+<p> a. 首先赋予helloworld.sh 脚本的+x权限</p>
+<p> b. 执行脚本</p>
+<p> 方式1⃣️ ，本质是解析器帮助执行脚本，所以脚本本身不需哟啊执行权限；方式2⃣️ ，本质是脚本需要自己执行，所以需要➕x权限。 </p>
+<h3 id="shell中的变量"><a href="#shell中的变量" class="headerlink" title="shell中的变量"></a>shell中的变量</h3><ol>
+<li><strong>常用系统变量</strong></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$HOME、$PWD、$SHELL、$USER等；</span><br></pre></td></tr></table></figure>
+
+<p>  <strong>2.自定义变量</strong></p>
+<p> 1). 定义变量：变量=值 ，a=1</p>
+<p> 2). 撤销变量：unset 变量 ,unset a</p>
+<p>只读 不可以使用unset </p>
+<p> 3). 声明静态变量：readonly 变量，   readonly b=2 </p>
+<p>规则</p>
+<p>1). 变量名称可以由字母、数字和下划线组成，但是不能以数字开头，环境变量名最好大写！</p>
+<p>2). 等号两侧不能有空格；</p>
+<p>3). 在bash中，变量默认类型都是字符串类型，无法直接进行数值运算；</p>
+<p> 4). 变量的值如果有空格，需要使用双引号 “ “ / ’ ’ 括起来。 </p>
+<p> <strong>tips:</strong><br>使用“ export 变量名 ” 可以将变量提升为全局环境变量，供其他Shell程序使用。 </p>
+<p><strong>3.特殊变量</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$n （功能描述：n为数字，$0代表该脚本名称，$1-$9代表第一到第九个参数，🔟以上的参数需要用大括号 &#123; &#125;包含，如$&#123;10&#125;）</span><br><span class="line">$# (功能描述：获取所有输入参数个数，常用于循环)。</span><br><span class="line">$* (功能描述：此变量代表命令行中所有的参数，$* 把所有的参数看成一个整体)；</span><br><span class="line">$@ (功能描述：此变量也代表命令行中所有参数，不过$@把每个参数区分对待)。</span><br><span class="line">$?(功能描述：最后一次执行的命令的返回状态。如果此变量值为0，证明上一个命令正确执行；如果此变量值为非0，则证明上一个命令执行错误)。</span><br></pre></td></tr></table></figure>
+
+<h3 id="运算法"><a href="#运算法" class="headerlink" title="运算法"></a>运算法</h3><ol>
+<li>基本语法</li>
+</ol>
+<p>1). <code>&quot; $((运算式))&quot; / &quot;$[运算式]&quot;</code>,e.g  s=$[(10+5)*4] </p>
+<p>2). <code>expr + - \* / %</code> 加减乘除取余，e.g  expr 10 + 5 </p>
+<p><strong>tips:</strong><br>expr运算符间需➕空格</p>
+<h3 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h3><p>[ condition ] (tips：condition前后有空格)</p>
+<p>注：条件非空即为true，[ balabala ] 返回true， []返回false。</p>
+<p>注意： 多条件判断（&amp;&amp; 表示上一条命令执行成功时，才执行后一条命令， || 表示上一条命令执行失败后，才执行下一条命令） </p>
+<p>1). 两个整数之间比较</p>
+<p>= 字符串比较<br>-lt 小于 (less than)<br>-le 小于等于(less equal)<br>-eq 等于(equal)<br>-gt 大于(greater than)<br>-ge 大于等于(greater equal)<br>-ne 不等于(not equal)</p>
+<p>2). 按照文件权限进行判断</p>
+<p>-r有读的权限(read)<br>-w 有写的权限(write)<br>-x 有执行的权限(execute)</p>
+<p>3).按照文件类型进行判断<br>-f 文件存在且是一个常规的文件(file)<br>-e 文件存在(existence)<br>-d 文件存在且是一个目录(directory)</p>
+<h3 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h3><p><strong>1.if</strong></p>
+<p> if [ 条件判断式 ] </p>
+<p>then <em>#        程序</em> </p>
+<p>fi </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if [ $1 -eq 1 ]</span><br><span class="line">then</span><br><span class="line">        echo &quot;the number is one&quot;</span><br><span class="line">elif [ $1 -eq 2 ]</span><br><span class="line">then</span><br><span class="line">        echo &quot;the number is two&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p><strong>2.case</strong></p>
+<p> case $变量名 in </p>
+<p>“值1”) </p>
+<p>​    <em>#    如果变量的值等于值1，则执行程序1</em></p>
+<p> ;;</p>
+<p> “值2”) </p>
+<p><em>#    如果变量的值等于值1，则执行程序1</em> </p>
+<p>;; </p>
+<p> *) </p>
+<p><em>#    若变量的值与以上都不符，则执行此default程序</em></p>
+<p> ;; </p>
+<p>esac </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">case $1 in</span><br><span class="line">1)</span><br><span class="line">        echo &quot; the number is one&quot;</span><br><span class="line">;;</span><br><span class="line"></span><br><span class="line">2)</span><br><span class="line">        echo &quot; the number is two&quot;</span><br><span class="line">;;</span><br><span class="line"></span><br><span class="line">*)</span><br><span class="line">        echo &quot;the other number except the two choice&quot;</span><br><span class="line">;;</span><br><span class="line">esac</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>3.for</strong></p>
+<ol start="3">
+<li><p>1</p>
+<p>for(( 初始值; 循环控制条件；变量变化 )) </p>
+</li>
+</ol>
+<p>​       do </p>
+<p>​            程序 </p>
+<p>​       done </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for(( i=1;i&lt;=100;i++ ))</span><br><span class="line">do</span><br><span class="line">        s=$[$s+$i]</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>3.2</p>
+<p> for 变量  in 值1 值2 值3… </p>
+<p>​      do  </p>
+<p>​          程序 </p>
+<p>​     done </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for i in $*</span><br><span class="line">do</span><br><span class="line">        echo &quot;the parameter you entered is $i&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p><strong>4.while</strong></p>
+<p> while [ 条件判断式 ] </p>
+<p>​         do </p>
+<p>​              <em>#    程序</em> </p>
+<p>​        done </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">while [ $i -le 100 ]</span><br><span class="line">do</span><br><span class="line">        s=$[$s + $i]</span><br><span class="line">        i=$[$i + 1]</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="read读取控制台输入"><a href="#read读取控制台输入" class="headerlink" title="read读取控制台输入"></a>read读取控制台输入</h3><p>read(选项)(参数)</p>
+<p>选项：<br>-p：指定读取值时的提示符；<br>-t：指定读取值时等待的时间（秒）。</p>
+<p>参数：<br>变量：指定读取值的变量名。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">read -t 7 -p &quot;please input your name&quot; NAME</span><br><span class="line"></span><br><span class="line">echo $NAME</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ol>
+<li><strong>basename</strong>  </li>
+</ol>
+<p>basename [string / pathname] [suffix]</p>
+<p>功能描述：若加了后缀suffix，则basename命令会删掉所有的后缀包括最后一个( ’ / ‘) 字符，然后显示出字符串。</p>
+<p>选项：<br>suffix为后缀，为可选项，如果suffix被指定了，basename会将pathname或string中的suffix去掉。</p>
+<p><strong>2.dirname</strong> </p>
+<p>dirname 文件绝对路径；</p>
+<p>功能描述：从给定的包含绝对路径的文件名中去除文件名(非目录)，然后返回目录。</p>
+<p><strong>3.自定义函数</strong></p>
+<p>[ function ] funname[()]<br>{<br>    Action;<br>    [return int;]<br>}<br>funname</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function sum()</span><br><span class="line">&#123;</span><br><span class="line">        s=0;</span><br><span class="line">        s=$[$1+$2]</span><br><span class="line">        echo $s</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Shell-工具"><a href="#Shell-工具" class="headerlink" title="Shell 工具"></a>Shell 工具</h3><p><strong>1.cut</strong></p>
+<p> 负责剪切数据；cut命令从文件的每一行剪切字节、字符和字段并输出。 </p>
+<table>
+<thead>
+<tr>
+<th>选项参数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-f</td>
+<td><code>列号，</code>按列号提取</td>
+</tr>
+<tr>
+<td>-d</td>
+<td><code>分隔符</code>，按照指定分隔符分割列</td>
+</tr>
+</tbody></table>
+<p><strong>2.sed</strong></p>
+<p> sed是一种流编辑器，一次处理一行内容。处理时把当前处理的行存储在临时缓冲区中，称为“模式空间”，接着用sed命令处理缓冲区中的内容并将其输出屏幕。不断重复直至文件末尾。 </p>
+<ol>
+<li>基本语法</li>
+</ol>
+<p>sed [选项参数] ‘command’ filename</p>
+<ol>
+<li>选项参数说明</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>选项参数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-e</td>
+<td>直接在指令列模式上进行sed的动作编辑</td>
+</tr>
+</tbody></table>
+<ol>
+<li>常用命令功能描述</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a</td>
+<td>新增，a后面可接字符串，在下一行出现</td>
+</tr>
+<tr>
+<td>d</td>
+<td>删除</td>
+</tr>
+<tr>
+<td>s</td>
+<td>查找并替换</td>
+</tr>
+</tbody></table>
+<p><strong>3.awk</strong></p>
+<p>awk是一个强大的文本分析工具，将文件逐行读入，以空格为默认分隔符将行切片，对切开的部分再进行分析处理。</p>
+<p>基本语法<br>awk [] ‘pattern1{action1} pattern2{action2} … ’ filename<br>pattern: 表示awk在数据中查找的内容，就是匹配模式；<br>action: 在找到匹配内容时所执行的一系列命令</p>
+<p>常用选项参数说明</p>
+<table>
+<thead>
+<tr>
+<th>选项参数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-F</td>
+<td>指定输入文件分隔符</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>赋值一个用户定义变量</td>
+</tr>
+</tbody></table>
+<p>awk 的内置变量</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FILENAME</td>
+<td>文件名</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>已读的记录数</td>
+</tr>
+<tr>
+<td>NF</td>
+<td>浏览记录的域的个数（<code>切割后列的个数</code>）</td>
+</tr>
+</tbody></table>
+<p><strong>4.sort</strong></p>
+<p>sort命令在Linux中非常有用，它将文件进行排序，并将排序结果标准输出。</p>
+<ol>
+<li>基本语法</li>
+</ol>
+<p>sort(选项)(参数)</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-n</td>
+<td>按照数值的大小排序</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>以相反的顺序来排序</td>
+</tr>
+<tr>
+<td>-t</td>
+<td>设置排序时所用的分割字符</td>
+</tr>
+<tr>
+<td>-k</td>
+<td>指定需要排序的列</td>
+</tr>
+</tbody></table>
+<p>参数：指定待排序的文件列表。</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/31/shell%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/">http://example.com/2022/12/31/shell%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="nextSlogan" href="/2022/12/30/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/" title="接口测试"><span>NextPost ></span><br><span class="nextTitle">接口测试</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Shell%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0"><span class="toc-number">1.</span> <span class="toc-text">Shell脚本语言学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.</span> <span class="toc-text">Shell是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80"><span class="toc-number">1.2.</span> <span class="toc-text">Shell脚本语言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#shell%E4%B8%AD%E7%9A%84%E5%8F%98%E9%87%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">shell中的变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E6%B3%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">运算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="toc-number">1.2.3.</span> <span class="toc-text">条件判断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="toc-number">1.2.4.</span> <span class="toc-text">流程控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#read%E8%AF%BB%E5%8F%96%E6%8E%A7%E5%88%B6%E5%8F%B0%E8%BE%93%E5%85%A5"><span class="toc-number">1.2.5.</span> <span class="toc-text">read读取控制台输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.6.</span> <span class="toc-text">函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Shell-%E5%B7%A5%E5%85%B7"><span class="toc-number">1.2.7.</span> <span class="toc-text">Shell 工具</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

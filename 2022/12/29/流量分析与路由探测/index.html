@@ -1,0 +1,180 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>流量分析与路由探测 · 香蜜的博客</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">流量分析与路由探测</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-12-29</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="流量分析与路由探测"><a href="#流量分析与路由探测" class="headerlink" title="流量分析与路由探测"></a>流量分析与路由探测</h1><h2 id="实验原理"><a href="#实验原理" class="headerlink" title="实验原理:"></a>实验原理:</h2><ol>
+<li><strong>三次握手</strong></li>
+</ol>
+<p>主要是为了对每次发送的数据量进行跟踪与协商，确保数据段的发送和接收同步，根据所接收到的数据量而确认数据发送、接收完毕后何时撤消联系，并建立虚连接。</p>
+<p><strong>第一次握手：</strong>建立连接时，客户端发送syn包（seq=j）到服务器，并进入SYN_SENT状态，等待服务器确认；SYN：同步序列编号（Synchronize Sequence Numbers）。 </p>
+<p><strong>第二次握手：</strong>服务器收到syn包，必须确认客户端的SYN（ack=j+1），同时自己也发送一个SYN包（seq=k），即SYN+ACK包，此时服务器进入SYN_RECV状态。 </p>
+<p><img src="/E:/git-blog\source\images\wps1.png" alt="img"><strong>第三次握手：</strong>客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=k+1)，此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。 </p>
+<p>完成三次握手，客户端与服务器开始传送数据</p>
+<p>\2. <strong>四次挥手</strong></p>
+<p>四次挥手即终止TCP连接，就是指断开一个TCP连接时，需要客户端和服务端总共发送4个包以确认连接的断开。</p>
+<p>由于TCP连接是全双工的，因此，每个方向都必须要单独进行关闭，这一原则是当一方完成数据发送任务后，发送一个FIN来终止这一方向的连接，收到一个FIN只是意味着这一方向上没有数据流动了，即不会再收到数据了，但是在这个TCP连接上仍然能够发送数据，直到这一方向也发送了FIN。首先进行关闭的一方将执行主动关闭，而另一方则执行被动关闭。</p>
+<p><strong>第一次挥手：</strong> TCP客户端发送一个FIN报文，用来关闭客户到服务器的数据传送。</p>
+<p><strong>第二次挥手：</strong> 服务器收到这个FIN报文，它发回一个ACK报文，确认序号为收到的序号加1。和SYN一样，一个FIN报文将占用一个序号。</p>
+<p><strong>第三次挥手：</strong>服务器关闭客户端的连接，发送一个FIN给客户端。</p>
+<p><strong>第四次挥手</strong>： 客户端发回ACK报文确认，并将确认序号设置为收到序号加1。</p>
+<p><img src="/E:/git-blog\source\images\wps2.png" alt="img"> </p>
+<p>\3. <strong>SSL协议握手</strong></p>
+<p><strong>第一阶段：建立安全能力</strong></p>
+<p>　　SSL握手的第一阶段启动逻辑连接，建立这个连接的安全能力。首先客户机向服务器发出client hello消息并等待服务器响应，随后服务器向客户机返回server hello消息，对client hello消息中的信息进行确认。Client hello消息包括Version，Random，Session id，Cipher suite，Compression method等信息。</p>
+<p><strong>第二阶段：服务器鉴别与密钥交换</strong></p>
+<p>　　服务器启动SSL握手第2阶段，是本阶段所有消息的唯一发送方，客户机是所有消息的唯一接收方。该阶段分为4步：</p>
+<p>　　（a）证书：服务器将数字证书和到根CA整个链发给客户端，使客户端能用服务器证书中的服务器公钥认证服务器。</p>
+<p>　　（b）服务器密钥交换（可选）：这里视密钥交换算法而定</p>
+<p>　　（c）证书请求：服务端可能会要求客户自身进行验证。</p>
+<p>　　（d）服务器握手完成：第二阶段的结束，第三阶段开始的信号</p>
+<p><strong>第三阶段：客户机鉴别与密钥交换</strong>：</p>
+<p> 客户机启动SSL握手第3阶段，是本阶段所有消息的唯一发送方，服务器是所有消息的唯一接收方。该阶段分为3步：</p>
+<p>　　（a）证书（可选）：为了对服务器证明自身，客户要发送一个证书信息，这是可选的，在IIS中可以配置强制客户端证书认证。</p>
+<p>　　（b）客户机密钥交换（Pre-master-secret）：这里客户端将预备主密钥发送给服务端，注意这里会使用服务端的公钥进行加密。</p>
+<p>（c）证书验证（可选），对预备秘密和随机数进行签名，证明拥有（a）证书的公钥。</p>
+<p>第四阶段：</p>
+<p>客户机启动SSL握手第4阶段，使服务器结束。</p>
+<p><img src="/E:/git-blog\source\images\wps3.jpg" alt="img"> </p>
+<p>\4. <strong>路由探测</strong></p>
+<p>路由探测原理就是从发送TTL 值为1开始的数据包开始，每次增加1，直到该数据包能抵达目的IP地址。</p>
+<p>未能抵达最终目的地址的数据包，当路由器将值减为0 时，会给源地址返回一个数据包告知源地址：因经过路由的数据过多，导致TTL耗尽。数据包无法到达最终目的地。工具根据中间路由节点这个数据包返回的时间戳和发出数据包时的时间戳相减，计算出中间经过的每个路由节点的耗时。并获取中间路由节点的IP地址。</p>
+<h2 id="实验步骤"><a href="#实验步骤" class="headerlink" title="实验步骤:"></a>实验步骤:</h2><h3 id="TCP连接和断开三次握手"><a href="#TCP连接和断开三次握手" class="headerlink" title="TCP连接和断开三次握手"></a>TCP连接和断开三次握手</h3><ol>
+<li>打开wireshark，开启流量分析，进行一次网站访问，如访问cclab.ujs.edu.cn</li>
+</ol>
+<p><img src="/E:/git-blog\source\images\wps4.jpg" alt="img"> </p>
+<p>第一次握手：seq=0</p>
+<p><img src="/E:/git-blog\source\images\wps5.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps6.jpg" alt="img"> </p>
+<p>  第二次握手：seq=0,ack=1</p>
+<p><img src="/E:/git-blog\source\images\wps7.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps8.jpg" alt="img"> </p>
+<p>  第三次握手：seq=1,ack=1</p>
+<p><img src="/E:/git-blog\source\images\wps9.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps10.jpg" alt="img"> </p>
+<p>  连接已建立，后面就是开始交互</p>
+<p><img src="/E:/git-blog\source\images\wps11.jpg" alt="img"> </p>
+<p>2.四次挥手：</p>
+<p>第一次挥手 FIN=1，seq=3251</p>
+<p><img src="/E:/git-blog\source\images\wps12.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps13.jpg" alt="img"> </p>
+<p>第二次挥手 seq=613 ,ack=3252</p>
+<p><img src="/E:/git-blog\source\images\wps14.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps15.jpg" alt="img"> </p>
+<p>第三次挥手 seq=613 ack =3252</p>
+<p><img src="/E:/git-blog\source\images\wps16.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps17.jpg" alt="img"> </p>
+<p>第四次挥手 seq=3252 ack=614</p>
+<p><img src="/E:/git-blog\source\images\wps18.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps19.jpg" alt="img"> </p>
+<h3 id="wireshark分析SSL握手情况"><a href="#wireshark分析SSL握手情况" class="headerlink" title="wireshark分析SSL握手情况"></a>wireshark分析SSL握手情况</h3><p><img src="/E:/git-blog\source\images\wps20.jpg" alt="img"> </p>
+<p>1.客户端发起请求，以明文传输请求信息，包含版本信息，加密套件候选列表，压缩算法候选列表，随机数，扩展字段等信息<img src="/E:/git-blog\source\images\wps21.jpg" alt="img"></p>
+<p>\2. 服务器回答给客户端以下信息</p>
+<p><img src="/E:/git-blog\source\images\wps22.jpg" alt="img"> </p>
+<p>3.服务器发送给客户端</p>
+<p><img src="/E:/git-blog\source\images\wps23.jpg" alt="img"> </p>
+<p>4.客户端发送给服务端</p>
+<p><img src="/E:/git-blog\source\images\wps24.jpg" alt="img"> </p>
+<p>\5. 服务器端发送new session ticket消息。到这里握手结束。</p>
+<p><img src="/E:/git-blog\source\images\wps25.jpg" alt="img"> </p>
+<h3 id="利用ping测试链路情况、利用tracert测试路由"><a href="#利用ping测试链路情况、利用tracert测试路由" class="headerlink" title="利用ping测试链路情况、利用tracert测试路由"></a>利用ping测试链路情况、利用tracert测试路由</h3><p>1.ping百度获取ip</p>
+<p><img src="/E:/git-blog\source\images\wps26.jpg" alt="img"> </p>
+<p>2.打开WinMTR，输入百度ip,获取各个节点的响应时间及丢包率等信息。</p>
+<p><img src="/E:/git-blog\source\images\wps27.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps28.jpg" alt="img"> </p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/29/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B/">http://example.com/2022/12/29/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/29/%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA/" title=""><span>< PreviousPost</span><br><span class="prevTitle">[Untitled Post]</span></a><a class="nextSlogan" href="/2022/12/29/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/" title="软件测试学习（一）"><span>NextPost ></span><br><span class="nextTitle">软件测试学习（一）</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B"><span class="toc-number">1.</span> <span class="toc-text">流量分析与路由探测</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">实验原理:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.</span> <span class="toc-text">实验步骤:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E8%BF%9E%E6%8E%A5%E5%92%8C%E6%96%AD%E5%BC%80%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">TCP连接和断开三次握手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#wireshark%E5%88%86%E6%9E%90SSL%E6%8F%A1%E6%89%8B%E6%83%85%E5%86%B5"><span class="toc-number">1.2.2.</span> <span class="toc-text">wireshark分析SSL握手情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8ping%E6%B5%8B%E8%AF%95%E9%93%BE%E8%B7%AF%E6%83%85%E5%86%B5%E3%80%81%E5%88%A9%E7%94%A8tracert%E6%B5%8B%E8%AF%95%E8%B7%AF%E7%94%B1"><span class="toc-number">1.2.3.</span> <span class="toc-text">利用ping测试链路情况、利用tracert测试路由</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

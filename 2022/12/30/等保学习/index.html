@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>等保学习 · 香蜜的博客</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">等保学习</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-12-30</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><p>GB/T22239-2019 信息安全技术 网络安全等级保护基本要求</p>
+<h2 id="等保定义"><a href="#等保定义" class="headerlink" title="等保定义"></a>等保定义</h2><p>根据信息、信息系统在国家安全、经济建设、社会生活中的重要程度;<br>遭受破坏后对国家安全、社会秩序、公共利益以及公民、法人和其他组织的合法权益的危害程度;<br>将信息系统划分为不同的安全保护等级并对其实施不同的保护和监管。</p>
+<h2 id="等级划分"><a href="#等级划分" class="headerlink" title="等级划分"></a>等级划分</h2><p>1.第一级为自主保护级，适用于一般的信息和信息系统，其受到破坏后，会对公民、法人和其他组织的权益有一定影响，但不危害国家安全、社会秩序、经济建设和公共利益。<br>⒉第二级为指导保护级，适用于一定程度上涉及国家安全、社会秩序、经济建设和公共利益的一般信息和信息系统，其受到破坏后，会对国家安全、社会秩序、经济建设和公共利益造成一定损害。<br>3.第三级为监督保护级，适用于涉及国家安全、社会秩序、经济建设和公共利益的信息和信息系统，其受到破坏后，会对国家安全、社会秩序、经济建设和公共利益造成较大损害。<br>4.第四级为强制保护级，适用于涉及国家安全、社会秩序、经济建设和公共利益的重要信息和信息系统,其受到破坏后，会对国家安全、社会秩序、经济建设和公共利益造成严重损害。<br>5.第五级为专控保护级，适用于涉及国家安全、社会秩序、经济建设和公共利益的重要信息和信息系统的核心子系统，其受到破坏后，会对国家安全、社会秩序、经济建设和公共利益造成特别严重损害。</p>
+<p>【等保一级】<br>　　 　　等保一级为“用户自主保护级”，是等保中最低的级别，该级别无需测评，提交相关申请资料，公安部门审核通过即可。</p>
+<p>【等保二级】<br>　　 　　等保二级为“系统审计保护级”，是目前使用最多的等保方案，所有“信息系统受到破坏后，会对公民、法人和其他组织的合法权益产生严重损害，或者对社会秩序和公共利益造成损害，但不损害国家安全。”范围内网站均可适用，可支持到地级市各机关、事业单位及各类企业的系统应用，比如：网上各类服务的平台（尤其是涉及到个人信息认证的平台），市级地方机关、政府网站等等。</p>
+<p>【等保三级】<br>　　 　　等保三级等为“安全标记保护级”，级别更高，支持“信息系统受到破坏后，会对社会秩序和公共利益造成严重损害，或者对国家安全造成损害。”范围，适用于“地级市以上的国家机关、企业、事业单位的内部重要信息系统”，比如省级政府官网、银行官网等等。三级等保也是我们能制作的最高级别等保网站。</p>
+<p>【等保四级】<br>　　 　　等保四级等保适用于国家重要领域、涉及国家安全、国计民生的核心系统，比如中国人民银行就是目前唯一四级等保的中国央行门户集群。</p>
+<p>【等保五级】<br>　　 　　等保五级等保是目前我国最高级别，一般应用于国家的机密部门</p>
+<h2 id="等保1-0与等保2-0区别"><a href="#等保1-0与等保2-0区别" class="headerlink" title="等保1.0与等保2.0区别"></a>等保1.0与等保2.0区别</h2><p>等保2.0提出新的技术要求和管理要求，强调“一个中心，三重防护”，关键点包括可信技术、安全管理中心，以及云计算、物联网等新兴领域的安全扩展要求。对应地，企业在安全防护体系建设、风险评估和管理上需要更加全面，并需关注所在行业的安全要求和定级标准。</p>
+<p>1.安全要求，增加了扩展要求</p>
+<p>原来:安全要求<br>改为:安全通用要求和安全扩展要求<br>安全通用要求是不管等级保护对象形态如何必须满足的要求，针对于计算、移动互联、物联网和工业控制系统提出了特殊要求，称为安全扩展要求。</p>
+<p>2.备案的变化</p>
+<p>等保1.0《信息安全等级保护管理办法》(公通字[2007]43号) 第十五条已运营(运行)的第级以上信息系;<br>统，应当在安全保护等级确定后30日内，由其运营、使用单位到所在地设区的市级以上公安机关办理备案手续。<br>等保2.0《网络安全等级保护条例(征求意见稿)》第十八条[定级备案]第二级以上网络运营者应当在网络的安全保护等级确定后10个工作日内，到县级以上公安机关备案。</p>
+<p>3.等保测评的变化</p>
+<p>《信息安全等级保护管理办法》(等保1.0)<br>第三级:每年一次<br>第四级:每半年一次<br>第五级:依据特殊安全需求</p>
+<p>《网络安全等级保护条例(征求意见稿)》(等保2.0)<br>第三级以上网络的运营者<br>每年开展一次</p>
+<p>4.等保测评结论的变化</p>
+<p><img src="/E:/git-blog\source\images\1672399950819.png" alt="1672399950819"></p>
+<p>5.定级流程的变化</p>
+<p><img src="/E:/git-blog\source\images\1672400108377.png" alt="1672400108377"></p>
+<h2 id="等级保护工作的5个环节"><a href="#等级保护工作的5个环节" class="headerlink" title="等级保护工作的5个环节"></a>等级保护工作的5个环节</h2><p>等保包括五个阶段：1、定级、2、备案、3、建设整改、4、等级测评、5、监督检查。定级对象（即需要过等保的对象）建设整改后，需要选择符合国家要求的测评机构，按《网络安全等级保护基本要求》等技术标准进行等级测评，之后向监管单位提交测评报告。</p>
+<p>。</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/30/%E7%AD%89%E4%BF%9D%E5%AD%A6%E4%B9%A0/">http://example.com/2022/12/30/%E7%AD%89%E4%BF%9D%E5%AD%A6%E4%B9%A0/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/30/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/" title="接口测试"><span>< PreviousPost</span><br><span class="prevTitle">接口测试</span></a><a class="nextSlogan" href="/2022/12/29/%E7%BD%91%E7%BB%9C%E5%97%85%E6%8E%A2%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0/" title="网络嗅探器的实现"><span>NextPost ></span><br><span class="nextTitle">网络嗅探器的实现</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E4%BF%9D%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">等保定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E7%BA%A7%E5%88%92%E5%88%86"><span class="toc-number">2.</span> <span class="toc-text">等级划分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E4%BF%9D1-0%E4%B8%8E%E7%AD%89%E4%BF%9D2-0%E5%8C%BA%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">等保1.0与等保2.0区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%89%E7%BA%A7%E4%BF%9D%E6%8A%A4%E5%B7%A5%E4%BD%9C%E7%9A%845%E4%B8%AA%E7%8E%AF%E8%8A%82"><span class="toc-number">4.</span> <span class="toc-text">等级保护工作的5个环节</span></a></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

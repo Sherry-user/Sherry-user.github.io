@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>网络嗅探器的实现 · 香蜜的博客</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">网络嗅探器的实现</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-12-29</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="网络嗅探器的实现"><a href="#网络嗅探器的实现" class="headerlink" title="网络嗅探器的实现"></a>网络嗅探器的实现</h1><p>网络监控软件能够检测网络流量，发现网络中异常的数据流，有效地发现和防御网络攻击，是保证网络安全的重要工具和手段之一，也是网络安全技术人员必须掌握的重要技能之一。</p>
+<h2 id="功能分析"><a href="#功能分析" class="headerlink" title="功能分析"></a>功能分析</h2><p>希望能实现对常用的数据报类型的捕获，例如：ICMP,OSPF,HTTP,HTTPS,SMTP,FTP,TCP,UDP，</p>
+<p>能够显示各个数据包的数据包序号 ，数据包大小，源IP地址，源端口，目地ip地址，目的端口 ，</p>
+<p> IP头部大小，TCP头部大小，数据长度，数据包内容（解码后的内容）。并且能够实现选择具体协议类型的数据包进行抓包，以一个对用户友好的界面将抓取后的数据包信息及内容解码后展示出来。</p>
+<h2 id="功能图"><a href="#功能图" class="headerlink" title="功能图"></a>功能图</h2><p><img src="/E:/git-blog\source\images\wps62.png" alt="img"></p>
+<h2 id="方案设计"><a href="#方案设计" class="headerlink" title="方案设计"></a>方案设计</h2><h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>由于我们捕获的东西必须是要物理信号能收到的报文信息。显然只要通知网卡接收其收到的所有包，即网卡采用杂收模式（指网络上的所有设备都对总线上传送的数据进行侦听，并不仅仅是它们自己的数据）。在HUB下就能接收到这个网段的所有包，但是交换机下就只能是自己的包加上广播包。</p>
+<p>要想在交换机下接收别人的包，那就要让其发往自己的机器所在口。交换机记住一个口的MAC是通过接收来自这个口的数据后并记住其源MAC，就像一个机器的IP与MAC对应的ARP列表，交换机维护一个物理口与MAC的表，所以可以欺骗交换机的。可以发一个包设置源MAC是自己想接收的机器的MAC，那么交换机就把机器的网线插的物理口与那个MAC对应起来了，以后发给那个MAC的包就发往自己的网线插口了，也就是我们的网卡可以Sniffer到了。注意这物理口与MAC的表与机器的ARP表一样是动态刷新的，那机器发包后交换HUB就又记住他的口了，所以实际上是两个在争，这只能应用在只要收听少量包就可以的场合。</p>
+<p>内部网基于IP的通信可以用ARP欺骗别人机器让其发送给自己的机器，如果要想不影响原来两方的通信，可以欺骗两方，让其都发给自己的机器再由自己的机器转发，相当于做中间人，这用ARP加上编程很容易实现。并且现在很多设备支持远程管理，有很多交换机可以设置一个口监听别的口，不过这就要管理权限了。</p>
+<p>利用这一点，可以将一台计算机的网络连接设置为接受所有以太网总线上的数据，从而实现Sniffer。</p>
+<p>因为我们主要是希望能分析网络层，传输层，应用层的报文，因此需要对各层协议有一定理解。</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>主要协议</th>
+<th>主要功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>应用层</td>
+<td>Http、Telnet、FTP、E-mail等</td>
+<td>负责把数据传输到传输层或者接收从传输层返回的数据;</td>
+</tr>
+<tr>
+<td>传输层</td>
+<td>TCP、UDP</td>
+<td>TCP为两台主机上的应用程序提供高可靠的端到端的数据通信，包括把应用程序交给它的数据分成数据块交给网络层、确认接收到的分组等;UDP则为应用层提供不可靠的数据通信，它只是把数据包的分组从一台主机发送到另一台主机，不保证数据能到达另一端;</td>
+</tr>
+<tr>
+<td>网络层</td>
+<td>ICMP、IP、IGMP</td>
+<td>主要为数据包选择路由，其中IP是TCP/IP协议族中最为核心的协议，所有的TCP、UDP、ICMP、IGMP数据都以IP数据包格式传输;</td>
+</tr>
+</tbody></table>
+<p>各层数据包由如下格式进行封装，捕获数据包后将头部信息进行解析，就可以获取源IP，目的IP，端口号，数据包大小等基本信息，进而可以分析数据包的来源及目的地；分析应用层数据就可以查看其想要传输的具体内容。</p>
+<p><img src="/E:/git-blog\source\images\wps63-1672295099181.jpg" alt="img"> </p>
+<h3 id="设计主要模块"><a href="#设计主要模块" class="headerlink" title="设计主要模块"></a>设计主要模块</h3><p>1） 包捕获机制</p>
+<p>不同的操作系统实现的底层包捕获机制可能是不一样的，但从形式上看大同小异。数据包常规的传输路径依次为网卡、设备驱动层、数据链路层、IP层、传输层、最后到达应用程序。而包捕获机制是在数据链路层增加一个旁路处理，对发送和接收到的数据包做过滤/缓冲等相关处理，最后直接传递到应用程序。</p>
+<p>常用的以太网卡支持以下工作模式：广播模式、多播模式、直接模式和混杂模式。</p>
+<p>混杂模式:工作在混杂模式下的网卡接收所有的流过网卡的帧，信包捕获程序就是在这种模式下运行的。网卡的缺省工作模式包含广播模式和直接模式，即它只接收广播帧和发给自己的帧。如果采用混杂模式，网卡将接受同一网络内所有主机发送的数据包。</p>
+<p>利用网卡混杂模式的特性，就可以到达对于网络信息监听捕获的目的。</p>
+<p>2）解码机制</p>
+<p>能对接受到的数据包进行解码，即将数字转换为ASCLL码，输出对用户友善的信息，以便用户查看部分数据包传输的具体内容；</p>
+<p>3） 包过滤机制</p>
+<p>包过滤机制是对所捕获到的数据包根据用户的要求进行筛选，最终只把满足过滤条件的数据包传递给用户程序。</p>
+<p>4） 用户程序的接口</p>
+<p>对用户程序而言，包捕获机制提供了一个统一的接口，使用户程序只需要简单的调用若干函数就能获得所期望的数据包。这样一来，针对特定操作系统的捕获机制对用户透明。</p>
+<h3 id="文字介绍实现的方法"><a href="#文字介绍实现的方法" class="headerlink" title="文字介绍实现的方法"></a>文字介绍实现的方法</h3><p>设置网卡为混杂模式，建立socket实体，并用bind()函数将其绑定在主机IP上，调用recv()函数，返回捕获的数据包，完成包捕获机制；通过建立IP头部，TCP头部，UDP头部结构体，建立结构体类型的指针，指针指向数据包的第一个数组存储的地址，再计算头部长度，通过地址加上头部长度，就指向数据包具体内容存储的地址，从而就可以输出数据包内容；设置输出格式为%c(即以字符的形式输出)，并将一些控制字符以特定的形式输出，从而避免输出乱码，实现报文的解码；通过判断IP头部的Protocol信息，确定传输的是TCP报文还是UDP报文，对于应用层报文，例如TCP以上的报文，可以通过端口号实现报文的判断，例如80号端口是TCP，443端口对应的是HTTPS，25号端口对应的是SMTP，20和21端口对应的是FTP，从而实现了对数据包的辨别。</p>
+<h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><p><img src="/E:/git-blog\source\images\wps64.png" alt="img"></p>
+<h3 id="关键技术及代码"><a href="#关键技术及代码" class="headerlink" title="关键技术及代码"></a>关键技术及代码</h3><p>1） <strong>socket创建与数据包的接收，是网络嗅探器的基础</strong></p>
+<p>SOCKET sock;</p>
+<p>if ((sock = socket(AF_INET, SOCK_RAW, IPPROTO_IP)) == SOCKET_ERROR)</p>
+<p>​    {</p>
+<p>​        exit(-1);</p>
+<p>​    }</p>
+<p>sockaddr_in sa;</p>
+<p>sa.sin_family = AF_INET;</p>
+<p>sa.sin_port = htons(6000);</p>
+<p>sa.sin_addr.S_un.S_addr = inet_addr(“172.19.204.232”);</p>
+<p>bind(sock, (SOCKADDR*)&amp;sa, sizeof(sa));//将socket与主机IP绑定</p>
+<p>WSAIoctl(sock, SIO_RCVALL, &amp;optval, sizeof(optval), NULL, 0, &amp;dwBytesRet, NULL, NULL);  //设置网卡为混杂模式，接受所有的接收所有的流过网卡的帧</p>
+<p>recv(sock, recvBuff, sizeof(recvBuff), 0); /<em>接收数据包</em>/</p>
+<p>2） <strong>数据包过滤器的实现</strong></p>
+<p>主要分为两部分：捕获的包通过解析IP头得出Protocol，通过判断Protocol的值确定传输层的数据包类型（例如ICMP的Protocol是1，TCP的Protocol是6），通过判断TCP头部的端口信息确定应用层的数据包类型（例如HTTP的端口是80，SMTP的端口是25，FTP的端口是20或21）。</p>
+<p>if (pIpheader-&gt;Protocol == 1) {</p>
+<p>​            if (myICMP == 0) continue;</p>
+<p>​            printf(“———————ICMP———————\n”);</p>
+<p>​            …….此部分为待打印的数据包信息……………        }</p>
+<p>  if (pIpheader-&gt;Protocol == 89) {</p>
+<p>​              if (myOSPF == 0) continue;</p>
+<p>​              printf(“———————OSPF———————\n”);</p>
+<p>…….此部分为待打印的数据包信息……………    }</p>
+<p>if (pIpheader-&gt;Protocol == 6)  /<em>使用的是TCP协议</em>/</p>
+<p>​           {if (dataLen == 0) break;</p>
+<p>​             if (ntohs(pTcpheader-&gt;DestinationPort) == 80) {</p>
+<p>​                  if (myHTTP == 0) continue;</p>
+<p>​                  printf(“———————————-协议：HTTP；\n”);}</p>
+<p>​             else if (ntohs(pTcpheader-&gt;DestinationPort) == 443) {</p>
+<p>​                  if (myHTTPS == 0) continue;</p>
+<p>​                  printf(“———————————-协议：HTTPS；\n”);}</p>
+<p>​             else if (ntohs(pTcpheader-&gt;DestinationPort) == 25) {</p>
+<p>​                  if (mySMTP == 0) continue;</p>
+<p>​                  printf(“———————————-协议：SMTP；\n”);}</p>
+<p>​             else if (ntohs(pTcpheader-&gt;DestinationPort) == 20 || ntohs(pTcpheader-&gt;DestinationPort) == 21)       </p>
+<p>{</p>
+<p>​                  if (myFTP == 0) continue;</p>
+<p>​                  printf(“———————————-协议：FTP；\n”);}</p>
+<p>​             else</p>
+<p>​               {if (myTCP == 0) continue;</p>
+<p>​                  printf(“———————————-协议：TCP；\n”);}    </p>
+<p>…….此部分为待打印的数据包信息……………}</p>
+<p>其他的数据包类型辨别诸如此类。</p>
+<h2 id="实现结果"><a href="#实现结果" class="headerlink" title="实现结果"></a>实现结果</h2><h3 id="ICMP报文捕获"><a href="#ICMP报文捕获" class="headerlink" title="ICMP报文捕获"></a>ICMP报文捕获</h3><p>以下是一些基本的数据包信息。</p>
+<p><img src="/E:/git-blog\source\images\wps65-1672295099182.jpg" alt="img"> </p>
+<h3 id="HTTP报文捕获"><a href="#HTTP报文捕获" class="headerlink" title="HTTP报文捕获"></a>HTTP报文捕获</h3><p>很明显，我们能从数据包解码后的信息里看到以下信息：</p>
+<p><strong>User-Agent：</strong>生成请求的浏览器类型</p>
+<p><strong>Accept：</strong>客户端可识别的响应内容类型列表；星号* 用于按范围将类型分组。*/*表示可接受全部类型，type/*表示可接受type类型的所有子类型。</p>
+<p><strong>Accept-Language:</strong> 客户端可接受的自然语言</p>
+<p><strong>Accept-Encoding:</strong> 客户端可接受的编码压缩格式</p>
+<p><strong>Accept-Charset：</strong> 可接受的字符集</p>
+<p><strong>Host:</strong> 请求的主机名，允许多个域名绑定同一IP地址</p>
+<p><strong>connection：</strong>连接方式（close或keeplive）</p>
+<p><img src="/E:/git-blog\source\images\wps66-1672295099182.jpg" alt="img"> </p>
+<h3 id="HTTPS报文捕获"><a href="#HTTPS报文捕获" class="headerlink" title="HTTPS报文捕获"></a>HTTPS报文捕获</h3><p>我们可以看出报文内容是<strong>无意义的语句</strong>，原因在于HTTPS本身是一种<strong>加密传输</strong>，因此获取的报文是无意义的，但是我们可以通过IP头部得出该数据包的一些基础信息，例如源IP，目的IP等。</p>
+<p><img src="/E:/git-blog\source\images\wps67-1672295099183.jpg" alt="img"> </p>
+<h3 id="SMTP报文的捕获"><a href="#SMTP报文的捕获" class="headerlink" title="SMTP报文的捕获"></a>SMTP报文的捕获</h3><p>我们可以通过数据包内容看出该邮件的发送方，接收方，邮件内容，使用的软件（火狐），版本号等信息。</p>
+<p>以下是我通过火狐邮件发送的邮件信息：</p>
+<p><img src="/E:/git-blog\source\images\wps68-1672295099183.jpg" alt="img"> </p>
+<p>这是抓包的结果，可以看出邮件的发送方，接收方，邮件具体内容，使用的软件及版本号都和上面对应的邮件信息相同；</p>
+<p><img src="/E:/git-blog\source\images\wps69-1672295099183.jpg" alt="img"> </p>
+<h3 id="TCP报文捕获"><a href="#TCP报文捕获" class="headerlink" title="TCP报文捕获"></a>TCP报文捕获</h3><p>例如抓取的这个端口号是1231的TCP包，我们可以从数据包内容的分析可知<strong>唯一设备识别符</strong>，<strong>接口参数</strong>等信息。</p>
+<p><img src="/E:/git-blog\source\images\wps70-1672295099183.jpg" alt="img"> </p>
+<h3 id="UDP报文捕获"><a href="#UDP报文捕获" class="headerlink" title="UDP报文捕获"></a>UDP报文捕获</h3><p>可以通过报文信息看到一些具体的参数信息，具体的内容如下：</p>
+<p><img src="/E:/git-blog\source\images\wps71-1672295099183.jpg" alt="img"> </p>
+<h3 id="FTP报文捕获"><a href="#FTP报文捕获" class="headerlink" title="FTP报文捕获"></a>FTP报文捕获</h3><p>可以通过报文解析查看用户名和密码。</p>
+<p><img src="/E:/git-blog\source\images\wps72-1672295099183.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps73-1672295099183.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps74-1672295099183.jpg" alt="img"> </p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>1.问题：出现了以一种访问权限不允许的方式做了一个访问套接字的尝试。</p>
+<p>解决方法：以管理员身份运行程序可以解决，注意：一定要关闭火绒软件，否则程序会被识别为木马；</p>
+<p>2.问题：无法捕获到TCP</p>
+<p>解决办法：主要是网卡的选择问题，使用gethostname(hostName, MAX_HOSTNAME_LEN)获取主机名称，通过他建立关于本机信息的一个hostent结构体;网卡选择hostent结构体的h_addr_list的第2个IP，就可以捕捉到TCP以及其他报文。</p>
+<p>3.问题：捕获不到SMTP报文</p>
+<p>解决办法：将Foxmail取消SSL加密传输</p>
+<p><img src="/E:/git-blog\source\images\wps75-1672295099183.jpg" alt="img"> </p>
+<p>4.问题：对报文进行解码后出现许多乱码，无法有效的查看数据包信息</p>
+<p>解决办法：事实上， ascll码仅有32到126是对于解码有意义的，其他的大部分都是操作符，或者是一些意义不大的字符，如果在解码过程中以字符的形式控制输出（即printf(“ %c”, *(recvBuff + i));），这一部分就会出现乱码，因此在执行解码的时候，我们可以做一个过滤机制，只将32到126以字符的形式进行解码，其他的以统一的格式输出即可，这样便于对数据包内容进行分析。</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/29/%E7%BD%91%E7%BB%9C%E5%97%85%E6%8E%A2%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0/">http://example.com/2022/12/29/%E7%BD%91%E7%BB%9C%E5%97%85%E6%8E%A2%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/30/%E7%AD%89%E4%BF%9D%E5%AD%A6%E4%B9%A0/" title="等保学习"><span>< PreviousPost</span><br><span class="prevTitle">等保学习</span></a><a class="nextSlogan" href="/2022/12/29/%E4%BD%BF%E7%94%A8UltraEdi%E7%8C%9C%E6%B5%8B%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" title="使用UltraEdi猜测文件格式"><span>NextPost ></span><br><span class="nextTitle">使用UltraEdi猜测文件格式</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%97%85%E6%8E%A2%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.</span> <span class="toc-text">网络嗅探器的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">功能分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E5%9B%BE"><span class="toc-number">1.2.</span> <span class="toc-text">功能图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.3.</span> <span class="toc-text">方案设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.1.</span> <span class="toc-text">实现原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E4%B8%BB%E8%A6%81%E6%A8%A1%E5%9D%97"><span class="toc-number">1.3.2.</span> <span class="toc-text">设计主要模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E5%AD%97%E4%BB%8B%E7%BB%8D%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.3.</span> <span class="toc-text">文字介绍实现的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">1.3.4.</span> <span class="toc-text">流程图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">1.3.5.</span> <span class="toc-text">关键技术及代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%93%E6%9E%9C"><span class="toc-number">1.4.</span> <span class="toc-text">实现结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ICMP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.1.</span> <span class="toc-text">ICMP报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.2.</span> <span class="toc-text">HTTP报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTPS%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.3.</span> <span class="toc-text">HTTPS报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SMTP%E6%8A%A5%E6%96%87%E7%9A%84%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.4.</span> <span class="toc-text">SMTP报文的捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.5.</span> <span class="toc-text">TCP报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UDP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.6.</span> <span class="toc-text">UDP报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FTP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.7.</span> <span class="toc-text">FTP报文捕获</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.5.</span> <span class="toc-text">遇到的问题</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

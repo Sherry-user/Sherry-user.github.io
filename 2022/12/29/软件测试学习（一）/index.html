@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>软件测试学习（一） · 香蜜的博客</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">软件测试学习（一）</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-12-29</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h2 id="软件测试是什么"><a href="#软件测试是什么" class="headerlink" title="软件测试是什么"></a>软件测试是什么</h2><p> 描述一种用来促进鉴定软件的正确性、完整性、安全性和质量的过程。换句话说，软件测试是一种实际输出与预期输出之间的 审核或者比较<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%BF%87%E7%A8%8B/8386928?fromModule=lemma_inlink">过程</a>。软件测试的经典定义是：在规定的条件下对程序进行<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%93%8D%E4%BD%9C/5797370?fromModule=lemma_inlink">操作</a>，以发现程序错误，衡量软件质量，并对其是否能满足设计要求进行评估的过程。 </p>
+<h2 id="测试的工作内容"><a href="#测试的工作内容" class="headerlink" title="测试的工作内容"></a>测试的工作内容</h2><p>1.寻找软件中的bug，并且越早发现越好</p>
+<p>2.确认bug的可重复性以及bug产生的步骤</p>
+<p>3.确认bug是否被解决</p>
+<p>4.测试方法，测试计划，测试平台，测试代码，测试用例，测试文档，测试报告的确定、编写和执行。</p>
+<h2 id="测试分类"><a href="#测试分类" class="headerlink" title="测试分类"></a>测试分类</h2><p>1.按开发阶段划分</p>
+<p>单元测试，集成测试，确认测试，系统测试，验收测试</p>
+<p>2.按测试技术划分</p>
+<p>黑盒测试，白盒测试，灰盒测试</p>
+<p>3.按代码运行划分</p>
+<p>静态测试，动态测试</p>
+<p>4.按软件特性划分</p>
+<p>功能测试，性能测试，安全性测试</p>
+<p>5.按测试运行主体</p>
+<p>手工测试，自动化测试</p>
+<p>6.其他测试</p>
+<p>回归测试，冒烟测试，随机测试，猴子测试</p>
+<h2 id="测试过程模型"><a href="#测试过程模型" class="headerlink" title="测试过程模型"></a>测试过程模型</h2><p>1、V模型<br>   ●揭示了开发过程与测试过程中各阶段的对应关系</p>
+<p>   ●缺点与不足</p>
+<pre><code>     （1）v模型仅仅把测试过程作为在需求分析、系统设计及编码之后的一个阶段，忽视了测试对需求分析、系统设计的验证；
+
+     （2）需求的满足情况一直拖到后期的验收测试才被验证；
+
+     （3）没有体现出“尽早地和不断地进行软件测试”的原则。
+</code></pre>
+<p>​       <img src="/E:/git-blog\source\images\20190506174441246.png" alt="img">         </p>
+<p>2、W模型<br>   ●由两个v字型模型组成，分别代表测试与开发过程，明确表示出了测试与开发的并行关系</p>
+<p>   ●优点</p>
+<pre><code>   （1）测试的活动与软件开发同步进行
+
+   （2）测试对象不仅仅是程序，包括需求和设计
+
+   （3）尽早发现软件缺陷可降低软件开发的成本
+</code></pre>
+<p>   ●局限性</p>
+<pre><code>     在w模型中，需求、设计、编码等活动被视为串行的，这样就无法支持灵活的迭代。
+</code></pre>
+<p>​              <img src="/E:/git-blog\source\images\20190506180516154.png" alt="img"> </p>
+<p>3、H模型<br>H模型中，软件的测试活动从开发中独立出来，形成一个独立的流程，贯穿整个软件周期。H模型中每个测试活动的主要流程如下：</p>
+<p>随软件周期开始，进入测试准备阶段（用例、文档、代码等）。<br>软件开发活动持续为软件测试提供准备材料，直到达到测试就绪点。<br>测试执行。<br>             <img src="/E:/git-blog\source\images\aHR0cHM6Ly9jenBjYWxtLm9zcy1jbi1iZWlqaW5nLmFsaXl1bmNzLmNvbS90eXBvcmEvMjAxOTExMjMwMDU2MDUtODUyNTk2LnBuZw.png" alt="img"> </p>
+<p>4、X模型<br>X模型提出先对程序片段进行独立的测试和编码，再进行频繁的交换，通过集成形成可执行程序（左边部分）。集成的可执行程序进行集成测试，通过集成测试的程序可能成为更大范围集成的一部分，也可能（形成最终产品时）封版提交给客户（右上部分）。另外，可以对集成的程序进行测试计划外的探索性测试（右下部分）。</p>
+<p> <img src="/E:/git-blog\source\images\aHR0cHM6Ly9waWMzLnpoaW1nLmNvbS92Mi1hMDcxZGE0ZWJhNDJiZDQ0YWJkYjllYmI3ZmNjOTljY18xMjAweDUwMC5qcGc.png" alt="img"> </p>
+<h2 id="测试的流程"><a href="#测试的流程" class="headerlink" title="测试的流程"></a>测试的流程</h2><p>需求分析，设计评审，制定测试策略，设计和执行测试用例，进行缺陷跟踪，质量风险分析</p>
+<h3 id="分析测试需求"><a href="#分析测试需求" class="headerlink" title="分析测试需求"></a>分析测试需求</h3><h3 id="制定测试计划"><a href="#制定测试计划" class="headerlink" title="制定测试计划"></a>制定测试计划</h3><p>测试计划一般要做好以下工作安排。</p>
+<p>①确定测试范围：明确哪些对象是需要测试的，哪些对象不是需要测试的。</p>
+<p>② 制定测试策略：测试策略是测试计划中最重要的部分，它将要测试的内容划分出不同的优先级，并确定测试重点。根据测试模块的特点和测试类型（如功能测试、性能测试）选定测试环境和测试方法（如人工测试、自动化测试）。</p>
+<p>③安排测试资源：通过对测试难度、时间、工作量等因素对测试资源合理安排，包括人员分配、工具配置等。</p>
+<p>④安排测试进度：根据软件开发计划、产品的整体计划来安排测试工作的进度，同时还要考虑各部分工作的变化。在安排工作进度时，最好在各项测试工作之间预留一个缓冲时间以应对计划变更。</p>
+<p>⑤预估测试风险：罗列出测试工作过程中可能会出现的不确定因素，并制定应对策略。</p>
+<h4 id="1-编写目的"><a href="#1-编写目的" class="headerlink" title="1.编写目的"></a>1.编写目的</h4><p>此文档根据项目需求文档，制定测试策略、评估测试风险，确定所需的资源，并对测试的工作量进行估计，进行人员和进度安排，并且列出测试项目的可交付元素。</p>
+<h4 id="2-参考文档"><a href="#2-参考文档" class="headerlink" title="2.参考文档"></a>2.参考文档</h4><p>详细设计文档，设计原型</p>
+<h4 id="3-测试概要"><a href="#3-测试概要" class="headerlink" title="3.测试概要"></a>3.测试概要</h4><p>（1）测试目标<br>通过测试，达到以下目标：测试已实现的产品是否达到设计的要求，包括：各个功能点是否以实现，业务流程是否正确。产品规定的操作和系统运行稳定。Bug数和缺陷率控制在可接收的范围之内，遗留BUG一般不超过所有BUG的10%<br>（2）测试范围<br>列出测试最终需要交付的功能模块列表<br>（3）测试人力资源<br>（4）测试环境：服务器环境，终端环境，网络环境<br>（5）bug管理工具</p>
+<h4 id="4-测试规范"><a href="#4-测试规范" class="headerlink" title="4.测试规范"></a>4.测试规范</h4><p>开始测试标准：代码编译通过，软件可以争取安装运行，实现功能与产品设计出人，冒烟测试通过<br>中断测试标准：安装无法正确完成，程序代码编译不通过，系统服务异常，发现阻塞功能的bug</p>
+<h4 id="5-bug规范"><a href="#5-bug规范" class="headerlink" title="5.bug规范"></a>5.bug规范</h4><p>致命，严重，一般，建议</p>
+<h4 id="6-测试策略"><a href="#6-测试策略" class="headerlink" title="6.测试策略"></a>6.测试策略</h4><p>冒烟测试-迭代测试（先功能后性能，回归测试）-发布测试</p>
+<p><strong>冒烟测试：</strong>依据开发提测时间变动<br>第一轮功能测试：执行测试用例，包括边界值测试，兼容性测试，易用性测试，用户界面测试，安全性测试<br>第二轮功能测试：bug复测及功能验证<br><strong>回归测试：</strong>全面回归测试<br>性能测试：需确认具体性能测试方案和工具<br><strong>发布测试</strong></p>
+<h4 id="7-测试风险"><a href="#7-测试风险" class="headerlink" title="7.测试风险"></a>7.测试风险</h4><p>测试本身（测试时间/测试技术/开发进度延误/难以修复缺陷/其它原因）</p>
+<h4 id="8-测试输出文档"><a href="#8-测试输出文档" class="headerlink" title="8.测试输出文档"></a>8.测试输出文档</h4><p>测试计划<br>测试用例<br>测试bug单<br>测试报告</p>
+<h3 id="编写测试用例"><a href="#编写测试用例" class="headerlink" title="编写测试用例"></a>编写测试用例</h3><p>①测试用例（Test Case）指的是一套详细的测试方案，包括测试环境、测试步骤、测试数据和预期结果。不同的公司会有不同的测试用例模板，虽然它们在风格和样式上有所不同，但本质上是一样的，都包括了测试用例的基本要素。</p>
+<p>②测试用例编写的原则是尽量以最少的测试用例达到最大测试覆盖率。</p>
+<h4 id="1-设计方法："><a href="#1-设计方法：" class="headerlink" title="1.设计方法："></a>1.设计方法：</h4><p><strong>等价类划分法</strong>（将测试的范围划分成几个互不相交的子集）：</p>
+<p> 等价类划分是把所有可能的输入数据，即程序的输入域划分成若干部分（子集），然后从每一个子集中选取少数具有代表性的数据作为测试用例。测试某等价类的代表值就等于对这一类其它值的测试。因此，可以把全部输入数据合理划分为若干等价类，在每一个等价类中取一个数据作为测试的输入条件，就可以用少量代表性的测试数据，取得较好的测试结果。 </p>
+<p><strong>边界值分析法</strong>（选出的测试用例，应选取正好等于、刚刚大于、刚刚小于边界的值）<br><strong>错误推测法</strong>（在测试程序时，人们可以根据经验或直觉推测程序中可能存在的各种错误）</p>
+<p><strong>因果图法</strong></p>
+<p><strong>判定表法</strong>（适合于逻辑判断复杂的场景，通过穷举条件获得结果，对结果再进行优化合并，会得到一个判断清晰的策略）<br><strong>正交实验法</strong>（在各因素互相独立的情况下，设计出一种特殊的表格，找出能以少数替代全面的测试用例）<br>还有其它场景法，功能图法和状态迁移法等</p>
+<h4 id="2-测试用例八要素"><a href="#2-测试用例八要素" class="headerlink" title="2.测试用例八要素"></a>2.测试用例八要素</h4><p>（1） 用例编号（规则：由字符和数字组成的字符串，具有唯一性，易识别性）<br>（2） 测试项目（对应测试用例编号中的测试子项名 系统测试<br>（3） 测试标题（体现测试出发点关注点以及测试用例期盼的测试结果）<br>（4） 重要级别、优先级别（重要级别一般分为高中低 ）<br>（5） 预置条件：测试用例在执行时需要满足一些前提条件，环境的设置<br>（6） 测试输入（测试执行中需要加工的外部信息，避免用描述性语言，要具体，根据测试用例具体情况，有手工输入，文件，数据库记录）<br>（7） 操作步骤：执行当前用例需要经过的操作步骤，需要明确的给出每一个步骤的描述<br>（8） 预期输出：需要判断测试对象是否正常工作</p>
+<h3 id="执行测试阶段"><a href="#执行测试阶段" class="headerlink" title="执行测试阶段"></a>执行测试阶段</h3><p>①测试执行就是按照测试用例执行测试的过程，这是测试人员最主要的活动阶段。</p>
+<p>②在执行测试时要根据测试用例的优先级进行。</p>
+<p>③在执行测试过程中，测试人员要密切跟踪测试过程，记录缺陷、形成报告等，这一阶段是测试人员最重要的工作阶段。</p>
+<h4 id="1-测试环境搭建"><a href="#1-测试环境搭建" class="headerlink" title="1.测试环境搭建"></a>1.测试环境搭建</h4><p>测试环境分为硬件环境和软件环境<br><strong>硬件环境：</strong>测试必须的服务器，客户端，网络连接设备，以及打印机/扫描仪等辅助硬件设备构成的环境<br><strong>软件环境：</strong>被测软件运行的操作系统，数据库以及其它应用软件构成的环境<br>搭建测试环境的准备工作：<br>安装工具：虚拟机<br>虚拟机优点：运行在主机上 </p>
+<h4 id="2-执行测试用例"><a href="#2-执行测试用例" class="headerlink" title="2.执行测试用例"></a>2.执行测试用例</h4><p>根据测试<strong>用例优先级</strong>来执行测试用例</p>
+<ol>
+<li><strong>根据UI效果图进行UI测试</strong></li>
+</ol>
+<p>（1）观察APP的用户界面(如菜单、对话框、窗口和其它可规控件)是否符合UI稿</p>
+<p>（2）不同的连接页面之间导航链接是否有效，是否跳转是否正确</p>
+<p>（3）旋转手机，确保程序不退出，页面排版无异常</p>
+<p>（5）输入框说明文字的内容与产品需求一致</p>
+<p>（6）某页无数据时、断网时、有网但接口异常时的状态页是否和UI一致</p>
+<ol start="2">
+<li><p><strong>功能测试时主要依据编写的功能测试用例进行软件功能的测试</strong></p>
+</li>
+<li><p><strong>涉及的测试主要包括基本功能测试，逻辑测试，安装、卸载、运行测试，中断测试，异常处理（包括网络突然断开或者网速过慢、机器内存不足等异常情况的处理）测试</strong></p>
+</li>
+</ol>
+<p>（1）App安装完成后是否能正常启动，且打开速度控制在预期时间内</p>
+<p>（2）切换后台再切换前台的操作对当前状态如登陆、当前页、数据刷新的影响</p>
+<p>（3）强制杀掉APP进程再启动对当前状态如登陆、当前页、数据刷新的影响</p>
+<p>（4）登陆验证/免密登陆时的手势密码和指纹是否正常符合产品需求</p>
+<p>（5）对于有数据交换的页面，每个页面都必需要进行前后台切换、锁屏解锁的测试，这种页面最容易出现崩溃</p>
+<p>（6）同一用户在多个终端先后登陆时，APP是否有正常符合产品需求的处理</p>
+<p>（7）App使用过程中有电话进来的中断测试，与文件下载、音乐播放、等应用的交叉情况测试</p>
+<p>（8）很多应用会支持缓存数据，测试在断网启动或从有网到无网时是否可以浏览缓存数据</p>
+<p>（9）软件在不同操作系统及版本（Android、iOS、）下安装是否正常</p>
+<p>（10）软件安装后的是否能够正常运行，安装后的文件夹及文件是否写到了指定的目录里，安装后没有生成多余的目录结构和文件</p>
+<p>（11）软件安装过程是否可以取消</p>
+<p>（12）软件安装过程中意外情况的处理是否符合需求（如死机，重启，断电）</p>
+<p>（13）安装空间不足时是否有相应提示</p>
+<p>（14）对于需要通过网络验证之类的安装，在断网情况下尝试一下</p>
+<p>（15）重复安装应该有提示iOS没有提示</p>
+<p>（16）升级安装时，版本更新链接有效，比如后台设置的版本白名单</p>
+<p>（17）使用各种方式卸载程序，如直接删除安装文件夹卸载是否有提示信息、长按图标卸载、手机设置里卸载、第三方应用卸载iOS卸载没有提示，Android安装时会闪退（偶现）</p>
+<p>（18）测试卸载后文件是否全部删除所有的安装文件夹</p>
+<p>（19）卸载过程中出现的意外情况的测试（如死机、断电、重启）</p>
+<p>（20）卸载是否支持取消功能，单击取消后软件卸载的情况</p>
+<ol start="4">
+<li><strong>兼容性及适配测试</strong></li>
+</ol>
+<p>（1）硬件的适配：不同手机厂商、硬件性能，不同屏幕大小的适配；</p>
+<p>如：厂商：华为，型号：mate30Pro，Android版本：Android10，屏幕：6.0英寸，分辨率：2400x1176像素</p>
+<p>厂商：苹果，型号：苹果XSmax,手机版本：iOS11，屏幕：6.0英寸，分辨率：2688x1224像素</p>
+<p>（2） iOS版本的兼容：IOS 6版本以上；Andriod 5版本以上等</p>
+<p>（3） 不同分辨率屏幕的适配：移动设备的分辨率多种多样，如果app没有做比较合适的处理就可能会显示不好，甚至影响功能的操作。</p>
+<p>（4） 兼容性测试必须在一定数量的真机上进行，由于真机类型过多，尤其Android在做兼容性测试时，可以选取典型的几种运用较多的真机，进行兼容性测试</p>
+<p>（5）与本机已经安装的App是否兼容</p>
+<p>（6）在各种系统、系统版本的不同手机上测试登陆，卸载，注册，登陆，修改密码等功能</p>
+<p>（7）UI层的兼容，界面的显示根据不同尺寸手机是否自适应</p>
+<p>（8）在各种系统、系统版本的不同手机上进行全方面的功能测试，如：使用每一个iOS版本的iPhone上测试“我的银行卡”模块的提现功能</p>
+<p>（9）基于开发环境和生产环境的不同，检验在各种网络连接下(WiFi、2G/3G/4G/5G等)，App的数据和运用是否正确</p>
+<ol start="5">
+<li><p><strong>安全性测试</strong></p>
+</li>
+<li><p>软件权限 </p>
+</li>
+</ol>
+<p>（1）扣费风险：包括短信、拨打电话、连接网络等</p>
+<p>（2）限制/允许使用手机拍照或录音</p>
+<p>（3）限制/允许使用手机读取用户数据，手机信息、联系人信息等</p>
+<p>（4）限制/允许使用手机写入用户数据 </p>
+<p>（5）没有用户的允许, 应用程序不能预先设定自动启动</p>
+<p>（6）对App的输入有效性校验、认证、授权、数据加密等方面进行检测 </p>
+<p>（7）没有用户的允许, 应用程序不能预先设定自动启动</p>
+<p>（8）手机能控制该APP能否使用Wi-Fi和移动数据</p>
+<p>​       2.数据安全性 </p>
+<p>（1）如果数据库中重要的数据正要被重写，应及时告知用户 </p>
+<p>（2）在数据删除之前，应用程序应当通知用户或者应用程序提供一个“取消”命令的操作。 </p>
+<p>（3）对密码长度和复杂度的安全要求</p>
+<p>（4）当将密码或其他的敏感数据输人到应用程序时, 其不会被储存在设备中, 同时密码也不会被解码</p>
+<p>（5）当应用程序处理明细或其它的敏感数据时，不以明文形式将数据写到其他单独的文件或者临时文件中</p>
+<ol start="6">
+<li><strong>接口测试</strong></li>
+</ol>
+<p>（1）测试api网关接口是否请求正常</p>
+<p>（2）Get,post发送和返回是否请求正常</p>
+<p>（3）查看请求参数和返回参数结果是否正常</p>
+<p>（测试接口工具：APIpost jmeter）</p>
+<ol start="7">
+<li><strong>性能测试</strong></li>
+</ol>
+<p>（1） 客户端性能测试重点关注：安装卸载时间、启动时间、页面加载时间、主要功能占用的CPU、内存、流量、耗电量等，以及与同类产品相比较是否有优势；</p>
+<p>（2） 运行过程中主要功能占用的CPU、内存、流量等可以借助开源工具emmagee（适用于Android）获取到；</p>
+<p>（4） 至于服务器端的性能，主要利用接口对服务器施加压力，重点关注响应时间、吞吐量、并发数、事物通过率等，可以用loadrunner、jmeter进行测试，也可以用fiddler Charles抓包来查看域名等是否正常。</p>
+<ol start="8">
+<li><strong>核心链路</strong></li>
+</ol>
+<p>——-核心链路测试</p>
+<h4 id="3-测试执行流程"><a href="#3-测试执行流程" class="headerlink" title="3.测试执行流程"></a>3.测试执行流程</h4><p>冒烟测试-迭代测试（先功能后性能，回归测试）-发布测试<br>注：对应测试产出对应测试报告和bug清单，可以把bug提到缺陷管理库里</p>
+<h3 id="编写测试报告"><a href="#编写测试报告" class="headerlink" title="编写测试报告"></a>编写测试报告</h3><p>一份完整的测试报告必须要包含以下几个要点。</p>
+<p>① 引言：测试报告编写目的、报告中出现的专业术语解释及参考资料等。</p>
+<p>②测试概要：介绍项目背景、测试时间、测试地点及测试人员等信息。</p>
+<p>③ 测试内容及执行情况：描述本次测试模块的版本、测试类型，使用的测试用例设计方法及测试通过覆盖率，依据测试的通过情况提供对测试执行过程的评估结论，并给出测试执行活动的改进建议，以供后续测试执行活动借鉴参考。</p>
+<p>④缺陷统计与分析：统计本次测试所发现的缺陷数目、类型等，分析缺陷产生的原因给出规避措施等建议，同时还要记录残留缺陷与未解决问题。</p>
+<p>⑤ 测试结论与建议：从需求符合度、功能正确性、性能指标等多个维度对版本质量进行总体评价，给出具体明确的结论。</p>
+<hr>
+<p>参考资料：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_49164248/article/details/121027120">https://blog.csdn.net/weixin_49164248/article/details/121027120</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43750377/article/details/114066222?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167227571616782425679079%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=167227571616782425679079&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-2-114066222-null-null.142%5Ev68%5Epc_rank_34_queryrelevant25,201%5Ev4%5Eadd_ask,213%5Ev2%5Et3_control2&amp;utm_term=%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95&amp;spm=1018.2226.3001.4">https://blog.csdn.net/weixin_43750377/article/details/114066222?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167227571616782425679079%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=167227571616782425679079&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-2-114066222-null-null.142^v68^pc_rank_34_queryrelevant25,201^v4^add_ask,213^v2^t3_control2&amp;utm_term=%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95&amp;spm=1018.2226.3001.4</a></p>
+<p> <a target="_blank" rel="noopener" href="https://blog.csdn.net/jinglin1100/article/details/121610397?ops_request_misc=%7B%22request_id%22:%22167227611716800213057804%22,%22scm%22:%2220140713.130102334..%22%7D&request_id=167227611716800213057804&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-2-121610397-null-null.142%5Ev68%5Epc_rank_34_queryrelevant25,201%5Ev4%5Eadd_ask,213%5Ev2%5Et3_control2&utm_term=%E6%B5%8B%E8%AF%95&spm=1018.2226.3001.4187">史上最全测试流程详解—-超详细_你泡不上的大林的博客-CSDN博客_测试流程</a> </p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/jinglin1100/article/details/121610397">https://blog.csdn.net/jinglin1100/article/details/121610397</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_60168783/article/details/125003521">https://blog.csdn.net/qq_60168783/article/details/125003521</a></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/29/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/">http://example.com/2022/12/29/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/29/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B/" title="流量分析与路由探测"><span>< PreviousPost</span><br><span class="prevTitle">流量分析与路由探测</span></a><a class="nextSlogan" href="/2022/07/13/%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84/" title=""><span>NextPost ></span><br><span class="nextTitle">[Untitled Post]</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">软件测试是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%86%85%E5%AE%B9"><span class="toc-number">2.</span> <span class="toc-text">测试的工作内容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E5%88%86%E7%B1%BB"><span class="toc-number">3.</span> <span class="toc-text">测试分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E8%BF%87%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="toc-number">4.</span> <span class="toc-text">测试过程模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="toc-number">5.</span> <span class="toc-text">测试的流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E6%B5%8B%E8%AF%95%E9%9C%80%E6%B1%82"><span class="toc-number">5.1.</span> <span class="toc-text">分析测试需求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%B6%E5%AE%9A%E6%B5%8B%E8%AF%95%E8%AE%A1%E5%88%92"><span class="toc-number">5.2.</span> <span class="toc-text">制定测试计划</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%BC%96%E5%86%99%E7%9B%AE%E7%9A%84"><span class="toc-number">5.2.1.</span> <span class="toc-text">1.编写目的</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="toc-number">5.2.2.</span> <span class="toc-text">2.参考文档</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%B5%8B%E8%AF%95%E6%A6%82%E8%A6%81"><span class="toc-number">5.2.3.</span> <span class="toc-text">3.测试概要</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%B5%8B%E8%AF%95%E8%A7%84%E8%8C%83"><span class="toc-number">5.2.4.</span> <span class="toc-text">4.测试规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-bug%E8%A7%84%E8%8C%83"><span class="toc-number">5.2.5.</span> <span class="toc-text">5.bug规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E6%B5%8B%E8%AF%95%E7%AD%96%E7%95%A5"><span class="toc-number">5.2.6.</span> <span class="toc-text">6.测试策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E6%B5%8B%E8%AF%95%E9%A3%8E%E9%99%A9"><span class="toc-number">5.2.7.</span> <span class="toc-text">7.测试风险</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E6%B5%8B%E8%AF%95%E8%BE%93%E5%87%BA%E6%96%87%E6%A1%A3"><span class="toc-number">5.2.8.</span> <span class="toc-text">8.测试输出文档</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"><span class="toc-number">5.3.</span> <span class="toc-text">编写测试用例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">5.3.1.</span> <span class="toc-text">1.设计方法：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E5%85%AB%E8%A6%81%E7%B4%A0"><span class="toc-number">5.3.2.</span> <span class="toc-text">2.测试用例八要素</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E6%B5%8B%E8%AF%95%E9%98%B6%E6%AE%B5"><span class="toc-number">5.4.</span> <span class="toc-text">执行测试阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">5.4.1.</span> <span class="toc-text">1.测试环境搭建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%89%A7%E8%A1%8C%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"><span class="toc-number">5.4.2.</span> <span class="toc-text">2.执行测试用例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%B5%8B%E8%AF%95%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">5.4.3.</span> <span class="toc-text">3.测试执行流程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A"><span class="toc-number">5.5.</span> <span class="toc-text">编写测试报告</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

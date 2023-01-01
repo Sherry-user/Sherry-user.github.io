@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>熟悉使用静态漏洞挖掘工具：cppCheck和动态漏洞挖掘工具： Boofuzz · 香蜜的博客</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">熟悉使用静态漏洞挖掘工具：cppCheck和动态漏洞挖掘工具： Boofuzz</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-12-29</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h2 id="熟悉使用静态漏洞挖掘工具：cppCheck和动态漏洞挖掘工具：-Boofuzz"><a href="#熟悉使用静态漏洞挖掘工具：cppCheck和动态漏洞挖掘工具：-Boofuzz" class="headerlink" title="熟悉使用静态漏洞挖掘工具：cppCheck和动态漏洞挖掘工具： Boofuzz"></a>熟悉使用静态漏洞挖掘工具：cppCheck和动态漏洞挖掘工具： Boofuzz</h2><p>利用cppcheck静态漏洞挖掘工具分析源代码，写出详细的代码模块分析和使用报告，并使用若干案例进行验证。</p>
+<h4 id="cppCheck"><a href="#cppCheck" class="headerlink" title="cppCheck"></a>cppCheck</h4><p>\1. 下载分析源代码及各模块功能</p>
+<p>1.1. ****cppcheck****<strong>检查点</strong></p>
+<p> <strong>1</strong>、自动变量检查：返回自动变量（局部变量）指针；</p>
+<p> <strong>2</strong>、越界检查： 数组越界返回自动变量（局部变量）指针；</p>
+<p> <strong>3</strong>、类检查： 构造函数初始化；</p>
+<p> <strong>4</strong>、内存泄露检查；</p>
+<p> <strong>5</strong>、空指针检查；</p>
+<p> <strong>6</strong>、废弃函数检查；</p>
+<p>  <strong>7.</strong> 自己定制项目中对应的规则；</p>
+<p> <strong>8</strong>、其他。</p>
+<p>1.2. <strong>Cppcheck总过程：</strong></p>
+<p><strong>预处理</strong>：由<strong>Preprocessor</strong>类实现<strong>**，*<em><strong>执行</strong>Class Preprocessor::preprocess()*<em><strong>，该</strong>阶段主要处理：去多余空格，删除汇编代码，处理</em>*#Include</em>*及嵌套，统一预处理语句（例：</strong>#if define=&gt; #ifdef<strong>），提取预处理配置设置（</strong>configuration**），替换宏定义。</p>
+<p><strong>Tokenize：</strong>解析代码成符号（**+-*/;…**等，变量名，函数名），由 <strong>class Tokenizer</strong>实现， 实现接口 <strong>class Tokenizer::tokenize()。</strong></p>
+<p><strong>Simplify：</strong>简化复杂代码，统一化，由 <strong>class Tokenizer</strong>实现， 实现接口 <strong>class Tokenizer::simplifyTokenList()。</strong></p>
+<p><strong>分析代码，报告错误。</strong></p>
+<p>1.3. <strong>cppcheck总体流程图****如下：</strong></p>
+<p><img src="/E:/git-blog\source\images\wps26.png" alt="img"><strong>开发中使用主要的类有：</strong></p>
+<p>Tokenizer类： 代码token化， 计划代码</p>
+<p>SymbolDatabase类：符号数据库，生成和存储各种符号：scope,function, variable等</p>
+<p>Scope类： 各种代码block。最常用的有functionScopes， classAndStructScopes等</p>
+<p>Token类： 里面有str(), next(), previous(), tokAt(), link(),Match()等常用函数</p>
+<p>Variable类：getTypeString() –C++相关的代码经常需要</p>
+<p>Function类：可以找到实现的scope</p>
+<p>Value类： token可以通过getValue()得到可能的值</p>
+<p><strong>参数分析部分（<strong><strong>内部抽象classSetings</strong></strong>）：</strong></p>
+<p>class Settings</p>
+<p>{</p>
+<p> …</p>
+<p> std::string _append;</p>
+<p> std::string userDefines;</p>
+<p> std::list<a href="std::string">std::string</a> _includePaths;</p>
+<p> std::list<Rule> rules;</Rule></p>
+<p> …</p>
+<p>}</p>
+<p><em><strong>*核心函数check()*</strong></em></p>
+<p>　　处理入口，在此函数对输入代码进行初步分析处理，最后将代码传递给 CheckFile()。</p>
+<p><img src="/E:/git-blog\source\images\wps27-1672294253195.jpg" alt="img"> </p>
+<p><em><strong>*核心函数CheckFile()*</strong></em></p>
+<p>　　函数功能是分析一个代码文件， CheckFile()会将代码流做进一步的分析，做tokenize,simplify，处理后分析代码，报告错误。</p>
+<p>  <strong>1.3.代码流分析</strong></p>
+<p>举例代码：</p>
+<p><img src="/E:/git-blog\source\images\wps28-1672294253195.jpg" alt="img"> </p>
+<p>执行路径1：</p>
+<p><img src="/E:/git-blog\source\images\wps29.jpg" alt="img"> </p>
+<p>执行路径2：</p>
+<p><img src="/E:/git-blog\source\images\wps30-1672294253195.jpg" alt="img"> </p>
+<p>保留条件信息：</p>
+<p><img src="/E:/git-blog\source\images\wps31.jpg" alt="img"> </p>
+<p>最后执行if for while等复杂语句的等价替换</p>
+<p>例如</p>
+<p><img src="/E:/git-blog\source\images\wps32-1672294253196.png" alt="img"></p>
+<p><img src="/E:/git-blog\source\images\wps33.png" alt="img"></p>
+<p>\2. <strong>使用若干案例进行验证</strong></p>
+<p>2.1. 当数组下标越界</p>
+<p><img src="/E:/git-blog\source\images\wps34.jpg" alt="img"> </p>
+<p> 2.2.当函数参数被指派为一个地址</p>
+<p><img src="/E:/git-blog\source\images\wps35.jpg" alt="img"> </p>
+<p>2.3.当内存泄漏</p>
+<p><img src="/E:/git-blog\source\images\wps36-1672294253196.jpg" alt="img"> </p>
+<p>2.4．当使用迭代器到本地容器可能是无效的。  </p>
+<p><img src="/E:/git-blog\source\images\wps37-1672294253197.jpg" alt="img"> </p>
+<p>2.5.越界问题</p>
+<p><img src="/E:/git-blog\source\images\wps38-1672294253197.jpg" alt="img"> </p>
+<h4 id="Boofuzz"><a href="#Boofuzz" class="headerlink" title="Boofuzz"></a><strong>Boofuzz</strong></h4><p><strong>1.下载安装boofuzz</strong></p>
+<p><em><strong>*2.BooFuzz框架*</strong></em></p>
+<p>四大组件：</p>
+<p>a) Data Generation 数据生成, 基于generation-based的方式, 需要对协议或者文件进行建模.</p>
+<p>b) Session 会话管理, 根据已经构建好的Request，利用 Pgraph 绘制， Pgraph 可以创建、修改和渲染图</p>
+<p>c) Agents代理</p>
+<p>d) Utilities独立单元工具</p>
+<p><strong>3.总流程</strong></p>
+<p><img src="/E:/git-blog\source\images\wps39.png" alt="img"></p>
+<p>**4.**<strong>Session对象</strong></p>
+<p>即Fuzz测试的核心，当你创建Session的时候，你会传递一个Target对象，该对象本身接收一个Connection对象。</p>
+<p><img src="/E:/git-blog\source\images\wps40-1672294253197.jpg" alt="img"> </p>
+<p>准备好会话对象后，接下来需要在协议中定义消息。每一条消息均以一个s_initialize函数开头，比如这是fuzz FTP协议中的几个消息定义：</p>
+<p><img src="/E:/git-blog\source\images\wps41-1672294253198.jpg" alt="img"> </p>
+<p>定义消息后，将使用刚刚创建的Session对象将它们连接到图中：</p>
+<p><img src="/E:/git-blog\source\images\wps42-1672294253198.jpg" alt="img"> </p>
+<p>之后，就可以进行fuzz测试session.fuzz()</p>
+<p>每次运行的日志数据将保存到当前工作目录下boofuzz-results目录中的SQLite数据库中。</p>
+<p><strong>5.</strong> <strong>对路由器的登录接口进行fuzz测试</strong></p>
+<p>5.1.使用Burpsuite设置代理</p>
+<p>5.2. Burpsuite抓包，结果如下：</p>
+<p><img src="/E:/git-blog\source\images\wps43-1672294253198.jpg" alt="img"> </p>
+<p><img src="/E:/git-blog\source\images\wps44.png" alt="img"> </p>
+<p>5.3.然后根据报文，利用boofuzz框架提供的原语对http请求进行定义</p>
+<p><img src="/E:/git-blog\source\images\wps45-1672294253198.jpg" alt="img"> </p>
+<p>5.4. 设置会话信息，包括设备的IP地址以及端口</p>
+<p><img src="/E:/git-blog\source\images\wps46-1672294253198.jpg" alt="img"> </p>
+<p>注意：如果需要fuzz多个请求，比如说，还要继续fuzz登录后的一些接口，还需要将之前定义的请求按照一定的先后顺序连接，比如说：</p>
+<p><img src="/E:/git-blog\source\images\wps47-1672294253198.jpg" alt="img"> </p>
+<p>5.5.添加监视器</p>
+<p><img src="/E:/git-blog\source\images\wps48-1672294253199.jpg" alt="img"> </p>
+<p>5.6．调用session.fuzz()，运行编写好的脚本，每次运行的日志数据将保存到当前工作目录下boofuzz-results目录中的SQLite数据库中，运行boo open &lt;run-*.db&gt;，会在26000端口开启一个Web服务器，控制和查看测试进度。</p>
+<p><img src="/E:/git-blog\source\images\wps49-1672294253199.jpg" alt="img"> </p>
+<p>上图表明，第238个用例测试结果出现了异常。在打开数据库监控状态的时候，如果提示26000端口已经占用，可以使用netstat -anp | grep 26000找到进程，并杀死即可。</p>
+<p>5.7. 打开 boofuzz-results 目录下的相关文件可查看fuzz的日志</p>
+<p><img src="/E:/git-blog\source\images\wps50-1672294253199.jpg" alt="img"> </p>
+<p>从中可以看出的确是按照代码，对相关字段进行分析，从而达到fuzz的效果。进一步观察238个用例的前一个用例，找到发送的内容，重新发送，观察设备状态，看问题是否能够复现，最终确定漏洞是否存在。</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/29/%E7%86%9F%E6%82%89%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9AcppCheck%E5%92%8C%E5%8A%A8%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9A%20Boofuzz/">http://example.com/2022/12/29/%E7%86%9F%E6%82%89%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9AcppCheck%E5%92%8C%E5%8A%A8%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9A%20Boofuzz/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/29/%E6%96%87%E4%BB%B6%E6%81%A2%E5%A4%8D/" title=""><span>< PreviousPost</span><br><span class="prevTitle">[Untitled Post]</span></a><a class="nextSlogan" href="/2022/12/29/%E6%96%87%E6%9C%AC%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%9A%84%E8%AE%A1%E7%AE%97/" title="文本相似度的计算"><span>NextPost ></span><br><span class="nextTitle">文本相似度的计算</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%86%9F%E6%82%89%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9AcppCheck%E5%92%8C%E5%8A%A8%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9A-Boofuzz"><span class="toc-number">1.</span> <span class="toc-text">熟悉使用静态漏洞挖掘工具：cppCheck和动态漏洞挖掘工具： Boofuzz</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cppCheck"><span class="toc-number">1.0.1.</span> <span class="toc-text">cppCheck</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Boofuzz"><span class="toc-number">1.0.2.</span> <span class="toc-text">Boofuzz</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

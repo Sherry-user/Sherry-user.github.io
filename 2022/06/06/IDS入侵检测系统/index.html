@@ -129,7 +129,7 @@
 <li>分布式</li>
 </ul>
 <p> 一般由多个部件组成，分布在网络的各个部分，每个部件完成相应功能，分别进行数据采集、数据分析等。通过中心的控制部件，进行数据汇总、分析、产生入侵警报等。在这种“分布式IDS（入侵检测系统）”的结构下，不仅可以检测到针对单独主机的入侵，同时也可以检测到针对该网段上的主机的入侵。 </p>
-<h2 id="入侵检测系统原理"><a href="#入侵检测系统原理" class="headerlink" title="入侵检测系统原理"></a>入侵检测系统原理</h2><h3 id="1-信息收集"><a href="#1-信息收集" class="headerlink" title="1.信息收集"></a>1.信息收集</h3><p>收集的内容包括系统、网络、数据及用户活动的状态和行为<br> 入侵检测利用的信息一般来自以下四个方面：</p>
+<h2 id="入侵检测系统原理"><a href="#入侵检测系统原理" class="headerlink" title="入侵检测系统原理"></a>入侵检测系统原理</h2><h3 id="信息收集部分"><a href="#信息收集部分" class="headerlink" title="信息收集部分"></a>信息收集部分</h3><p>收集的内容包括系统、网络、数据及用户活动的状态和行为<br> 入侵检测利用的信息一般来自以下四个方面：</p>
 <ul>
 <li><p>系统日志：黑客经常在系统日志中留下他们的踪迹，因此，充分利用系统日志是非常重要的</p>
 </li>
@@ -140,16 +140,18 @@
 <li><p>物理形式的入侵信息 这包括两个方面的内容，一是未授权的对网络硬件连接；二是对物理 资源的未授权访问</p>
 </li>
 </ul>
-<h3 id="2-数据分析"><a href="#2-数据分析" class="headerlink" title="2.数据分析"></a>2.数据分析</h3><p>一般通过三种技术手段进行分析： 模式匹配， 统计分析和完整性分析。 其中前两种方法用于实时的入侵检测，而完整性分析则用于事后分析。</p>
+<h3 id="数据分析部分"><a href="#数据分析部分" class="headerlink" title="数据分析部分"></a>数据分析部分</h3><p>一般通过三种技术手段进行分析： 模式匹配， 统计分析和完整性分析。 其中前两种方法用于实时的入侵检测，而完整性分析则用于事后分析。</p>
 <ul>
-<li><p>模式匹配：模式匹配就是将收集到的信息与已知的网络入侵和系统误用模式数据 库进行比较，从而发现违背安全策略的行为</p>
+<li><p>模式匹配：模式匹配就是将收集到的信息与已知的网络入侵和系统误用模式数据库进行比较，从而发现违背安全策略的行为</p>
 </li>
-<li><p>统计分析 ：统计分析方法首先给系统对象（如用户、文件、目录和设备等）创建 一个统计描述，统计正常使用时的一些测量属性（如访问次数、操作失败 次数和延时等）。测量属性的平均值将被用来与网络、系统的行为进行比 较，任何观察值如果超过了正常值范围，就认为有入侵发生。其优点是可 检测到未知的入侵和更为复杂的入侵，缺点是误报、漏报率高，且不适应 用户正常行为的突然改变</p>
+<li><p>统计分析 ：统计分析方法首先给系统对象（如用户、文件、目录和设备等）创建 一个统计描述，统计正常使用时的一些测量属性（如访问次数、操作失败次数和延时等）。测量属性的平均值将被用来与网络、系统的行为进行比 较，任何观察值如果超过了正常值范围，就认为有入侵发生。其优点是可检测到未知的入侵和更为复杂的入侵，缺点是误报、漏报率高，且不适应用户正常行为的突然改变</p>
 </li>
-<li><p>完整性分析 完整性分析主要关注某个文件或对象是否被更改，这经常包括文件和 目录的内容及属性，它在发现被修改成类似特洛伊木马的应用程序方面特 别有效。其优点是不管模式匹配方法和统计分析方法能否发现入侵，只要 是有入侵行为导致了文件或其他对象的任何改变，它都能够发现。缺点是 一般以批处理方式实现，不用于实时响应</p>
+<li><p>完整性分析：完整性分析主要关注某个文件或对象是否被更改，这经常包括文件和 目录的内容及属性，它在发现被修改成类似特洛伊木马的应用程序方面特别有效。其优点是不管模式匹配方法和统计分析方法能否发现入侵，只要 是有入侵行为导致了文件或其他对象的任何改变，它都能够发现。缺点是一般以批处理方式实现，不用于实时响应</p>
 </li>
 </ul>
-<h3 id="分析引擎："><a href="#分析引擎：" class="headerlink" title="分析引擎："></a>分析引擎：</h3><p> <strong>1、误用检测技术</strong><br>基于模式匹配原理。收集非正常操作的行为特征，建立相关的特征库，当监测的用户或系统行为与库中的记录相匹配时，系统就认为这种行为是入侵。 </p>
+<h3 id="入侵响应部分"><a href="#入侵响应部分" class="headerlink" title="入侵响应部分"></a>入侵响应部分</h3><p>a.主动响应：入侵检测系统在检测到入侵后能够阻断攻击、影响进而改变攻击的进程。 </p>
+<p>b.被动响应：入侵检测系统仅仅简单地报告和记录所检测出的问题。 </p>
+<h3 id="分析引擎"><a href="#分析引擎" class="headerlink" title="分析引擎"></a>分析引擎</h3><p> <strong>1、误用检测技术</strong><br>基于模式匹配原理。收集非正常操作的行为特征，建立相关的特征库，当监测的用户或系统行为与库中的记录相匹配时，系统就认为这种行为是入侵。 </p>
 <p> <strong>2、异常检测技术</strong><br>基于统计分析原理。首先总结正常操作应该具有的特征（用户轮廓），试图用定量的方式加以描述，当用户活动与正常行为有重大偏离时即被认为是入侵。 </p>
 <p> 3.入侵响应</p>
 <p> <strong>主动响应：</strong> 入侵检测系统在检测到入侵后能够阻断攻击、影响进而改变攻击的进程。 </p>
@@ -163,6 +165,201 @@
 <p><img src="/E:/git-blog\source\images\1654741185264.png" alt="1654741185264"></p>
 <h3 id="工作过程"><a href="#工作过程" class="headerlink" title="工作过程"></a>工作过程</h3><h2 id="入侵行为的特征"><a href="#入侵行为的特征" class="headerlink" title="入侵行为的特征"></a>入侵行为的特征</h2><p>一组能确定网络访问或系统行为是入侵行为的字符串、数据、行为模式或符号组合等，入侵行为的这些特征，是入侵检测系统鉴别入侵行为的基本依据。<br>对于NIDS，入侵行为的特征，可以是IP地址、端口号、某些标志组合、数据包长度以及数据包内容中包含的特定字符串等。<br>对于HIDS，入侵行为的特征还包括对目标系统频繁访问尝试、对系统配置文件的访问尝试以及目标系统上运行（安装）程序的名称、占用的端口号、注册表项等的读取。</p>
 <h2 id="IDS和防火墙联动"><a href="#IDS和防火墙联动" class="headerlink" title="IDS和防火墙联动"></a>IDS和防火墙联动</h2><p>通过IDS来发现，通过防火墙来阻断。但由于迄今为止没有统一的接口规范，加上越来越频发的“瞬间攻击”（一个会话就可以达成攻击效果，如SQL注入、溢出攻击等），使得IDS与防火墙联动在实际应用中的效果不显著。 ‘</p>
+<h2 id="关于snort"><a href="#关于snort" class="headerlink" title="关于snort"></a>关于snort</h2><p>Snort是一个跨平台、轻量级的网络入侵检测工具，从入侵检测的分类上看，Snort应当属于基于网络的误用检测。针对每一种入侵行为，都提炼出它的特征并按照规范写成规则，从而形成一个规则库，将捕获的数据包对照规则库逐一匹配，若匹配成功，则认为该入侵行为成立。此外，Snort是开源的入侵检测系统，并具有很好的扩展性和可移植性。</p>
+<p>Snort拥有三大基本功能：嗅探器、数据包记录器和入侵检测。嗅探器模式仅从网络上读取数据包并作为连续不断的流显示在终端上，常用命令snort-dev。数据包记录器模式是把数据包记录到硬盘上，常用命令snort-b。网络入侵检测模式是最复杂的，而且是可配置的。我们可以让Snort分析网络数据流以匹配用户定义的一些规则，并根据检测结果采取一定的动作。</p>
+<h3 id="snort的体系结构"><a href="#snort的体系结构" class="headerlink" title="snort的体系结构"></a>snort的体系结构</h3><p><img src="/E:/git-blog\source\images\1656317568449.png" alt="1656317568449"></p>
+<h3 id="snort-规则"><a href="#snort-规则" class="headerlink" title="snort 规则"></a>snort 规则</h3><p> Snort的每条规则都可以分成逻辑上的两个部分：规则头和规则体。</p>
+<p>实例:</p>
+<p><img src="/E:/git-blog\source\images\1656399597611.png" alt="1656399597611"></p>
+<p>​        规则体的作用是在规则头信息的基础上进一步分析，有了它才能确认复杂的攻击(Snort的规则定义中可以没有规则体)。规则体由若干个被分别隔开的片断组成，每个片断定义了一个选项和相应的选项值。一部分选项是对各种协议的详细说明，包括IP、ICMP和TCP协议，其余的选项是：规则触发时提供给管理员的参考信息，被搜索的关键字，Snort规则的标识和大小写不敏感选项。</p>
+<p><img src="/E:/git-blog\source\images\1656318295737.png" alt="1656318295737"></p>
+<p><strong>Snort预置的规则动作有5种：</strong></p>
+<p>（1）pass—动作选项pass将忽略当前的包，后继捕获的包将被继续分析。</p>
+<p>（2）log—动作选项log将按照自己配置的格式记录包。</p>
+<p>（3）alert—动作选项alert将按照自己配置的格式记录包，然后进行报警。它的功能强大，但是必须恰当的用，因为如果报警记录过多，从中攫取有效信息的工作量增大，反而会使安全防护工作变得低效。</p>
+<p>（4）dynamic—动作选项dynamic是比较独特的一种，它保持在一种潜伏状态，直到activate类型的规则将其触发，之后它将像log动作一样记录数据包。</p>
+<p>（5）activate—动作选项activate功能强大，当被规则触发时生成报警，并启动相关的dynamic类型规则。在检测复杂的攻击，或对数据进行归类时，该动作选项相当有用。</p>
+<p><strong>规则体即规则选项</strong></p>
+<p>Snort规则选项部分在头部后面，在一对圆括号里面，其中可能包含一个选项，也可能包含用分号分割的过个选项，这些选项的关系是逻辑与的关系，只有当选项中的条件都满足的时候，规则动作才会被执行。所有snort规则选项之间用分号隔开，每个规则选项也被用冒号分为选项关键字和选项值。</p>
+<p>四类主要的规则选项类：</p>
+<ul>
+<li>一般 提供信息但在检测过程中不产生任何影响</li>
+<li>有效负载 在净荷中查找数据，并且能过相互关联（数据包数据部分）</li>
+<li>非有效负载 查找非净荷中的数据（数据包首部）</li>
+<li>过后检测选项 这些选项时某条规则被处罚后，所设置的执行的规则</li>
+</ul>
+<h3 id="snort命令"><a href="#snort命令" class="headerlink" title="snort命令"></a>snort命令</h3><p> Snort采用命令行方式运行。格式为：snort–[options]<filters>。options为选项参数；filters为过滤器。 </filters></p>
+<p><strong>选项</strong></p>
+<ul>
+<li><p>-A <alert>   设置报警模式，alert = full/fast/none/unsock</alert></p>
+</li>
+<li><p>-b  用<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E4%BA%8C%E8%BF%9B%E5%88%B6&spm=1001.2101.3001.7020">二进制</a>文件保存网络数据包，以应付高吞吐量的网络。</p>
+</li>
+<li><p>-B <mask>  将IP地址信息抹掉，去隐私化。</mask></p>
+</li>
+<li><p>-c <cf>  使用配置文件<cf>，这会使得snort进入IDS模式，并从<cf>中读取运行的配置信息。</cf></cf></cf></p>
+</li>
+<li><p>-d  显示包的应用层数据。</p>
+</li>
+<li><p>-D  以后台进程运行snort。如无指定，Alerts将写到/var/log/snort/alert。</p>
+</li>
+<li><p>-e  显示数据链路层的信息。</p>
+</li>
+<li><p>-E  保存报警日志为windows事件日志。</p>
+</li>
+<li><p>-f  激活PCAP行缓冲（line buffering）。</p>
+</li>
+<li><p>-F <bpf> 指定BPF过滤器。</bpf></p>
+</li>
+<li><p>-g <gname> 初始化Snort后以组ID（group ID）运行。</gname></p>
+</li>
+<li><p>-G <id> 为事件生成设置一个基础事件id值。</id></p>
+</li>
+<li><p>-h <hn> 设置本地网络为hn，如192.168.1.0/24。</hn></p>
+</li>
+<li><p>-i <if> 设置网络接口为<if>。可以用-W选项查询网络接口列表，然后用接口序号index指定接口。如-i 2</if></if></p>
+</li>
+<li><p>-I  报警时附加上接口信息。</p>
+</li>
+<li><p> -J <port> 当以in-line模式运行时，这个选项将只捕获<port>端口的报文。</port></port></p>
+</li>
+<li><p>-k <checksum mode> 为all，noip，notcp，noudp，noicmp，or none设置校验和模式。</checksum></p>
+</li>
+<li><p>-K <logging mode>   设置保存文件的格式：pcap，ascii， none。pcap是默认格式，同于-b选项的格式。ascii是老的模式格式。none则关闭数据包记录。</logging></p>
+</li>
+<li><p>-l <ld>  设置数据包文件存放目录<ld>。默认目录是/var/log/snort.</ld></ld></p>
+</li>
+<li><p>-L <fn>  设置二进制输出文件的文件名为<fn>。</fn></fn></p>
+</li>
+<li><p>-M  当以非后台模式daemon运行时，保存信息到syslog。</p>
+</li>
+<li><p>-m <mask> 设置snort输出文件的权限位。</mask></p>
+</li>
+<li><p>-n <count> 出来<count>个报文后终止程序。</count></count></p>
+</li>
+<li><p>-N  关闭保存日志包功能。</p>
+</li>
+<li><p>-o  改变应用规则的顺序。从Alert–&gt;Pass–&gt;Log顺序改为Pass–&gt;Alert–&gt;Log，避免了设置大量BPF命令行参数来过滤alert规则。</p>
+</li>
+<li><p>-O  在ASCII数据包捕获模式下混淆IP地址。</p>
+</li>
+<li><p>-p  关闭混杂模式。</p>
+</li>
+<li><p>-P<snaplen>  设置snaplen，默认值是当前网卡的MTU。</snaplen></p>
+</li>
+<li><p>-q  安静模式，不显示标志和状态报告。</p>
+</li>
+<li><p>-Q  当在线（in-line）运行时，从iptables/IPQ中读取数据包。</p>
+</li>
+<li><p>-r <tf>  从pcap格式的文件中读取数据包。</tf></p>
+</li>
+<li><p>-R <name>  为snort pidfile增加下标。</name></p>
+</li>
+<li><p>-s  使snort把报警消息发送到syslog，默认的设备是LOG_AUTHPRIV和LOG_ALERT。可以修改snort.conf文件修改其配置。</p>
+</li>
+<li><p>-S &lt;n=v&gt;  为变量n设置值为v。</p>
+</li>
+<li><p>-t <chroot>  初始化后将Snort的根目录改变为<chroot>。</chroot></chroot></p>
+</li>
+<li><p>-T  以自检测模式启动Snort。</p>
+</li>
+<li><p>-u <uname>  初始化后改变Snort的UID。</uname></p>
+</li>
+<li><p>-U  在时间戳上用UTC时间代替本地时间。</p>
+</li>
+<li><p>-v  从网络上读出数据包然后显示在你的控制台上。</p>
+</li>
+<li><p>-V  查看版本号并退出。</p>
+</li>
+<li><p>-w  如果运行在802.11网中，显示管理帧。</p>
+</li>
+<li><p>-W  <em>WIN32 ONLY</em>列出可以网络接口。其中的Index或Device Name都可以用到-i选项中。</p>
+</li>
+<li><p>X  显示包括数据链路层的原始数据包。</p>
+</li>
+<li><p>-y  在时间戳里显示年份。</p>
+</li>
+<li><p>-Z <path></path>  设置性能监视器(perfmon)路径。</p>
+</li>
+<li><p>-？  帮助信息。</p>
+</li>
+</ul>
+<p><strong>长参数选项</strong></p>
+<ul>
+<li><p> –logid &lt;0xid&gt;         Same as -G</p>
+</li>
+<li><p> –perfmon-file <file>     Same as -Z</file></p>
+</li>
+<li><p>–pid-path <path></path>       Specify the path for the Snort PID file</p>
+</li>
+<li><p> –snaplen <snap>        Same as -P</snap></p>
+</li>
+<li><p> –help             Same as -?</p>
+</li>
+<li><p>–dynamic-engine-lib <file></file></p>
+<pre><code>  指定动态监测引擎文件
+</code></pre>
+</li>
+<li><p>–dynamic-detection-lib <file></file></p>
+<pre><code>  指定一个动态规则库文件
+</code></pre>
+</li>
+<li><p>–dynamic-detection-lib-dir <path></path></p>
+<pre><code>  指定所有动态规则库路径
+</code></pre>
+</li>
+<li><p>–dump-dynamic-rules <path></path></p>
+<pre><code>  为所有加载的规则库创建根规则文件
+</code></pre>
+</li>
+<li><p>–dynamic-preprocessor-lib <file></file></p>
+<pre><code>  指定动态预处理库文件
+</code></pre>
+</li>
+<li><p>–dynamic-preprocessor-lib-dir <path></path></p>
+<pre><code>  指定动态预处理库路径
+</code></pre>
+</li>
+<li><p>–dump-dynamic-preproc-genmsg <path></path></p>
+<pre><code>  为所有加载的预处理库生成gen-msg.map文件到路径&lt;path&gt;.
+</code></pre>
+</li>
+<li><p>–alert-before-pass</p>
+<pre><code>  在pass之前处理alert, drop, sdrop, or reject. 默认是pass before alert, drop, etc.
+</code></pre>
+</li>
+<li><p>–treat-drop-as-alert</p>
+<pre><code>  Converts drop, and reject rules into alert rules during startup. sdrop rules are not loaded.将drop处理为alert。
+</code></pre>
+</li>
+<li><p>–process-all-events</p>
+<pre><code>  Process all triggered events in group order, per Rule Ordering configuration. Default stops after first group.
+</code></pre>
+</li>
+<li><p>–pid-path <path></path></p>
+<pre><code>  Specify the path for Snort&#39;s PID file. 为SnortPID文件指定路径。
+</code></pre>
+</li>
+<li><p>–create-pidfile</p>
+<pre><code>  Create PID file, even when not in Daemon mode. 创建PID文件。
+</code></pre>
+</li>
+<li><p>–enable-inline-test</p>
+<pre><code>  Runs snort in &quot;inline test mode&quot;. This option cannot be used with -Q. 在线测试模式。
+</code></pre>
+</li>
+</ul>
+<p><strong>过滤器选项</strong></p>
+<p>  过滤器选项为标准的BPF格式。即，同tcpdump的过滤器表达式一致。（BPF：<a target="_blank" rel="noopener" href="http://zh.wikipedia.org/wiki/BPF%EF%BC%89">http://zh.wikipedia.org/wiki/BPF）</a></p>
+<p><strong>Filters过滤器</strong></p>
+<p>Snort的<filters>是标准的BPF格式的过滤器。Snort应用了BPF机制，可以在探测器上书写和执行BPF规则的文件。BPF机制允许用户书写快速的包分析规则，这些规则主要基于源、目的、和其他的头信息。通过嗅探和BPF，我们可以只捕获需要的流量，这样就减轻了需要处理的数据量。</filters></p>
+<p>​       BPF机制很容易理解，可以用于分析TCP、UDP、IP和ICMP协议。规则语法很像自然的口语，使用“and”和“or”作为规则操作符,用“not”作为取反符，此处还可以用括号来告诉引擎将一系列数据作为一个整体来处理。</p>
+<h3 id="snort-mysql-base安装使用教程"><a href="#snort-mysql-base安装使用教程" class="headerlink" title="snort+mysql+base安装使用教程"></a>snort+mysql+base安装使用教程</h3><p>详情请见 </p>
+<p>参考资料：</p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43606134/article/details/106351223">https://blog.csdn.net/weixin_43606134/article/details/106351223</a></p>
 <p> <a target="_blank" rel="noopener" href="https://blog.csdn.net/hexf9632/article/details/90698399">(74条消息) IDS入侵检测系统_半砖的博客-CSDN博客_入侵检测系统</a> </p>
-</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/06/06/IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F/">http://example.com/2022/06/06/IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/06/06/WAF----Web%E5%BA%94%E7%94%A8%E9%98%B2%E7%81%AB%E5%A2%99/" title="WAF -- Web应用防火墙"><span>< PreviousPost</span><br><span class="prevTitle">WAF -- Web应用防火墙</span></a><a class="nextSlogan" href="/2022/05/30/%E6%B0%B8%E6%81%92%E4%B9%8B%E8%93%9D%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" title="永恒之蓝漏洞利用"><span>NextPost ></span><br><span class="nextTitle">永恒之蓝漏洞利用</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.</span> <span class="toc-text">IDS入侵检测系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%8A%9F%E8%83%BD"><span class="toc-number">1.1.</span> <span class="toc-text">入侵检测系统功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">1.2.</span> <span class="toc-text">入侵检测系统的分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">入侵检测系统原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.数据分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%BC%95%E6%93%8E%EF%BC%9A"><span class="toc-number">1.3.3.</span> <span class="toc-text">分析引擎：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-number">1.3.4.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.5.</span> <span class="toc-text">工作过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E8%A1%8C%E4%B8%BA%E7%9A%84%E7%89%B9%E5%BE%81"><span class="toc-number">1.4.</span> <span class="toc-text">入侵行为的特征</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDS%E5%92%8C%E9%98%B2%E7%81%AB%E5%A2%99%E8%81%94%E5%8A%A8"><span class="toc-number">1.5.</span> <span class="toc-text">IDS和防火墙联动</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/ftxc_blog/article/details/12565761">https://blog.csdn.net/ftxc_blog/article/details/12565761</a></p>
+<p> <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/307366823">网络入侵检测系统之Snort(一)–snort概览 - 知乎 (zhihu.com)</a> </p>
+<p> <a target="_blank" rel="noopener" href="https://blog.csdn.net/jack237/article/details/6899465">(83条消息) Snort 命令参数详解_jack237的博客-CSDN博客_snort命令</a> </p>
+<p> <a target="_blank" rel="noopener" href="https://www.cnblogs.com/yuersan/p/15236326.html">Snort规则 - 鱼儿叁 - 博客园 (cnblogs.com)</a> </p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/06/06/IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F/">http://example.com/2022/06/06/IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/06/06/WAF----Web%E5%BA%94%E7%94%A8%E9%98%B2%E7%81%AB%E5%A2%99/" title="WAF -- Web应用防火墙"><span>< PreviousPost</span><br><span class="prevTitle">WAF -- Web应用防火墙</span></a><a class="nextSlogan" href="/2022/05/30/%E6%B0%B8%E6%81%92%E4%B9%8B%E8%93%9D%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" title="永恒之蓝漏洞利用"><span>NextPost ></span><br><span class="nextTitle">永恒之蓝漏洞利用</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#IDS%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.</span> <span class="toc-text">IDS入侵检测系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%8A%9F%E8%83%BD"><span class="toc-number">1.1.</span> <span class="toc-text">入侵检测系统功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">1.2.</span> <span class="toc-text">入侵检测系统的分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">入侵检测系统原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E9%83%A8%E5%88%86"><span class="toc-number">1.3.1.</span> <span class="toc-text">信息收集部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E9%83%A8%E5%88%86"><span class="toc-number">1.3.2.</span> <span class="toc-text">数据分析部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E5%93%8D%E5%BA%94%E9%83%A8%E5%88%86"><span class="toc-number">1.3.3.</span> <span class="toc-text">入侵响应部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E5%BC%95%E6%93%8E"><span class="toc-number">1.3.4.</span> <span class="toc-text">分析引擎</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-number">1.3.5.</span> <span class="toc-text">架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="toc-number">1.3.6.</span> <span class="toc-text">工作过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5%E8%A1%8C%E4%B8%BA%E7%9A%84%E7%89%B9%E5%BE%81"><span class="toc-number">1.4.</span> <span class="toc-text">入侵行为的特征</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDS%E5%92%8C%E9%98%B2%E7%81%AB%E5%A2%99%E8%81%94%E5%8A%A8"><span class="toc-number">1.5.</span> <span class="toc-text">IDS和防火墙联动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8Esnort"><span class="toc-number">1.6.</span> <span class="toc-text">关于snort</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#snort%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">1.6.1.</span> <span class="toc-text">snort的体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#snort-%E8%A7%84%E5%88%99"><span class="toc-number">1.6.2.</span> <span class="toc-text">snort 规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#snort%E5%91%BD%E4%BB%A4"><span class="toc-number">1.6.3.</span> <span class="toc-text">snort命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#snort-mysql-base%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B"><span class="toc-number">1.6.4.</span> <span class="toc-text">snort+mysql+base安装使用教程</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
