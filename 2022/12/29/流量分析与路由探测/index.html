@@ -104,7 +104,7 @@
 <p>主要是为了对每次发送的数据量进行跟踪与协商，确保数据段的发送和接收同步，根据所接收到的数据量而确认数据发送、接收完毕后何时撤消联系，并建立虚连接。</p>
 <p><strong>第一次握手：</strong>建立连接时，客户端发送syn包（seq=j）到服务器，并进入SYN_SENT状态，等待服务器确认；SYN：同步序列编号（Synchronize Sequence Numbers）。 </p>
 <p><strong>第二次握手：</strong>服务器收到syn包，必须确认客户端的SYN（ack=j+1），同时自己也发送一个SYN包（seq=k），即SYN+ACK包，此时服务器进入SYN_RECV状态。 </p>
-<p><img src="/E:/git-blog\source\images\wps1.png" alt="img"><strong>第三次握手：</strong>客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=k+1)，此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。 </p>
+<p><img src="/%5Cimages%5Cwps1.png" alt="img"><strong>第三次握手：</strong>客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=k+1)，此包发送完毕，客户端和服务器进入ESTABLISHED（TCP连接成功）状态，完成三次握手。 </p>
 <p>完成三次握手，客户端与服务器开始传送数据</p>
 <p>\2. <strong>四次挥手</strong></p>
 <p>四次挥手即终止TCP连接，就是指断开一个TCP连接时，需要客户端和服务端总共发送4个包以确认连接的断开。</p>
@@ -113,7 +113,7 @@
 <p><strong>第二次挥手：</strong> 服务器收到这个FIN报文，它发回一个ACK报文，确认序号为收到的序号加1。和SYN一样，一个FIN报文将占用一个序号。</p>
 <p><strong>第三次挥手：</strong>服务器关闭客户端的连接，发送一个FIN给客户端。</p>
 <p><strong>第四次挥手</strong>： 客户端发回ACK报文确认，并将确认序号设置为收到序号加1。</p>
-<p><img src="/E:/git-blog\source\images\wps2.png" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps2.png" alt="img"> </p>
 <p>\3. <strong>SSL协议握手</strong></p>
 <p><strong>第一阶段：建立安全能力</strong></p>
 <p>　　SSL握手的第一阶段启动逻辑连接，建立这个连接的安全能力。首先客户机向服务器发出client hello消息并等待服务器响应，随后服务器向客户机返回server hello消息，对client hello消息中的信息进行确认。Client hello消息包括Version，Random，Session id，Cipher suite，Compression method等信息。</p>
@@ -130,51 +130,51 @@
 <p>（c）证书验证（可选），对预备秘密和随机数进行签名，证明拥有（a）证书的公钥。</p>
 <p>第四阶段：</p>
 <p>客户机启动SSL握手第4阶段，使服务器结束。</p>
-<p><img src="/E:/git-blog\source\images\wps3.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps3.jpg" alt="img"> </p>
 <p>\4. <strong>路由探测</strong></p>
 <p>路由探测原理就是从发送TTL 值为1开始的数据包开始，每次增加1，直到该数据包能抵达目的IP地址。</p>
 <p>未能抵达最终目的地址的数据包，当路由器将值减为0 时，会给源地址返回一个数据包告知源地址：因经过路由的数据过多，导致TTL耗尽。数据包无法到达最终目的地。工具根据中间路由节点这个数据包返回的时间戳和发出数据包时的时间戳相减，计算出中间经过的每个路由节点的耗时。并获取中间路由节点的IP地址。</p>
 <h2 id="实验步骤"><a href="#实验步骤" class="headerlink" title="实验步骤:"></a>实验步骤:</h2><h3 id="TCP连接和断开三次握手"><a href="#TCP连接和断开三次握手" class="headerlink" title="TCP连接和断开三次握手"></a>TCP连接和断开三次握手</h3><ol>
 <li>打开wireshark，开启流量分析，进行一次网站访问，如访问cclab.ujs.edu.cn</li>
 </ol>
-<p><img src="/E:/git-blog\source\images\wps4.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps4.jpg" alt="img"> </p>
 <p>第一次握手：seq=0</p>
-<p><img src="/E:/git-blog\source\images\wps5.jpg" alt="img"> </p>
-<p><img src="/E:/git-blog\source\images\wps6.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps5.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps6.jpg" alt="img"> </p>
 <p>  第二次握手：seq=0,ack=1</p>
-<p><img src="/E:/git-blog\source\images\wps7.jpg" alt="img"> </p>
-<p><img src="/E:/git-blog\source\images\wps8.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps7.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps8.jpg" alt="img"> </p>
 <p>  第三次握手：seq=1,ack=1</p>
-<p><img src="/E:/git-blog\source\images\wps9.jpg" alt="img"> </p>
-<p><img src="/E:/git-blog\source\images\wps10.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps9.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps10.jpg" alt="img"> </p>
 <p>  连接已建立，后面就是开始交互</p>
-<p><img src="/E:/git-blog\source\images\wps11.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps11.jpg" alt="img"> </p>
 <p>2.四次挥手：</p>
 <p>第一次挥手 FIN=1，seq=3251</p>
-<p><img src="/E:/git-blog\source\images\wps12.jpg" alt="img"> </p>
-<p><img src="/E:/git-blog\source\images\wps13.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps12.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps13.jpg" alt="img"> </p>
 <p>第二次挥手 seq=613 ,ack=3252</p>
-<p><img src="/E:/git-blog\source\images\wps14.jpg" alt="img"> </p>
-<p><img src="/E:/git-blog\source\images\wps15.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps14.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps15.jpg" alt="img"> </p>
 <p>第三次挥手 seq=613 ack =3252</p>
-<p><img src="/E:/git-blog\source\images\wps16.jpg" alt="img"> </p>
-<p><img src="/E:/git-blog\source\images\wps17.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps16.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps17.jpg" alt="img"> </p>
 <p>第四次挥手 seq=3252 ack=614</p>
-<p><img src="/E:/git-blog\source\images\wps18.jpg" alt="img"> </p>
-<p><img src="/E:/git-blog\source\images\wps19.jpg" alt="img"> </p>
-<h3 id="wireshark分析SSL握手情况"><a href="#wireshark分析SSL握手情况" class="headerlink" title="wireshark分析SSL握手情况"></a>wireshark分析SSL握手情况</h3><p><img src="/E:/git-blog\source\images\wps20.jpg" alt="img"> </p>
-<p>1.客户端发起请求，以明文传输请求信息，包含版本信息，加密套件候选列表，压缩算法候选列表，随机数，扩展字段等信息<img src="/E:/git-blog\source\images\wps21.jpg" alt="img"></p>
+<p><img src="/%5Cimages%5Cwps18.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps19.jpg" alt="img"> </p>
+<h3 id="wireshark分析SSL握手情况"><a href="#wireshark分析SSL握手情况" class="headerlink" title="wireshark分析SSL握手情况"></a>wireshark分析SSL握手情况</h3><p><img src="/%5Cimages%5Cwps20.jpg" alt="img"> </p>
+<p>1.客户端发起请求，以明文传输请求信息，包含版本信息，加密套件候选列表，压缩算法候选列表，随机数，扩展字段等信息<img src="/%5Cimages%5Cwps21.jpg" alt="img"></p>
 <p>\2. 服务器回答给客户端以下信息</p>
-<p><img src="/E:/git-blog\source\images\wps22.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps22.jpg" alt="img"> </p>
 <p>3.服务器发送给客户端</p>
-<p><img src="/E:/git-blog\source\images\wps23.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps23.jpg" alt="img"> </p>
 <p>4.客户端发送给服务端</p>
-<p><img src="/E:/git-blog\source\images\wps24.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps24.jpg" alt="img"> </p>
 <p>\5. 服务器端发送new session ticket消息。到这里握手结束。</p>
-<p><img src="/E:/git-blog\source\images\wps25.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps25.jpg" alt="img"> </p>
 <h3 id="利用ping测试链路情况、利用tracert测试路由"><a href="#利用ping测试链路情况、利用tracert测试路由" class="headerlink" title="利用ping测试链路情况、利用tracert测试路由"></a>利用ping测试链路情况、利用tracert测试路由</h3><p>1.ping百度获取ip</p>
-<p><img src="/E:/git-blog\source\images\wps26.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps26.jpg" alt="img"> </p>
 <p>2.打开WinMTR，输入百度ip,获取各个节点的响应时间及丢包率等信息。</p>
-<p><img src="/E:/git-blog\source\images\wps27.jpg" alt="img"> </p>
-<p><img src="/E:/git-blog\source\images\wps28.jpg" alt="img"> </p>
-</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/29/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B/">http://example.com/2022/12/29/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/29/%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA/" title=""><span>< PreviousPost</span><br><span class="prevTitle">[Untitled Post]</span></a><a class="nextSlogan" href="/2022/12/29/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/" title="软件测试学习（一）"><span>NextPost ></span><br><span class="nextTitle">软件测试学习（一）</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B"><span class="toc-number">1.</span> <span class="toc-text">流量分析与路由探测</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">实验原理:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.</span> <span class="toc-text">实验步骤:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E8%BF%9E%E6%8E%A5%E5%92%8C%E6%96%AD%E5%BC%80%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">TCP连接和断开三次握手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#wireshark%E5%88%86%E6%9E%90SSL%E6%8F%A1%E6%89%8B%E6%83%85%E5%86%B5"><span class="toc-number">1.2.2.</span> <span class="toc-text">wireshark分析SSL握手情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8ping%E6%B5%8B%E8%AF%95%E9%93%BE%E8%B7%AF%E6%83%85%E5%86%B5%E3%80%81%E5%88%A9%E7%94%A8tracert%E6%B5%8B%E8%AF%95%E8%B7%AF%E7%94%B1"><span class="toc-number">1.2.3.</span> <span class="toc-text">利用ping测试链路情况、利用tracert测试路由</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
+<p><img src="/%5Cimages%5Cwps27.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps28.jpg" alt="img"> </p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/29/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B/">http://example.com/2022/12/29/%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/29/%E5%85%A5%E4%BE%B5%E6%A3%80%E6%B5%8B%E7%B3%BB%E7%BB%9F%E6%9E%84%E5%BB%BA/" title="入侵检测系统构建"><span>< PreviousPost</span><br><span class="prevTitle">入侵检测系统构建</span></a><a class="nextSlogan" href="/2022/12/29/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/" title="软件测试学习（一）——基础"><span>NextPost ></span><br><span class="nextTitle">软件测试学习（一）——基础</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90%E4%B8%8E%E8%B7%AF%E7%94%B1%E6%8E%A2%E6%B5%8B"><span class="toc-number">1.</span> <span class="toc-text">流量分析与路由探测</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">实验原理:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.</span> <span class="toc-text">实验步骤:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E8%BF%9E%E6%8E%A5%E5%92%8C%E6%96%AD%E5%BC%80%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">TCP连接和断开三次握手</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#wireshark%E5%88%86%E6%9E%90SSL%E6%8F%A1%E6%89%8B%E6%83%85%E5%86%B5"><span class="toc-number">1.2.2.</span> <span class="toc-text">wireshark分析SSL握手情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8ping%E6%B5%8B%E8%AF%95%E9%93%BE%E8%B7%AF%E6%83%85%E5%86%B5%E3%80%81%E5%88%A9%E7%94%A8tracert%E6%B5%8B%E8%AF%95%E8%B7%AF%E7%94%B1"><span class="toc-number">1.2.3.</span> <span class="toc-text">利用ping测试链路情况、利用tracert测试路由</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

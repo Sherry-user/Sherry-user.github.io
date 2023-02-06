@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="John Doe"><meta name="renderer" content="webkit"><meta name="copyright" content="John Doe"><meta name="keywords" content="Hexo"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>软件测试学习（二）——自动化测试 · 香蜜的博客</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/favicon.ico"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">软件测试学习（二）——自动化测试</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2023-01-15</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="自动化测试是什么"><a href="#自动化测试是什么" class="headerlink" title="自动化测试是什么"></a>自动化测试是什么</h1><h1 id="自动化测试流程"><a href="#自动化测试流程" class="headerlink" title="自动化测试流程"></a>自动化测试流程</h1><p>和手工测试差不多，但自动化主要集中在用例执行方面，有的测试报告也可以自动生成</p>
+<h1 id="编写自动化脚本"><a href="#编写自动化脚本" class="headerlink" title="编写自动化脚本"></a>编写自动化脚本</h1><h2 id="借助于软件"><a href="#借助于软件" class="headerlink" title="借助于软件"></a>借助于软件</h2><h3 id="3-web-UI自动化测试工具——Selenium-IDE"><a href="#3-web-UI自动化测试工具——Selenium-IDE" class="headerlink" title="3.web UI自动化测试工具——Selenium IDE"></a>3.web UI自动化测试工具——Selenium IDE</h3><p>火狐谷歌插件，通过模拟人工操作来实现自动化</p>
+<p>1.Cteate  a new projiect</p>
+<p>2.输入url ,录制一遍自己的操作</p>
+<p>3.根据需求自己写代码</p>
+<p>4.添加测试用例</p>
+<p>5.执行所以测试用例</p>
+<h2 id="根据需求自己编写代码"><a href="#根据需求自己编写代码" class="headerlink" title="根据需求自己编写代码"></a>根据需求自己编写代码</h2><h1 id="断言"><a href="#断言" class="headerlink" title="断言"></a>断言</h1><p>即让程序去判断一个系统功能是否正常</p>
+<h1 id="报告"><a href="#报告" class="headerlink" title="报告"></a>报告</h1><h2 id="selenium-side-runner"><a href="#selenium-side-runner" class="headerlink" title="selenium-side-runner"></a>selenium-side-runner</h2><p><strong>需提前安装nodejs再安装selenium-side-runner</strong></p>
+<p><strong>用法：</strong></p>
+<ul>
+<li><p>1.Selenium IDE保存结果文件</p>
+</li>
+<li><p> 2.selenium-side-runner + Selenium IDE输出结果文件  –output-format jest –output-directory aaatony</p>
+</li>
+</ul>
+<p>e.g.selenium-side-runner test.side  –output-format jest –output-directory aaatony</p>
+<ul>
+<li><p> 3.自动生成测试报告 文本形式，生成文件在aaatony里面</p>
+</li>
+<li><p>4.文本形式转换为html+图表形式</p>
+</li>
+</ul>
+<p>j2h -f 文件</p>
+<p>e.g j2h -f test.json</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2023/01/15/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">http://example.com/2023/01/15/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%BA%8C%EF%BC%89%E2%80%94%E2%80%94%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2023/01/15/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%89%EF%BC%89%E2%80%94%E2%80%94%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/" title="软件测试学习（三）——接口测试"><span>< PreviousPost</span><br><span class="prevTitle">软件测试学习（三）——接口测试</span></a><a class="nextSlogan" href="/2022/12/31/shell%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/" title="shell脚本语言学习"><span>NextPost ></span><br><span class="nextTitle">shell脚本语言学习</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">自动化测试是什么</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">自动化测试流程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E8%87%AA%E5%8A%A8%E5%8C%96%E8%84%9A%E6%9C%AC"><span class="toc-number">3.</span> <span class="toc-text">编写自动化脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%80%9F%E5%8A%A9%E4%BA%8E%E8%BD%AF%E4%BB%B6"><span class="toc-number">3.1.</span> <span class="toc-text">借助于软件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-web-UI%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7%E2%80%94%E2%80%94Selenium-IDE"><span class="toc-number">3.1.1.</span> <span class="toc-text">3.web UI自动化测试工具——Selenium IDE</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B9%E6%8D%AE%E9%9C%80%E6%B1%82%E8%87%AA%E5%B7%B1%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81"><span class="toc-number">3.2.</span> <span class="toc-text">根据需求自己编写代码</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%AD%E8%A8%80"><span class="toc-number">4.</span> <span class="toc-text">断言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8A%A5%E5%91%8A"><span class="toc-number">5.</span> <span class="toc-text">报告</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#selenium-side-runner"><span class="toc-number">5.1.</span> <span class="toc-text">selenium-side-runner</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

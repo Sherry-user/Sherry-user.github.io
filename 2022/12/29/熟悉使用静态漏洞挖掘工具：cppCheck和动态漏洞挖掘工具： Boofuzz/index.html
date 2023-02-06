@@ -114,8 +114,9 @@
 <p><strong>Tokenize：</strong>解析代码成符号（**+-*/;…**等，变量名，函数名），由 <strong>class Tokenizer</strong>实现， 实现接口 <strong>class Tokenizer::tokenize()。</strong></p>
 <p><strong>Simplify：</strong>简化复杂代码，统一化，由 <strong>class Tokenizer</strong>实现， 实现接口 <strong>class Tokenizer::simplifyTokenList()。</strong></p>
 <p><strong>分析代码，报告错误。</strong></p>
-<p>1.3. <strong>cppcheck总体流程图****如下：</strong></p>
-<p><img src="/E:/git-blog\source\images\wps26.png" alt="img"><strong>开发中使用主要的类有：</strong></p>
+<p>1.3. <strong>cppcheck总体流程图</strong>如下：</p>
+<p><img src="/%5Cimages%5Cwps26.png" alt="img"></p>
+<p>开发中使用主要的类有：</p>
 <p>Tokenizer类： 代码token化， 计划代码</p>
 <p>SymbolDatabase类：符号数据库，生成和存储各种符号：scope,function, variable等</p>
 <p>Scope类： 各种代码block。最常用的有functionScopes， classAndStructScopes等</p>
@@ -123,7 +124,7 @@
 <p>Variable类：getTypeString() –C++相关的代码经常需要</p>
 <p>Function类：可以找到实现的scope</p>
 <p>Value类： token可以通过getValue()得到可能的值</p>
-<p><strong>参数分析部分（<strong><strong>内部抽象classSetings</strong></strong>）：</strong></p>
+<p><strong>参数分析部分（****内部抽象classSetings</strong>）：**</p>
 <p>class Settings</p>
 <p>{</p>
 <p> …</p>
@@ -135,33 +136,33 @@
 <p>}</p>
 <p><em><strong>*核心函数check()*</strong></em></p>
 <p>　　处理入口，在此函数对输入代码进行初步分析处理，最后将代码传递给 CheckFile()。</p>
-<p><img src="/E:/git-blog\source\images\wps27-1672294253195.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps27-1672294253195.jpg" alt="img"> </p>
 <p><em><strong>*核心函数CheckFile()*</strong></em></p>
 <p>　　函数功能是分析一个代码文件， CheckFile()会将代码流做进一步的分析，做tokenize,simplify，处理后分析代码，报告错误。</p>
 <p>  <strong>1.3.代码流分析</strong></p>
 <p>举例代码：</p>
-<p><img src="/E:/git-blog\source\images\wps28-1672294253195.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps28-1672294253195.jpg" alt="img"> </p>
 <p>执行路径1：</p>
-<p><img src="/E:/git-blog\source\images\wps29.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps29.jpg" alt="img"> </p>
 <p>执行路径2：</p>
-<p><img src="/E:/git-blog\source\images\wps30-1672294253195.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps30-1672294253195.jpg" alt="img"> </p>
 <p>保留条件信息：</p>
-<p><img src="/E:/git-blog\source\images\wps31.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps31.jpg" alt="img"> </p>
 <p>最后执行if for while等复杂语句的等价替换</p>
 <p>例如</p>
-<p><img src="/E:/git-blog\source\images\wps32-1672294253196.png" alt="img"></p>
-<p><img src="/E:/git-blog\source\images\wps33.png" alt="img"></p>
+<p><img src="/%5Cimages%5Cwps32-1672294253196.png" alt="img"></p>
+<p><img src="/%5Cimages%5Cwps33.png" alt="img"></p>
 <p>\2. <strong>使用若干案例进行验证</strong></p>
 <p>2.1. 当数组下标越界</p>
-<p><img src="/E:/git-blog\source\images\wps34.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps34.jpg" alt="img"> </p>
 <p> 2.2.当函数参数被指派为一个地址</p>
-<p><img src="/E:/git-blog\source\images\wps35.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps35.jpg" alt="img"> </p>
 <p>2.3.当内存泄漏</p>
-<p><img src="/E:/git-blog\source\images\wps36-1672294253196.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps36-1672294253196.jpg" alt="img"> </p>
 <p>2.4．当使用迭代器到本地容器可能是无效的。  </p>
-<p><img src="/E:/git-blog\source\images\wps37-1672294253197.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps37-1672294253197.jpg" alt="img"> </p>
 <p>2.5.越界问题</p>
-<p><img src="/E:/git-blog\source\images\wps38-1672294253197.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps38-1672294253197.jpg" alt="img"> </p>
 <h4 id="Boofuzz"><a href="#Boofuzz" class="headerlink" title="Boofuzz"></a><strong>Boofuzz</strong></h4><p><strong>1.下载安装boofuzz</strong></p>
 <p><em><strong>*2.BooFuzz框架*</strong></em></p>
 <p>四大组件：</p>
@@ -170,33 +171,33 @@
 <p>c) Agents代理</p>
 <p>d) Utilities独立单元工具</p>
 <p><strong>3.总流程</strong></p>
-<p><img src="/E:/git-blog\source\images\wps39.png" alt="img"></p>
+<p><img src="/%5Cimages%5Cwps39.png" alt="img"></p>
 <p>**4.**<strong>Session对象</strong></p>
 <p>即Fuzz测试的核心，当你创建Session的时候，你会传递一个Target对象，该对象本身接收一个Connection对象。</p>
-<p><img src="/E:/git-blog\source\images\wps40-1672294253197.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps40-1672294253197.jpg" alt="img"> </p>
 <p>准备好会话对象后，接下来需要在协议中定义消息。每一条消息均以一个s_initialize函数开头，比如这是fuzz FTP协议中的几个消息定义：</p>
-<p><img src="/E:/git-blog\source\images\wps41-1672294253198.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps41-1672294253198.jpg" alt="img"> </p>
 <p>定义消息后，将使用刚刚创建的Session对象将它们连接到图中：</p>
-<p><img src="/E:/git-blog\source\images\wps42-1672294253198.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps42-1672294253198.jpg" alt="img"> </p>
 <p>之后，就可以进行fuzz测试session.fuzz()</p>
 <p>每次运行的日志数据将保存到当前工作目录下boofuzz-results目录中的SQLite数据库中。</p>
 <p><strong>5.</strong> <strong>对路由器的登录接口进行fuzz测试</strong></p>
 <p>5.1.使用Burpsuite设置代理</p>
 <p>5.2. Burpsuite抓包，结果如下：</p>
-<p><img src="/E:/git-blog\source\images\wps43-1672294253198.jpg" alt="img"> </p>
-<p><img src="/E:/git-blog\source\images\wps44.png" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps43-1672294253198.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps44.png" alt="img"> </p>
 <p>5.3.然后根据报文，利用boofuzz框架提供的原语对http请求进行定义</p>
-<p><img src="/E:/git-blog\source\images\wps45-1672294253198.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps45-1672294253198.jpg" alt="img"> </p>
 <p>5.4. 设置会话信息，包括设备的IP地址以及端口</p>
-<p><img src="/E:/git-blog\source\images\wps46-1672294253198.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps46-1672294253198.jpg" alt="img"> </p>
 <p>注意：如果需要fuzz多个请求，比如说，还要继续fuzz登录后的一些接口，还需要将之前定义的请求按照一定的先后顺序连接，比如说：</p>
-<p><img src="/E:/git-blog\source\images\wps47-1672294253198.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps47-1672294253198.jpg" alt="img"> </p>
 <p>5.5.添加监视器</p>
-<p><img src="/E:/git-blog\source\images\wps48-1672294253199.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps48-1672294253199.jpg" alt="img"> </p>
 <p>5.6．调用session.fuzz()，运行编写好的脚本，每次运行的日志数据将保存到当前工作目录下boofuzz-results目录中的SQLite数据库中，运行boo open &lt;run-*.db&gt;，会在26000端口开启一个Web服务器，控制和查看测试进度。</p>
-<p><img src="/E:/git-blog\source\images\wps49-1672294253199.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps49-1672294253199.jpg" alt="img"> </p>
 <p>上图表明，第238个用例测试结果出现了异常。在打开数据库监控状态的时候，如果提示26000端口已经占用，可以使用netstat -anp | grep 26000找到进程，并杀死即可。</p>
 <p>5.7. 打开 boofuzz-results 目录下的相关文件可查看fuzz的日志</p>
-<p><img src="/E:/git-blog\source\images\wps50-1672294253199.jpg" alt="img"> </p>
+<p><img src="/%5Cimages%5Cwps50-1672294253199.jpg" alt="img"> </p>
 <p>从中可以看出的确是按照代码，对相关字段进行分析，从而达到fuzz的效果。进一步观察238个用例的前一个用例，找到发送的内容，重新发送，观察设备状态，看问题是否能够复现，最终确定漏洞是否存在。</p>
-</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/29/%E7%86%9F%E6%82%89%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9AcppCheck%E5%92%8C%E5%8A%A8%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9A%20Boofuzz/">http://example.com/2022/12/29/%E7%86%9F%E6%82%89%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9AcppCheck%E5%92%8C%E5%8A%A8%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9A%20Boofuzz/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/29/%E6%96%87%E4%BB%B6%E6%81%A2%E5%A4%8D/" title=""><span>< PreviousPost</span><br><span class="prevTitle">[Untitled Post]</span></a><a class="nextSlogan" href="/2022/12/29/%E6%96%87%E6%9C%AC%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%9A%84%E8%AE%A1%E7%AE%97/" title="文本相似度的计算"><span>NextPost ></span><br><span class="nextTitle">文本相似度的计算</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%86%9F%E6%82%89%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9AcppCheck%E5%92%8C%E5%8A%A8%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9A-Boofuzz"><span class="toc-number">1.</span> <span class="toc-text">熟悉使用静态漏洞挖掘工具：cppCheck和动态漏洞挖掘工具： Boofuzz</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cppCheck"><span class="toc-number">1.0.1.</span> <span class="toc-text">cppCheck</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Boofuzz"><span class="toc-number">1.0.2.</span> <span class="toc-text">Boofuzz</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/29/%E7%86%9F%E6%82%89%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9AcppCheck%E5%92%8C%E5%8A%A8%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9A%20Boofuzz/">http://example.com/2022/12/29/%E7%86%9F%E6%82%89%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9AcppCheck%E5%92%8C%E5%8A%A8%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9A%20Boofuzz/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/29/%E6%96%87%E4%BB%B6%E6%81%A2%E5%A4%8D/" title="文件恢复"><span>< PreviousPost</span><br><span class="prevTitle">文件恢复</span></a><a class="nextSlogan" href="/2022/12/29/%E6%96%87%E6%9C%AC%E7%9B%B8%E4%BC%BC%E5%BA%A6%E7%9A%84%E8%AE%A1%E7%AE%97/" title="文本相似度的计算"><span>NextPost ></span><br><span class="nextTitle">文本相似度的计算</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%86%9F%E6%82%89%E4%BD%BF%E7%94%A8%E9%9D%99%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9AcppCheck%E5%92%8C%E5%8A%A8%E6%80%81%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E5%B7%A5%E5%85%B7%EF%BC%9A-Boofuzz"><span class="toc-number">1.</span> <span class="toc-text">熟悉使用静态漏洞挖掘工具：cppCheck和动态漏洞挖掘工具： Boofuzz</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#cppCheck"><span class="toc-number">1.0.1.</span> <span class="toc-text">cppCheck</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Boofuzz"><span class="toc-number">1.0.2.</span> <span class="toc-text">Boofuzz</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

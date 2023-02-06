@@ -103,7 +103,7 @@
 <h1 id="U盾"><a href="#U盾" class="headerlink" title="U盾"></a>U盾</h1><p><strong>简介</strong>：U盾，即工商银行2003年推出并获得国家专利的客户证书USBkey，是工行提供的办理网上银行业务的高级别安全工具。它外形酷似U盘，安全性能如一面盾牌，意为U型的盾牌，所以取名曰：“U盾”。它的作用是在办理网上银行业务时保护着网上银行资金安全，规避黑客、假网站、木马病毒等各种风险。 U盾是工商银行推出并获得国家专利的客户证书USBkey，是工行为您提供的办理网上银行业务的高级别安全工具。 U盾是用于网上银行电子签名和数字认证的工具，它内置微型智能卡处理器，采用1024位非对称密钥算法对网上数据进行加密、解密和数字签名，确保网上交易的保密性、真实性、完整性和不可否认性。</p>
 <p><strong>工作原理</strong>：</p>
 <p>​       U盾又作移动数字证书，它存放着你个人的数字证书，并不可读取。同样，银行也记录着你的数字证书。当你尝试进行网上交易时，银行会向你发送由时间字串，地址字串，交易信息字串，防重放攻击字串组合在一起进行加密后得到的字串A，你的U盾将跟据你的个人证书对字串A进行不可逆运算得到字串B，并将字串B发送给银行，银行端也同时进行该不可逆运算，如果银行运算结果和你的运算结果一致便认为你合法，交易便可以完成，如果不一致便认为你不合法，交易便会失败。<br>　　理论上，不同的字串A不会得出相同的字串B，即一个字串A对应一个唯一的字串B；但是字串B 和字串A无法得出你的数字证书，而且U盾具有不可读取性，所以任何人都无法获行你的数字证书。并且银行每次都会发不同的防重放字串（随机字串）和时间字串，所以当一次交易完成后，刚发出的B字串便不再有效。综上所述，理论上U盾是绝对安全的。</p>
-<p><img src="/E:/git-blog\source\images\QQ截图20210908205640.png" alt="QQ截图20210908205640"></p>
+<p><img src="/%5Cimages%5CQQ%E6%88%AA%E5%9B%BE20210908205640.png" alt="QQ截图20210908205640"></p>
 <h1 id="https"><a href="#https" class="headerlink" title="https"></a>https</h1><p> <strong>简介</strong>：HTTPS （全称：Hyper Text Transfer Protocol over SecureSocket Layer），是以安全为目标的 HTTP 通道，在HTTP的基础上通过传输加密和<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/5294713">身份认证</a>保证了传输过程的安全性 [1] 。HTTPS 在HTTP 的基础下加入<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/SSL/320778">SSL</a>，HTTPS 的安全基础是 SSL，因此加密的详细内容就需要 SSL。 HTTPS 存在不同于 HTTP 的默认端口及一个加密/身份验证层（在 HTTP与 <a target="_blank" rel="noopener" href="https://baike.baidu.com/item/TCP/33012">TCP</a> 之间）。这个系统提供了身份验证与加密通讯方法。它被广泛用于<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E4%B8%87%E7%BB%B4%E7%BD%91/215515">万维网</a>上安全敏感的通讯，例如交易支付等方面。</p>
 <p><strong>实现原理</strong>：</p>
 <p>① 客户端将它所支持的算法列表和一个用作产生密钥的随机数发送给服务器；</p>
@@ -116,7 +116,7 @@
 <p>​      随着计算机通信网技术的不断发展，MITM攻击也越来越多样化。最初，攻击者只要将网卡设为混杂模式，伪装成<a target="_blank" rel="noopener" href="https://wapbaike.baidu.com/item/%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8">代理服务器</a>监听特定的流量就可以实现攻击，这是因为很多通信协议都是以明文来进行传输的，如HTTP、FTP、Telnet等。后来，随着<a target="_blank" rel="noopener" href="https://wapbaike.baidu.com/item/%E4%BA%A4%E6%8D%A2%E6%9C%BA">交换机</a>代替<a target="_blank" rel="noopener" href="https://wapbaike.baidu.com/item/%E9%9B%86%E7%BA%BF%E5%99%A8">集线器</a>，简单的嗅探攻击已经不能成功，必须先进行<a target="_blank" rel="noopener" href="https://wapbaike.baidu.com/item/ARP%E6%AC%BA%E9%AA%97/2805503">ARP欺骗</a>才行。如今，越来越多的服务商（网上银行，邮箱登陆）开始采用加密通信，SSL(Secure Sockets Layer <a target="_blank" rel="noopener" href="https://wapbaike.baidu.com/item/%E5%AE%89%E5%85%A8%E5%A5%97%E6%8E%A5%E5%B1%82">安全套接层</a>)是一种广泛使用的技术，HTTPS、FTPS等都是建立在其基础上的。</p>
 <p><strong>实现原理</strong>:</p>
 <p>解释如下图：</p>
-<p><img src="/C:/Users\ASUS\AppData\Roaming\Typora\typora-user-images\image-20210908194927456.png" alt="image-20210908194927456"></p>
+<p><img src="/images/image-20210908194927456-1675686093963.png" alt="image-20210908194927456"></p>
 <h1 id="RSA"><a href="#RSA" class="headerlink" title="RSA"></a>RSA</h1><p><strong>简介</strong>：RSA<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%AF%86%E7%A0%81%E4%BD%93%E5%88%B6/11048976">公开密钥密码体制</a>是一种使用不同的加密密钥与解密密钥，“由已知加密密钥推导出解密密钥在计算上是不可行的”密码体制  。</p>
 <p>在公开密钥密码体制中，加密密钥（即公开密钥）PK是公开信息，而解密密钥（即秘密密钥）SK是需要保密的。加密算法E和解密算法D也都是公开的。虽然解密密钥SK是由公开密钥PK决定的，但却不能根据PK计算出SK 。</p>
 <p>正是基于这种理论，1978年出现了著名的RSA算法，它通常是先生成一对RSA密钥，其中之一是保密密钥，由用户保存；另一个为公开密钥，可对外公开，甚至可在网络服务器中注册。为提高保密强度，RSA密钥至少为500位长，一般推荐使用1024位。这就使加密的计算量很大。为减少计算量，在传送信息时，常采用传统加密方法与<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%8A%A0%E5%AF%86/8090774">公开密钥加密</a>方法相结合的方式，即信息采用改进的DES或IDEA对话密钥加密，然后使用RSA密钥加密对话密钥和信息摘要。对方收到信息后，用不同的密钥解密并可核对信息摘要  。RSA是被研究得最广泛的公钥算法，从提出到现在已近三十年，经历了各种攻击的考验，逐渐为人们接受，普遍认为是目前最优秀的公钥方案之一。</p>
@@ -124,22 +124,22 @@
 <p><strong>实现原理</strong>：RSA公开密钥密码体制的原理是：根据数论，寻求两个大素数比较简单，而将它们的乘积进行因式分解却极其困难，因此可以将乘积公开作为加密密钥。</p>
 <p>RSA算法的具体描述如下： </p>
 <p>（1）任意选取两个不同的大素数p和q计算乘积</p>
-<p><img src="https://bkimg.cdn.bcebos.com/formula/f0dac18152076624d87832b62709895c.svg" alt="img"></p>
+<p><img src="/images/f0dac18152076624d87832b62709895c.svg" alt="img"></p>
 <p>（2）任意选取一个大整数e，满足</p>
-<p><img src="https://bkimg.cdn.bcebos.com/formula/c33d8c66364a636b051d82f0ee202a36.svg" alt="img"></p>
+<p><img src="/../images/c33d8c66364a636b051d82f0ee202a36.svg" alt="img"></p>
 <p> ，整数e用做加密钥（注意：e的选取是很容易的，例如，所有大于p和q的素数都可用） ；</p>
 <p>（3）确定的解密钥d，满足</p>
-<p><img src="https://bkimg.cdn.bcebos.com/formula/da8649c0078a0a842779394d64011776.svg" alt="img"></p>
+<p><img src="/../images/da8649c0078a0a842779394d64011776.svg" alt="img"></p>
 <p> ，即</p>
-<p><img src="https://bkimg.cdn.bcebos.com/formula/4dee3f4df52a81983db0e3c619f96058.svg" alt="img"></p>
+<p><img src="/../images/4dee3f4df52a81983db0e3c619f96058.svg" alt="img"></p>
 <p> 是一个任意的整数；所以，若知道e和</p>
-<p><img src="https://bkimg.cdn.bcebos.com/formula/679e809a0d964785d0aa4cfcb4218742.svg" alt="img"></p>
+<p><img src="/../images/679e809a0d964785d0aa4cfcb4218742.svg" alt="img"></p>
 <p>，则很容易计算出d；</p>
 <p>（4）公开整数n和e，秘密保存d；</p>
 <p>（5）将明文m（m&lt;n是一个整数）加密成密文c，加密算法为 </p>
-<p><img src="https://bkimg.cdn.bcebos.com/formula/5947116555169dc6fe9e3f5cdf347706.svg" alt="img"></p>
+<p><img src="/../images/5947116555169dc6fe9e3f5cdf347706.svg" alt="img"></p>
 <p>（6）将密文c解密为明文m，解密算法为 </p>
-<p><img src="https://bkimg.cdn.bcebos.com/formula/1a8b337167e4d4b2c23855d88ec4c67f.svg" alt="img"></p>
+<p><img src="/../images/1a8b337167e4d4b2c23855d88ec4c67f.svg" alt="img"></p>
 <p>然而只根据n和e（注意：不是p和q）要计算出d是不可能的。因此，任何人都可对明文进行加密，但只有授权用户（知道d）才可对密文解密 。</p>
 <p><strong>参考资料</strong>：<a target="_blank" rel="noopener" href="https://blog.csdn.net/fkedwgwy/article/details/4100522?ops_request_misc=%7B%22request_id%22:%22163107184416780262517111%22,%22scm%22:%2220140713.130102334..%22%7D&request_id=163107184416780262517111&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-4100522.first_rank_v2_pc_rank_v29&utm_term=U%E7%9B%BE&spm=1018.2226.3001.4187">(6条消息) U盾 _潇湘博客-CSDN博客</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/superfjj/article/details/103983707?ops_request_misc=%7B%22request_id%22:%22163107290216780274192738%22,%22scm%22:%2220140713.130102334..%22%7D&request_id=163107290216780274192738&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_click~default-1-103983707.first_rank_v2_pc_rank_v29&utm_term=%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB&spm=1018.2226.3001.4187">(6条消息) 中间人攻击_程序那些事 -CSDN博客</a></p>
