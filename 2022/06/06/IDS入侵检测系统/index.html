@@ -167,12 +167,12 @@
 <h2 id="IDS和防火墙联动"><a href="#IDS和防火墙联动" class="headerlink" title="IDS和防火墙联动"></a>IDS和防火墙联动</h2><p>通过IDS来发现，通过防火墙来阻断。但由于迄今为止没有统一的接口规范，加上越来越频发的“瞬间攻击”（一个会话就可以达成攻击效果，如SQL注入、溢出攻击等），使得IDS与防火墙联动在实际应用中的效果不显著。 ‘</p>
 <h2 id="关于snort"><a href="#关于snort" class="headerlink" title="关于snort"></a>关于snort</h2><p>Snort是一个跨平台、轻量级的网络入侵检测工具，从入侵检测的分类上看，Snort应当属于基于网络的误用检测。针对每一种入侵行为，都提炼出它的特征并按照规范写成规则，从而形成一个规则库，将捕获的数据包对照规则库逐一匹配，若匹配成功，则认为该入侵行为成立。此外，Snort是开源的入侵检测系统，并具有很好的扩展性和可移植性。</p>
 <p>Snort拥有三大基本功能：嗅探器、数据包记录器和入侵检测。嗅探器模式仅从网络上读取数据包并作为连续不断的流显示在终端上，常用命令snort-dev。数据包记录器模式是把数据包记录到硬盘上，常用命令snort-b。网络入侵检测模式是最复杂的，而且是可配置的。我们可以让Snort分析网络数据流以匹配用户定义的一些规则，并根据检测结果采取一定的动作。</p>
-<h3 id="snort的体系结构"><a href="#snort的体系结构" class="headerlink" title="snort的体系结构"></a>snort的体系结构</h3><p><img src="/%5Cimages%5C1656317568449.png" alt="1656317568449"></p>
+<h3 id="snort的体系结构"><a href="#snort的体系结构" class="headerlink" title="snort的体系结构"></a>snort的体系结构</h3><p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/1656317568449.png" alt="1656317568449"></p>
 <h3 id="snort-规则"><a href="#snort-规则" class="headerlink" title="snort 规则"></a>snort 规则</h3><p> Snort的每条规则都可以分成逻辑上的两个部分：规则头和规则体。</p>
 <p>实例:</p>
-<p><img src="/%5Cimages%5C1656399597611.png" alt="1656399597611"></p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/1656399597611.png" alt="1656399597611"></p>
 <p>​        规则体的作用是在规则头信息的基础上进一步分析，有了它才能确认复杂的攻击(Snort的规则定义中可以没有规则体)。规则体由若干个被分别隔开的片断组成，每个片断定义了一个选项和相应的选项值。一部分选项是对各种协议的详细说明，包括IP、ICMP和TCP协议，其余的选项是：规则触发时提供给管理员的参考信息，被搜索的关键字，Snort规则的标识和大小写不敏感选项。</p>
-<p><img src="/%5Cimages%5C1656318295737.png" alt="1656318295737"></p>
+<p><img src="/E:/git-blog\source\images\1656318295737.png" alt="1656318295737"></p>
 <p><strong>Snort预置的规则动作有5种：</strong></p>
 <p>（1）pass—动作选项pass将忽略当前的包，后继捕获的包将被继续分析。</p>
 <p>（2）log—动作选项log将按照自己配置的格式记录包。</p>

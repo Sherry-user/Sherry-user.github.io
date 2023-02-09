@@ -102,7 +102,7 @@
 <h2 id="功能分析"><a href="#功能分析" class="headerlink" title="功能分析"></a>功能分析</h2><p>希望能实现对常用的数据报类型的捕获，例如：ICMP,OSPF,HTTP,HTTPS,SMTP,FTP,TCP,UDP，</p>
 <p>能够显示各个数据包的数据包序号 ，数据包大小，源IP地址，源端口，目地ip地址，目的端口 ，</p>
 <p> IP头部大小，TCP头部大小，数据长度，数据包内容（解码后的内容）。并且能够实现选择具体协议类型的数据包进行抓包，以一个对用户友好的界面将抓取后的数据包信息及内容解码后展示出来。</p>
-<h2 id="功能图"><a href="#功能图" class="headerlink" title="功能图"></a>功能图</h2><p><img src="/%5Cimages%5Cwps62.png" alt="img"></p>
+<h2 id="功能图"><a href="#功能图" class="headerlink" title="功能图"></a>功能图</h2><p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps62.png" alt="wps62"></p>
 <h2 id="方案设计"><a href="#方案设计" class="headerlink" title="方案设计"></a>方案设计</h2><h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>由于我们捕获的东西必须是要物理信号能收到的报文信息。显然只要通知网卡接收其收到的所有包，即网卡采用杂收模式（指网络上的所有设备都对总线上传送的数据进行侦听，并不仅仅是它们自己的数据）。在HUB下就能接收到这个网段的所有包，但是交换机下就只能是自己的包加上广播包。</p>
 <p>要想在交换机下接收别人的包，那就要让其发往自己的机器所在口。交换机记住一个口的MAC是通过接收来自这个口的数据后并记住其源MAC，就像一个机器的IP与MAC对应的ARP列表，交换机维护一个物理口与MAC的表，所以可以欺骗交换机的。可以发一个包设置源MAC是自己想接收的机器的MAC，那么交换机就把机器的网线插的物理口与那个MAC对应起来了，以后发给那个MAC的包就发往自己的网线插口了，也就是我们的网卡可以Sniffer到了。注意这物理口与MAC的表与机器的ARP表一样是动态刷新的，那机器发包后交换HUB就又记住他的口了，所以实际上是两个在争，这只能应用在只要收听少量包就可以的场合。</p>
 <p>内部网基于IP的通信可以用ARP欺骗别人机器让其发送给自己的机器，如果要想不影响原来两方的通信，可以欺骗两方，让其都发给自己的机器再由自己的机器转发，相当于做中间人，这用ARP加上编程很容易实现。并且现在很多设备支持远程管理，有很多交换机可以设置一个口监听别的口，不过这就要管理权限了。</p>
@@ -133,7 +133,7 @@
 </tr>
 </tbody></table>
 <p>各层数据包由如下格式进行封装，捕获数据包后将头部信息进行解析，就可以获取源IP，目的IP，端口号，数据包大小等基本信息，进而可以分析数据包的来源及目的地；分析应用层数据就可以查看其想要传输的具体内容。</p>
-<p><img src="/%5Cimages%5Cwps63-1672295099181.jpg" alt="img"> </p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps63-1672295099181.jpg" alt="wps63-1672295099181"></p>
 <h3 id="设计主要模块"><a href="#设计主要模块" class="headerlink" title="设计主要模块"></a>设计主要模块</h3><p>1） 包捕获机制</p>
 <p>不同的操作系统实现的底层包捕获机制可能是不一样的，但从形式上看大同小异。数据包常规的传输路径依次为网卡、设备驱动层、数据链路层、IP层、传输层、最后到达应用程序。而包捕获机制是在数据链路层增加一个旁路处理，对发送和接收到的数据包做过滤/缓冲等相关处理，最后直接传递到应用程序。</p>
 <p>常用的以太网卡支持以下工作模式：广播模式、多播模式、直接模式和混杂模式。</p>
@@ -146,7 +146,7 @@
 <p>4） 用户程序的接口</p>
 <p>对用户程序而言，包捕获机制提供了一个统一的接口，使用户程序只需要简单的调用若干函数就能获得所期望的数据包。这样一来，针对特定操作系统的捕获机制对用户透明。</p>
 <h3 id="文字介绍实现的方法"><a href="#文字介绍实现的方法" class="headerlink" title="文字介绍实现的方法"></a>文字介绍实现的方法</h3><p>设置网卡为混杂模式，建立socket实体，并用bind()函数将其绑定在主机IP上，调用recv()函数，返回捕获的数据包，完成包捕获机制；通过建立IP头部，TCP头部，UDP头部结构体，建立结构体类型的指针，指针指向数据包的第一个数组存储的地址，再计算头部长度，通过地址加上头部长度，就指向数据包具体内容存储的地址，从而就可以输出数据包内容；设置输出格式为%c(即以字符的形式输出)，并将一些控制字符以特定的形式输出，从而避免输出乱码，实现报文的解码；通过判断IP头部的Protocol信息，确定传输的是TCP报文还是UDP报文，对于应用层报文，例如TCP以上的报文，可以通过端口号实现报文的判断，例如80号端口是TCP，443端口对应的是HTTPS，25号端口对应的是SMTP，20和21端口对应的是FTP，从而实现了对数据包的辨别。</p>
-<h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><p><img src="/%5Cimages%5Cwps64.png" alt="img"></p>
+<h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps64.png" alt="wps64"></p>
 <h3 id="关键技术及代码"><a href="#关键技术及代码" class="headerlink" title="关键技术及代码"></a>关键技术及代码</h3><p>1） <strong>socket创建与数据包的接收，是网络嗅探器的基础</strong></p>
 <p>SOCKET sock;</p>
 <p>if ((sock = socket(AF_INET, SOCK_RAW, IPPROTO_IP)) == SOCKET_ERROR)</p>
@@ -191,7 +191,7 @@
 <p>…….此部分为待打印的数据包信息……………}</p>
 <p>其他的数据包类型辨别诸如此类。</p>
 <h2 id="实现结果"><a href="#实现结果" class="headerlink" title="实现结果"></a>实现结果</h2><h3 id="ICMP报文捕获"><a href="#ICMP报文捕获" class="headerlink" title="ICMP报文捕获"></a>ICMP报文捕获</h3><p>以下是一些基本的数据包信息。</p>
-<p><img src="/%5Cimages%5Cwps65-1672295099182.jpg" alt="img"> </p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps65-1672295099182.jpg" alt="wps65-1672295099182"></p>
 <h3 id="HTTP报文捕获"><a href="#HTTP报文捕获" class="headerlink" title="HTTP报文捕获"></a>HTTP报文捕获</h3><p>很明显，我们能从数据包解码后的信息里看到以下信息：</p>
 <p><strong>User-Agent：</strong>生成请求的浏览器类型</p>
 <p><strong>Accept：</strong>客户端可识别的响应内容类型列表；星号* 用于按范围将类型分组。*/*表示可接受全部类型，type/*表示可接受type类型的所有子类型。</p>
@@ -200,29 +200,29 @@
 <p><strong>Accept-Charset：</strong> 可接受的字符集</p>
 <p><strong>Host:</strong> 请求的主机名，允许多个域名绑定同一IP地址</p>
 <p><strong>connection：</strong>连接方式（close或keeplive）</p>
-<p><img src="/%5Cimages%5Cwps66-1672295099182.jpg" alt="img"> </p>
+<p> <img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps66-1672295099182.jpg" alt="wps66-1672295099182"></p>
 <h3 id="HTTPS报文捕获"><a href="#HTTPS报文捕获" class="headerlink" title="HTTPS报文捕获"></a>HTTPS报文捕获</h3><p>我们可以看出报文内容是<strong>无意义的语句</strong>，原因在于HTTPS本身是一种<strong>加密传输</strong>，因此获取的报文是无意义的，但是我们可以通过IP头部得出该数据包的一些基础信息，例如源IP，目的IP等。</p>
-<p><img src="/%5Cimages%5Cwps67-1672295099183.jpg" alt="img"> </p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps67-1672295099183.jpg" alt="wps67-1672295099183"></p>
 <h3 id="SMTP报文的捕获"><a href="#SMTP报文的捕获" class="headerlink" title="SMTP报文的捕获"></a>SMTP报文的捕获</h3><p>我们可以通过数据包内容看出该邮件的发送方，接收方，邮件内容，使用的软件（火狐），版本号等信息。</p>
 <p>以下是我通过火狐邮件发送的邮件信息：</p>
-<p><img src="/%5Cimages%5Cwps68-1672295099183.jpg" alt="img"> </p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps68-1672295099183.jpg" alt="wps68-1672295099183"></p>
 <p>这是抓包的结果，可以看出邮件的发送方，接收方，邮件具体内容，使用的软件及版本号都和上面对应的邮件信息相同；</p>
-<p><img src="/%5Cimages%5Cwps69-1672295099183.jpg" alt="img"> </p>
+<p> <img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps69-1672295099183.jpg" alt="wps69-1672295099183"></p>
 <h3 id="TCP报文捕获"><a href="#TCP报文捕获" class="headerlink" title="TCP报文捕获"></a>TCP报文捕获</h3><p>例如抓取的这个端口号是1231的TCP包，我们可以从数据包内容的分析可知<strong>唯一设备识别符</strong>，<strong>接口参数</strong>等信息。</p>
 <p><img src="/%5Cimages%5Cwps70-1672295099183.jpg" alt="img"> </p>
 <h3 id="UDP报文捕获"><a href="#UDP报文捕获" class="headerlink" title="UDP报文捕获"></a>UDP报文捕获</h3><p>可以通过报文信息看到一些具体的参数信息，具体的内容如下：</p>
-<p><img src="/%5Cimages%5Cwps71-1672295099183.jpg" alt="img"> </p>
+<p> <img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps70-1672295099183.jpg" alt="wps70-1672295099183"></p>
 <h3 id="FTP报文捕获"><a href="#FTP报文捕获" class="headerlink" title="FTP报文捕获"></a>FTP报文捕获</h3><p>可以通过报文解析查看用户名和密码。</p>
-<p><img src="/%5Cimages%5Cwps72-1672295099183.jpg" alt="img"> </p>
-<p><img src="/%5Cimages%5Cwps73-1672295099183.jpg" alt="img"> </p>
-<p><img src="/%5Cimages%5Cwps74-1672295099183.jpg" alt="img"> </p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps72-1672295099183.jpg" alt="wps72-1672295099183"></p>
+<p><img src="/E:/git-blog\source\images\wps73-1672295099183.jpg" alt="wps73-1672295099183"></p>
+<p> <img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps74-1672295099183.jpg" alt="wps74-1672295099183"></p>
 <h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>1.问题：出现了以一种访问权限不允许的方式做了一个访问套接字的尝试。</p>
 <p>解决方法：以管理员身份运行程序可以解决，注意：一定要关闭火绒软件，否则程序会被识别为木马；</p>
 <p>2.问题：无法捕获到TCP</p>
 <p>解决办法：主要是网卡的选择问题，使用gethostname(hostName, MAX_HOSTNAME_LEN)获取主机名称，通过他建立关于本机信息的一个hostent结构体;网卡选择hostent结构体的h_addr_list的第2个IP，就可以捕捉到TCP以及其他报文。</p>
 <p>3.问题：捕获不到SMTP报文</p>
 <p>解决办法：将Foxmail取消SSL加密传输</p>
-<p><img src="/%5Cimages%5Cwps75-1672295099183.jpg" alt="img"> </p>
+<p> <img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps75-1672295099183.jpg" alt="wps75-1672295099183"></p>
 <p>4.问题：对报文进行解码后出现许多乱码，无法有效的查看数据包信息</p>
 <p>解决办法：事实上， ascll码仅有32到126是对于解码有意义的，其他的大部分都是操作符，或者是一些意义不大的字符，如果在解码过程中以字符的形式控制输出（即printf(“ %c”, *(recvBuff + i));），这一部分就会出现乱码，因此在执行解码的时候，我们可以做一个过滤机制，只将32到126以字符的形式进行解码，其他的以统一的格式输出即可，这样便于对数据包内容进行分析。</p>
 </article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="http://example.com">John Doe</a></p><p> <span>Link:  </span><a href="http://example.com/2022/12/29/%E7%BD%91%E7%BB%9C%E5%97%85%E6%8E%A2%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0/">http://example.com/2022/12/29/%E7%BD%91%E7%BB%9C%E5%97%85%E6%8E%A2%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2022/12/30/%E7%AD%89%E4%BF%9D%E5%AD%A6%E4%B9%A0/" title="等保学习"><span>< PreviousPost</span><br><span class="prevTitle">等保学习</span></a><a class="nextSlogan" href="/2022/12/29/%E4%BD%BF%E7%94%A8UltraEdi%E7%8C%9C%E6%B5%8B%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" title="使用UltraEdi猜测文件格式"><span>NextPost ></span><br><span class="nextTitle">使用UltraEdi猜测文件格式</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a target="_blank" rel="noopener" href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%97%85%E6%8E%A2%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.</span> <span class="toc-text">网络嗅探器的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E5%88%86%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">功能分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E5%9B%BE"><span class="toc-number">1.2.</span> <span class="toc-text">功能图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.3.</span> <span class="toc-text">方案设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.1.</span> <span class="toc-text">实现原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E4%B8%BB%E8%A6%81%E6%A8%A1%E5%9D%97"><span class="toc-number">1.3.2.</span> <span class="toc-text">设计主要模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E5%AD%97%E4%BB%8B%E7%BB%8D%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.3.</span> <span class="toc-text">文字介绍实现的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-number">1.3.4.</span> <span class="toc-text">流程图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF%E5%8F%8A%E4%BB%A3%E7%A0%81"><span class="toc-number">1.3.5.</span> <span class="toc-text">关键技术及代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E7%BB%93%E6%9E%9C"><span class="toc-number">1.4.</span> <span class="toc-text">实现结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ICMP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.1.</span> <span class="toc-text">ICMP报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.2.</span> <span class="toc-text">HTTP报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTPS%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.3.</span> <span class="toc-text">HTTPS报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SMTP%E6%8A%A5%E6%96%87%E7%9A%84%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.4.</span> <span class="toc-text">SMTP报文的捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.5.</span> <span class="toc-text">TCP报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UDP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.6.</span> <span class="toc-text">UDP报文捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FTP%E6%8A%A5%E6%96%87%E6%8D%95%E8%8E%B7"><span class="toc-number">1.4.7.</span> <span class="toc-text">FTP报文捕获</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.5.</span> <span class="toc-text">遇到的问题</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

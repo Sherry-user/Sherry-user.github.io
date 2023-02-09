@@ -105,9 +105,9 @@
 <p>个人防火墙主要监控 PC 的通信流量，网关防火墙是监控网络中所有终端的通信流量，在网关处进行策略控制。</p>
 <h5 id="硬件防火墙"><a href="#硬件防火墙" class="headerlink" title="硬件防火墙"></a>硬件防火墙</h5><p>通过硬件设备实现的防火墙叫做<strong>硬件防火墙</strong>，外形跟路由器相似，接口类型通常有千兆网口、万兆光口。</p>
 <h1 id="防火相关技术"><a href="#防火相关技术" class="headerlink" title="防火相关技术"></a>防火相关技术</h1><p>1.包过滤技术</p>
-<p><img src="/%5Cimages%5C1653530737743.png" alt="1653530737743"></p>
-<p><img src="/%5Cimages%5C1653530890142.png" alt="1653530890142"></p>
-<p><img src="/%5Cimages%5C1653530934175.png" alt="1653530934175"></p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/1653530737743.png" alt="1653530737743"></p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/1653530890142.png" alt="1653530890142"></p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/1653530934175.png" alt="1653530934175"></p>
 <h1 id="关于Iptables"><a href="#关于Iptables" class="headerlink" title="关于Iptables"></a>关于Iptables</h1><p>Linux防火墙由两个组件netfilter和iptables组成，通常也称为iptables防火墙</p>
 <ul>
 <li>netfilter是内核的一部分，由一些数据包过滤表组成，这些表包含内核用来控制数据包过滤处理的规则集</li>
@@ -121,11 +121,11 @@
 </li>
 </ul>
 <p>链是数据包传输的路径，表是功能的集合。</p>
-<p><img src="/%5Cimages%5C1653531184370.png" alt="1653531184370"></p>
-<p><img src="/%5Cimages%5C1653531268731.png" alt="1653531268731"></p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/1653531184370.png" alt="1653531184370"></p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/1653531268731.png" alt="1653531268731"></p>
 <p><strong>lptables工具基本命令:</strong><br>iptables [-t table] command chain-name [match] [target/jump]</p>
 <p>iptables -P chain-name DROP/ ACCEPT/REJECT</p>
-<p><img src="/%5Cimages%5C1653531620100.png" alt="1653531620100"></p>
+<p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/1653531620100.png" alt="1653531620100"></p>
 <p><strong>command chain-name，指定iptables执行的动作，包括插入规则，删除规则和添加规则。</strong><br>-P –policy链名&gt;定义默认策略<br>-L –list链名&gt;查看iptables规则列表<br>-A–append链名&gt;在规则列表的最后增加1条规则-l –insert链名&gt;在指定的位置插入1条规则</p>
 <p>-D–delete链名&gt;从规则列表中删除1条规则</p>
 <p>-R–replace链名&gt;替换规则列表中的某条规则</p>
