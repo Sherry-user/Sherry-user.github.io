@@ -98,7 +98,8 @@
 }( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
 </head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/cat.png"></div><!--.profile-saying
   i.fa.fa-comment
-  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">漏洞挖掘工具cppCheck和Boofuzz原理及作用过程</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-12-29</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><span id="more"></span>
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">香蜜</div><div class="profile-signature">有趣的灵魂</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/Longlongyu" target="_black">friendA</a></span><span><a href="//github.com/" target="_black">friendB</a></span><span><a href="//github.com/" target="_black">friendC</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">香蜜的博客</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">漏洞挖掘工具cppCheck和Boofuzz原理及作用过程</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2022-12-29</span></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><p>记录一下漏洞挖掘工具cppCheck和Boofuzz原理及作用过程，以便后续学习</p>
+<span id="more"></span>
 
 <h4 id="cppCheck"><a href="#cppCheck" class="headerlink" title="cppCheck"></a>cppCheck</h4><ol>
 <li>下载分析源代码及各模块功能</li>
@@ -113,7 +114,7 @@
 <p>  <strong>7.</strong> 自己定制项目中对应的规则；</p>
 <p> <strong>8</strong>、其他。</p>
 <p>1.2. <strong>Cppcheck总过程：</strong></p>
-<p><strong>预处理</strong>：由<strong>Preprocessor</strong>类实现<strong>**，*<em><strong>执行</strong>Class Preprocessor::preprocess()*<em><strong>，该</strong>阶段主要处理：去多余空格，删除汇编代码，处理</em>*#Include</em>*及嵌套，统一预处理语句（例：</strong>#if define=&gt; #ifdef<strong>），提取预处理配置设置（</strong>configuration**），替换宏定义。</p>
+<p><strong>预处理</strong>：由<strong>Preprocessor</strong>类实现，执行Class Preprocessor::preprocess()，该阶段主要处理：去多余空格，删除汇编代码，处理#Include及嵌套，统一预处理语句（例：**#if define=&gt; #ifdef**），提取预处理配置设置（configuration），替换宏定义。</p>
 <p><strong>Tokenize：</strong>解析代码成符号（**+-*/;…**等，变量名，函数名），由 <strong>class Tokenizer</strong>实现， 实现接口 <strong>class Tokenizer::tokenize()。</strong></p>
 <p><strong>Simplify：</strong>简化复杂代码，统一化，由 <strong>class Tokenizer</strong>实现， 实现接口 <strong>class Tokenizer::simplifyTokenList()。</strong></p>
 <p><strong>分析代码，报告错误。</strong></p>
@@ -140,7 +141,7 @@
 <p><em><strong>*核心函数check()*</strong></em></p>
 <p>　　处理入口，在此函数对输入代码进行初步分析处理，最后将代码传递给 CheckFile()。</p>
 <p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps27-1672294253195.jpg" alt="wps27-1672294253195"></p>
-<p><em><strong>*核心函数CheckFile()*</strong></em></p>
+<p><strong>核心函数CheckFile()</strong></p>
 <p>　　函数功能是分析一个代码文件， CheckFile()会将代码流做进一步的分析，做tokenize,simplify，处理后分析代码，报告错误。</p>
 <p>  <strong>1.3.代码流分析</strong></p>
 <p>举例代码：</p>
@@ -169,7 +170,7 @@
 <p>2.5.越界问题</p>
 <p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps38-1672294253197.jpg" alt="wps38-1672294253197"></p>
 <h4 id="Boofuzz"><a href="#Boofuzz" class="headerlink" title="Boofuzz"></a><strong>Boofuzz</strong></h4><p><strong>1.下载安装boofuzz</strong></p>
-<p><em><strong>*2.BooFuzz框架*</strong></em></p>
+<p><strong>2.BooFuzz框架</strong></p>
 <p>四大组件：</p>
 <p>a) Data Generation 数据生成, 基于generation-based的方式, 需要对协议或者文件进行建模.</p>
 <p>b) Session 会话管理, 根据已经构建好的Request，利用 Pgraph 绘制， Pgraph 可以创建、修改和渲染图</p>
@@ -177,7 +178,7 @@
 <p>d) Utilities独立单元工具</p>
 <p><strong>3.总流程</strong></p>
 <p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps39.png" alt="wps39"></p>
-<p>**4.**<strong>Session对象</strong></p>
+<p><strong>4.Session对象</strong></p>
 <p>即Fuzz测试的核心，当你创建Session的时候，你会传递一个Target对象，该对象本身接收一个Connection对象。</p>
 <p><img src="https://xiangmipic.oss-cn-hangzhou.aliyuncs.com/img/wps40-1672294253197.jpg" alt="wps40-1672294253197"></p>
 <p>准备好会话对象后，接下来需要在协议中定义消息。每一条消息均以一个s_initialize函数开头，比如这是fuzz FTP协议中的几个消息定义：</p>
